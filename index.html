@@ -179,6 +179,7 @@ body.nomidi .midihint{display:inline-block}
 .copt .chip{padding:2px 9px;font-size:.76rem}
 .copt label{display:inline-flex;align-items:center;gap:5px;margin:0;cursor:pointer;font-size:.76rem;color:var(--mut)}
 .copt input[type=checkbox]{width:13px;height:13px;margin:0}
+body.nomidiapi #volBox,body.nomidiapi #midiTop{display:none}
 #mobNote{position:fixed;left:0;right:0;bottom:0;z-index:50;padding:12px;display:flex;justify-content:center}
 #mobNote .mn{max-width:420px;width:100%;background:var(--card);color:var(--fg);border:1.5px solid var(--ac);border-radius:14px;padding:14px 16px;box-shadow:0 10px 30px rgba(0,0,0,.35);text-align:center}
 #mobNote .mt{font-weight:700;margin-bottom:4px}
@@ -342,7 +343,7 @@ tr.hl td{background:var(--chip);font-weight:700}
 </details>
 </main>
 </div>
-<footer class="ft"><a href="impressum.html">Impressum</a> · <a href="datenschutz.html">Datenschutz</a></footer>
+<footer class="ft"><a data-k="p" href="datenschutz.html">Datenschutz</a></footer>
 <div id="hsOv"><div class="panel"><h2 style="margin:0 0 8px;font-size:1.1rem;color:var(--fg)">🏆 Highscores</h2><div id="hsMsg" style="font-weight:600;margin-bottom:6px"></div><label style="margin:6px 0">Dauer <select id="hsFilter"></select></label><div style="overflow-x:auto"><table id="hsTab"></table></div><div class="row"><button class="sec" id="hsClear">Alle löschen</button><button class="main" id="hsClose">Schließen</button></div></div></div>
 <script>
 const L=['C','D','E','F','G','A','B'],S={C:0,D:2,E:4,F:5,G:7,A:9,B:11};
@@ -1449,7 +1450,7 @@ function trWalk(root){if(root.nodeType===3){if(!SKIP[root.parentNode&&root.paren
 new MutationObserver(ms=>{if(LANG==='de')return;for(const m of ms){if(m.type==='childList')m.addedNodes.forEach(trWalk);else if(m.type==='characterData')trText(m.target);else if(m.type==='attributes')trAttr(m.target)}}).observe(document.body,{childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:['title']});
 const LANGS=[['de','Deutsch'],['en','English'],['es','Español']];
 function langBuild(){$('langs').innerHTML=LANGS.map(([c,n])=>`<button type="button" class="chip${LANG===c?' on':''}" data-lang="${c}">${n}</button>`).join('')}
-function ftLinks(){const de=LANG==='de',a=document.querySelectorAll('.ft a');if(a.length===2){a[0].setAttribute('href',de?'impressum.html':'legal-notice.html');a[1].setAttribute('href',de?'datenschutz.html':'privacy.html')}}
+function ftLinks(){const de=LANG==='de';document.querySelectorAll('.ft a').forEach(x=>{if(x.dataset.k==='p')x.setAttribute('href',de?'datenschutz.html':'privacy.html');else if(x.dataset.k==='i')x.setAttribute('href',de?'impressum.html':'legal-notice.html')})}
 function setLang(l){LANG=l;ftLinks();try{localStorage.setItem('pt-lang',l)}catch(e){}document.documentElement.lang=l;trWalk(document.body);langBuild();
  rebuildLists();lnBuild();lcBuild();triBuild();akBuild();srBuild();cntTxt();
  if(area==='chord'&&!LEARN.chord&&cur)showTask();if(area==='scale'&&!LEARN.scale&&SK)scShow();if(LEARN.scale)learnRender();if(LEARN.chord)chLearnRender();
@@ -1461,7 +1462,9 @@ $('modeSel').onchange();
 cntTxt();
 evalHeld();
 /* Hinweis für Mobilgeräte */
-try{const mob=/Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent)||(window.matchMedia&&matchMedia('(pointer:coarse)').matches&&innerWidth<900);
+const IS_MOB=(()=>{try{return /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent)||(window.matchMedia&&matchMedia('(pointer:coarse)').matches&&innerWidth<900)}catch(e){return false}})();
+if(IS_MOB&&!navigator.requestMIDIAccess)document.body.classList.add('nomidiapi');
+try{const mob=IS_MOB;
  if(mob&&localStorage.getItem('pt-mobile-note')!=='1')setTimeout(()=>{const d=document.createElement('div');d.id='mobNote';d.setAttribute('role','dialog');d.innerHTML='<div class="mn"><div class="mt">Diese Seite funktioniert am besten am Computer.</div><div class="ms">Du brauchst ein MIDI-Keyboard und am besten Chrome oder Edge.</div><button type="button" id="mobOk">OK</button></div>';document.body.appendChild(d);$('mobOk').onclick=()=>{d.remove();try{localStorage.setItem('pt-mobile-note','1')}catch(e){}}},700)}catch(e){}
 </script>
 </body>
