@@ -16,16 +16,16 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://www.chorddrills.org/random-chord-generator.html"/>
   </url>
   <url>
-    <loc>https://www.chorddrills.org/ii-v-i-all-keys.html</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://www.chorddrills.org/ii-v-i-all-keys.html"/>
-    <xhtml:link rel="alternate" hreflang="de" href="https://www.chorddrills.org/ii-v-i-alle-tonarten.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.chorddrills.org/ii-v-i-all-keys.html"/>
+    <loc>https://www.chorddrills.org/chord-progressions-practice.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.chorddrills.org/chord-progressions-practice.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://www.chorddrills.org/akkordfolgen-ueben-midi.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.chorddrills.org/chord-progressions-practice.html"/>
   </url>
   <url>
-    <loc>https://www.chorddrills.org/ii-v-i-alle-tonarten.html</loc>
-    <xhtml:link rel="alternate" hreflang="de" href="https://www.chorddrills.org/ii-v-i-alle-tonarten.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://www.chorddrills.org/ii-v-i-all-keys.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.chorddrills.org/ii-v-i-all-keys.html"/>
+    <loc>https://www.chorddrills.org/akkordfolgen-ueben-midi.html</loc>
+    <xhtml:link rel="alternate" hreflang="de" href="https://www.chorddrills.org/akkordfolgen-ueben-midi.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.chorddrills.org/chord-progressions-practice.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.chorddrills.org/chord-progressions-practice.html"/>
   </url>
   <url>
     <loc>https://www.chorddrills.org/scale-practice-midi.html</loc>
@@ -50,18 +50,6 @@
     <xhtml:link rel="alternate" hreflang="de" href="https://www.chorddrills.org/notenlesen-ueben-midi.html"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://www.chorddrills.org/sight-reading-midi.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://www.chorddrills.org/sight-reading-midi.html"/>
-  </url>
-  <url>
-    <loc>https://www.chorddrills.org/chord-inversions-practice.html</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://www.chorddrills.org/chord-inversions-practice.html"/>
-    <xhtml:link rel="alternate" hreflang="de" href="https://www.chorddrills.org/akkord-umkehrungen-ueben.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.chorddrills.org/chord-inversions-practice.html"/>
-  </url>
-  <url>
-    <loc>https://www.chorddrills.org/akkord-umkehrungen-ueben.html</loc>
-    <xhtml:link rel="alternate" hreflang="de" href="https://www.chorddrills.org/akkord-umkehrungen-ueben.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://www.chorddrills.org/chord-inversions-practice.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.chorddrills.org/chord-inversions-practice.html"/>
   </url>
   <url>
     <loc>https://www.chorddrills.org/faq.html</loc>
