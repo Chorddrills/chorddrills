@@ -3,17 +3,19 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Chord Drills</title>
-<meta name="description" content="Chord Drills: free chord, scale and sight-reading drills for MIDI keyboards. Random chords with inversions, scale practice, progressions, metronome with grooves. Runs in your browser, no sign-up.">
+<title>Chord Drills – free MIDI chord, scale & sight-reading drills</title>
+<meta name="description" content="Free browser app to drill chords, scales and sight reading with a MIDI keyboard: random chords, inversions, progressions, metronome. No sign-up.">
 <meta name="theme-color" content="#171513">
 <link rel="icon" href="favicon.ico?v=2" sizes="32x32">
 <link rel="icon" href="favicon.svg?v=2" type="image/svg+xml">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Chord Drills">
+<meta property="og:title" content="Chord Drills – free MIDI chord, scale & sight-reading drills">
 <meta property="og:description" content="Free chord, scale and sight-reading drills for MIDI keyboards. Runs in your browser.">
-<meta property="og:image" content="https://chorddrills.github.io/chorddrills/og-image.png">
+<meta property="og:image" content="https://www.chorddrills.org/og-image.png">
 <meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://www.chorddrills.org/">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Chord Drills","url":"https://www.chorddrills.org/","applicationCategory":"EducationalApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript. MIDI input needs a browser with Web MIDI (Chrome, Edge).","description":"Free browser app to drill chords, scales and sight reading with a MIDI keyboard. Random chords with inversions, progressions, chord chains, key journeys and a metronome.","inLanguage":["en","de","es"],"offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"}}</script>
 <style>
 :root{--bg:#faf8f4;--fg:#1f1d1a;--mut:#7a746b;--card:#fff;--bd:#ddd6ca;--ac:#c2410c;--acfg:#fff;--chip:#efe9de;--ok:#15803d;--bad:#dc2626;
 box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -278,7 +280,7 @@ tr.hl td{background:var(--chip);font-weight:700}
 <div class="card task">
 <div class="midihint" role="button" tabindex="0"><span class="mh-t">Verbinde dein MIDI-Keyboard über das Symbol oben rechts.</span></div>
 <div class="coptw" id="coptw"><div class="copt" id="dispRow" style="display:none"><span>Anzeige</span><div class="chips" id="dispChips"></div></div><div class="copt" id="diaRow"><label id="diaLab" title="Moll: natürliches Moll. Aus = im Stufen-Modus kommen auch chromatische Akkorde dazu."><input type="checkbox" id="diaOnly" checked> nur diatonische Akkorde</label></div></div>
-  <div class="keyrow"><div class="key" id="key">–</div><button type="button" class="repbtn" id="repBtn" style="display:none" aria-pressed="false" title="Diese Folge immer wieder üben. „Weiter“ startet sie von vorn. Zum Beenden Wiederholen ausschalten."><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11V9.5A3.5 3.5 0 0 1 7.5 6H18"/><path d="M15 2.8 18.2 6 15 9.2"/><path d="M20 13v1.5a3.5 3.5 0 0 1-3.5 3.5H6"/><path d="M9 21.2 5.8 18 9 14.8"/></svg></button></div>
+  <div class="keyrow"><div class="key" id="key">–</div><button type="button" class="repbtn" id="repBtn" style="display:none" aria-pressed="false" title="Diese Folge immer wieder üben. „Weiter“ oder Enter holt trotzdem die nächste Aufgabe, die Wiederholung bleibt an. Zum Beenden den Knopf erneut drücken."><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11V9.5A3.5 3.5 0 0 1 7.5 6H18"/><path d="M15 2.8 18.2 6 15 9.2"/><path d="M20 13v1.5a3.5 3.5 0 0 1-3.5 3.5H6"/><path d="M9 21.2 5.8 18 9 14.8"/></svg></button></div>
   <div class="deg" id="deg">Drück „Start"</div>
   <div id="solKb" style="margin-top:6px"></div>
   <div class="cnt"><span id="cnt"></span> <button type="button" id="resetCnt" title="Zähler zurücksetzen" style="padding:0 7px;border-radius:8px;font-size:.95rem">↺</button></div>
@@ -353,7 +355,7 @@ tr.hl td{background:var(--chip);font-weight:700}
 <label>Automatik: Pause <input type="number" id="secs" value="6" min="2" max="30"> Sekunden</label>
 <h2>Zeitrennen</h2>
 <label>Dauer <input type="number" id="raceSecs" value="60" min="5" max="600"> Sekunden</label>
-<div class="hint">Leertaste = Weiter, Enter = Lösung zeigen. Ansage auf Deutsch: B♭ heißt „Bäs", B heißt „B".</div>
+<div class="hint">Leertaste = Weiter, Enter = Lösung zeigen (bei aktiver Wiederholung = nächste Aufgabe). Ansage auf Deutsch: B♭ heißt „Bäs", B heißt „B".</div>
 </div>
 <div id="sightSet" style="display:none">
 <h2>Zeitrennen</h2>
@@ -425,7 +427,7 @@ function evalHeldCore(){if(area==='sight')return;if(area==='scale'){const mp={};
  $('staffPlay').innerHTML=staff(held.map(m=>{const x=mkNote(m,map);x.col=cur?(allow.has(x.pc)?'#15803d':'#dc2626'):'#000';return x}));
  const fb=$('fb');fb.className='fb';
  if(!cur){fb.textContent='Drück zuerst „Start"';return}
- if(!held.length){if(pendingStep){pendingStep=false;advanceStep();return}if(pendingNext){pendingNext=false;if(solved){stopAuto();next()}return}if(!solved)fb.textContent='';return}
+ if(!held.length){if(pendingStep){pendingStep=false;advanceStep();return}if(pendingNext){pendingNext=false;if(solved){stopAuto();autoAdvance()}return}if(!solved)fb.textContent='';return}
  const need=new Set(ex.need||ex.slice($('rootless').checked?1:0).map(t=>t.pc));
  const miss=[...need].filter(p=>!pcs.has(p)),bad=[...pcs].filter(p=>!allow.has(p));
  const bassOk=!(cur.akk&&cur.inv!=null)||held[0]%12===cur.bassPc;
@@ -455,10 +457,12 @@ function pick(){const pool=[];
  if(!$('diaOnly').checked){sel.maj.forEach(k=>chrL(CHR_MAJ).forEach(tok=>pool.push({key:k,mode:'Dur',i:0,tok})));sel.min.forEach(k=>chrL(CHR_MIN).forEach(tok=>pool.push({key:k,mode:'Moll',i:0,tok})))}
  if(!pool.length)return null;let c,t=0;do{c=pool[Math.floor(Math.random()*pool.length)];t++}while(pool.length>1&&c.key+c.mode+c.i+(c.tok||'')===last&&t<20);
  last=c.key+c.mode+c.i+(c.tok||'');return c}
+function autoAdvance(){if(cur&&cur.rep&&cur.prog&&!cur.wander)restartSame();else next()}
 function restartSame(){cur.step=0;cur.shown=0;cur.rev=false;solved=false;pendingNext=false;pendingStep=false;showTask();$('solWrap').style.display='none';$('chord').textContent='';say();evalHeld()}
 $('repBtn').onclick=()=>{if(!cur||!cur.prog||cur.wander)return;cur.rep=!cur.rep;$('repBtn').classList.toggle('on',!!cur.rep);$('repBtn').setAttribute('aria-pressed',String(!!cur.rep))};
-function next(force){if(cur&&cur.rep&&cur.prog&&!cur.wander&&!force){stopAuto();restartSame();return}if((gm==='wander'&&cur&&cur.wander||gm==='vamp'&&cur&&cur.vamp)&&!force){stopAuto();advanceStep();return}const c=gm==='vamp'?pickVamp():gm==='wander'?pickWander():gm==='verlauf'?pickProg():gm==='inter'?pickInt():gm==='akk'?(nextC||pickAkk()):(nextC||pick());if(!c){$('deg').textContent=emptyMsg();return}
+function next(force){if((gm==='wander'&&cur&&cur.wander||gm==='vamp'&&cur&&cur.vamp)&&!force){stopAuto();advanceStep();return}const c=gm==='vamp'?pickVamp():gm==='wander'?pickWander():gm==='verlauf'?pickProg():gm==='inter'?pickInt():gm==='akk'?(nextC||pickAkk()):(nextC||pick());if(!c){$('deg').textContent=emptyMsg();return}
  if(cur)$('prev').innerHTML='Vorherige Aufgabe: '+ansTxt(cur);
+ if(cur&&cur.rep&&c.prog&&!c.wander)c.rep=true;
  cur=c;n++;solved=false;pendingNext=false;pendingStep=false;nextC=gm==='stufen'?pick():gm==='akk'?pickAkk():null;showTask();
  $('chord').textContent='';$('solWrap').style.display='none';cntTxt();$('next').textContent='Weiter';say();evalHeld();
  if($('showAns').checked&&!auto)setTimeout(()=>reveal(undefined,true),2500)}
@@ -470,17 +474,17 @@ function reveal(a,st){if(!cur)return;if(cur.prog){cur.shown=(a===true||cur.step>
  $('staffSol').innerHTML=staff(t.map(x=>{const o=mkNote(60+x.rs+(x.off-0),map);o.col='#000';o.m=60+x.rs+x.off;const q=mkNote(o.m,map);q.col='#000';return q}));
  $('solWrap').style.display='block'}
 function stopAuto(){auto=false;clearTimeout(timer);$('auto').textContent='▶ Automatik'}
-function loop(){if(!auto)return;next();const s=Math.max(2,+$('secs').value||6);
+function loop(){if(!auto)return;autoAdvance();const s=Math.max(2,+$('secs').value||6);
  timer=setTimeout(()=>{if(!auto)return;reveal(undefined,true);timer=setTimeout(loop,Math.min(2500,s*500))},s*1000)}
 $('next').onclick=()=>{stopAuto();next()};
 $('reveal').onclick=()=>reveal(true);
 $('auto').onclick=()=>{if(race.on)return;if(auto){stopAuto();return}auto=true;$('auto').textContent='⏹ Stopp';loop()};
 document.addEventListener('keydown',e=>{if(e.target.tagName==='INPUT')return;
- if(e.code==='Space'){e.preventDefault();stopAuto();next()}else if(e.code==='Enter')reveal()});
+ if(e.code==='Space'){e.preventDefault();stopAuto();next()}else if(e.code==='Enter'){if(cur&&cur.rep&&cur.prog&&!cur.wander){stopAuto();next()}else reveal()}});
 $('rootless').onchange=evalHeld;
 
 /* MIDI */
-function onMidi(e){const[s,nt,v]=e.data,c=s&0xf0;if(c===0xB0&&nt===64){pianoSus(v>=64);return}if(c===0x90&&v>0){H.add(nt);pianoOn(nt,v)}else if(c===0x80||c===0x90){H.delete(nt);pianoOff(nt)}else return;if(c===0x90&&v>0){if(area==='scale')scaleNote(nt);else if(area==='sight')sightNote(nt)}evalHeld()}
+function onMidi(e){const[s,nt,v]=e.data,c=s&0xf0;if(c===0xB0&&nt===64){pianoSus(v>=64);return}if(c===0x90&&v>0){H.add(nt);pianoOn(nt,v)}else if(c===0x80||c===0x90){H.delete(nt);pianoOff(nt)}else return;if(c===0x90&&v>0){if(area==='scale')scaleNote(nt);else if(area==='sight')sightNote(nt)}else if(area==='scale'&&SKST[nt]){delete SKST[nt];if(SK&&SK.kind==='play')scShow()}evalHeld()}
 function midiUi(ins,msg){const t=$('midiTop'),ok=!!(ins&&ins.length);document.body.classList.toggle('nomidi',!ok);if(!ok)document.querySelectorAll('.midihint .mh-t').forEach(e=>e.textContent=msg||'Verbinde dein MIDI-Keyboard über das Symbol oben rechts.');if(ins&&ins.length){t.classList.add('on');$('midiTopTxt').textContent='MIDI ✓';t.title='MIDI verbunden: '+ins.map(i=>i.name).join(', ')}else{t.classList.remove('on');$('midiTopTxt').textContent='MIDI verbinden';t.title=msg||'MIDI verbinden'}}
 async function midiConnect(){
  if(!navigator.requestMIDIAccess){midiUi(null,'Dieser Browser unterstützt kein Web MIDI. Nutze Chrome oder Edge am Computer.');return}
@@ -589,14 +593,19 @@ function tilesHtml(c){const p=c.prog,bl=p.bl||p.t.map(()=>1),sh=c.shown||0,names
   inner+=`<span class="ch${i===c.step?' cur':i<c.step?' done':''}"><span class="r">${main}</span>${sub?`<span class="nm">${sub}</span>`:''}</span>`}
   h+=`<div class="tile${on?' on':''}">${inner}</div>`});
  return`<div class="tiles" style="--n:${perRow()}">${h}</div>`}
-function refreshNext(){if(area==='scale'){if(SK)scNew();return}nextC=null;if(cur)next(true)}
+let triManual=false,triAuto=false;
+function jazzSevenths(){if(triManual)return;const back=()=>{TRI=true;triAuto=false;triBuild();rebuildLists()};
+ if(gm!=='verlauf'){if(triAuto&&!TRI)back();return}
+ const v=$('progSel').value;if(v===''||v==='all')return;const jazz=PGRP[+v]==='Jazz';
+ if(jazz&&TRI){TRI=false;triAuto=true;triBuild();rebuildLists()}else if(!jazz&&triAuto&&!TRI)back()}
+function refreshNext(){jazzSevenths();if(area==='scale'){if(SK)scNew();return}nextC=null;if(cur)next(true)}
 function emptyMsg(){const nk=!sel.maj.size&&!sel.min.size;if(gm==='akk')return'Wähl mindestens eine Akkordart und einen Grundton';if(gm==='stufen')return nk?'Wähl mindestens eine Tonart':'Wähl mindestens eine Stufe';if(nk)return'Wähl mindestens eine Tonart';return $('diaOnly').checked?'Nichts Diatonisches gefunden: Haken oder Taktbereich ändern':'Wähl mindestens eine Tonart'}
 function showTask(){const c=cur,d=$('deg');$('repBtn').classList.toggle('on',!!c.rep);$('repBtn').setAttribute('aria-pressed',String(!!c.rep));$('repBtn').style.display=c.prog&&!c.wander?'':'none';$('key').textContent=kt(c);$('key').style.display=c.prog?'':'none';
  if(c.vamp){d.style.fontSize='';d.innerHTML=vampHtml(c);$('song').textContent=`${c.vc[0].name} ↔ ${c.vc[1].name} · endlos`;$('chord').style.fontSize=''}
  else if(c.prog){d.style.fontSize='';d.innerHTML=c.wander?wanderHtml(c):tilesHtml(c);$('song').textContent=c.prog.line||`${c.prog.n} · z. B. in: ${c.prog.s}`;$('chord').style.fontSize=''}
  else{d.style.fontSize='';d.innerHTML=nextC?`<div class="pair"><div class="lab hid">·</div><div class="lab">Nächste</div><div class="kk big">${kkTxt(c)}</div><div class="kk sm">${kkTxt(nextC)}</div><div class="tile on"><span class="r">${tileTxt(c)}</span></div><div class="tile nx"><span class="r">${tileTxt(nextC)}</span></div></div>`:`<div class="pair" style="grid-template-columns:1fr"><div class="kk big">${kkTxt(c)}</div><div class="tile on"><span class="r">${tileTxt(c)}</span></div></div>`;$('song').textContent=c.akk?(c.inv!=null?`${POSL[c.inv]} · tiefster Ton: ${c.bassName}`:c.def[4]?'Terz, Septime und Extension genügen (Grundton und Quinte optional)':''):'';$('chord').style.fontSize=''}}
 function advanceStep(){const was=cur.step;pendingStep=false;cur.step++;cur.rev=false;solved=false;if(cur.vamp){$('prev').innerHTML='Vorheriger Akkord: '+cur.vc[was%2].name;say()}if(cur.wander){extendWander(cur);cur.key=cur.prog.ks[cur.step];cur.mode=cur.prog.md[cur.step];$('prev').innerHTML='Vorheriger Akkord: '+chordTok(cur.prog.ks[was],cur.prog.t[was]);say()}showTask();$('solWrap').style.display='none';evalHeld()}
-$('modeSel').onchange=()=>{gm=$('modeSel').value;$('ivRow').style.display=gm==='inter'?'flex':'none';$('progRow').style.display=gm==='verlauf'?'flex':'none';$('wdRow').style.display=gm==='wander'?'flex':'none';$('repBtn').style.display='none';$('repBtn').classList.remove('on');$('auto').style.display=gm==='wander'||gm==='vamp'?'none':'';$('dispRow').style.display=gm==='verlauf'||gm==='inter'||gm==='wander'?'flex':'none';$('how').textContent=({akk:'Spiele den angezeigten Akkord. Die Oktave ist egal.',stufen:'Spiele den Akkord auf der angezeigten Stufe der Tonart.',verlauf:'Spiele die Akkorde der Reihe nach, einen pro Kachel.',inter:'Spiele die Akkorde der Reihe nach. Die Grundtöne wandern um das gewählte Intervall.',wander:'Spiele die Akkorde der Reihe nach. Die Tonart wechselt fortlaufend, ohne Ende.',vamp:'Spiele die beiden Akkorde abwechselnd, so lange du willst.'})[gm]||'';$('diaRow').style.display=gm==='akk'||gm==='wander'||gm==='vamp'?'none':'';$('coptw').style.display=gm==='akk'||gm==='vamp'?'none':'';$('diaOnly').checked=DIA[gm];rebuildLists();stopAuto();cur=null;nextC=null;last='';pendingNext=pendingStep=false;$('key').textContent='–';$('key').style.display='';$('next').textContent='Start';$('deg').style.fontSize='';$('deg').textContent='Drück „Start"';$('song').textContent='';$('chord').textContent='';$('prev').textContent='';$('solWrap').style.display='none';applyView();evalHeld();next()};
+$('modeSel').onchange=()=>{gm=$('modeSel').value;jazzSevenths();$('ivRow').style.display=gm==='inter'?'flex':'none';$('progRow').style.display=gm==='verlauf'?'flex':'none';$('wdRow').style.display=gm==='wander'?'flex':'none';$('repBtn').style.display='none';$('repBtn').classList.remove('on');$('auto').style.display=gm==='wander'||gm==='vamp'?'none':'';$('dispRow').style.display=gm==='verlauf'||gm==='inter'||gm==='wander'?'flex':'none';$('how').textContent=({akk:'Spiele den angezeigten Akkord. Die Oktave ist egal.',stufen:'Spiele den Akkord auf der angezeigten Stufe der Tonart.',verlauf:'Spiele die Akkorde der Reihe nach, einen pro Kachel.',inter:'Spiele die Akkorde der Reihe nach. Die Grundtöne wandern um das gewählte Intervall.',wander:'Spiele die Akkorde der Reihe nach. Die Tonart wechselt fortlaufend, ohne Ende.',vamp:'Spiele die beiden Akkorde abwechselnd, so lange du willst.'})[gm]||'';$('diaRow').style.display=gm==='akk'||gm==='wander'||gm==='vamp'?'none':'';$('coptw').style.display=gm==='akk'||gm==='vamp'?'none':'';$('diaOnly').checked=DIA[gm];rebuildLists();stopAuto();cur=null;nextC=null;last='';pendingNext=pendingStep=false;$('key').textContent='–';$('key').style.display='';$('next').textContent='Start';$('deg').style.fontSize='';$('deg').textContent='Drück „Start"';$('song').textContent='';$('chord').textContent='';$('prev').textContent='';$('solWrap').style.display='none';applyView();evalHeld();next()};
 $('perRow').onchange=()=>{if(cur&&cur.prog)showTask()};
 const SCM=[0,2,4,5,7,9,11],SCN=[0,2,3,5,7,8,10],pcMemo={};
 function tokDia(t,minor){const k=t+(minor?'m':'M');if(k in pcMemo)return pcMemo[k];
@@ -713,7 +722,7 @@ function fingering(root,sc,hand,N){const ti={ion:0,aeo:1,harm:2,mel:3}[sc.k];if(
 function shuf(a){a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
 let SKN=null;
 function scPick(avoid){const roots=[...scSel.roots],types=SCALES.filter(s=>scSel.types.has(s.n));if(!roots.length||!types.length)return null;let root,ty,t=0;do{root=roots[Math.floor(Math.random()*roots.length)];ty=types[Math.floor(Math.random()*types.length)];t++}while(roots.length*types.length>1&&ty.n+root===avoid&&t<40);return{root,ty}}
-function scNew(){const roots=[...scSel.roots],types=SCALES.filter(s=>scSel.types.has(s.n));
+function scNew(){Object.keys(SKST).forEach(k=>delete SKST[k]);const roots=[...scSel.roots],types=SCALES.filter(s=>scSel.types.has(s.n));
  if(!roots.length||!types.length){$('scName').textContent='Wähl Tonarten und Skalen';$('scPair').innerHTML='';$('scHow').textContent='';return}
  const pk=SKN&&scSel.roots.has(SKN.root)&&scSel.types.has(SKN.ty.n)?SKN:scPick(scLast),root=pk.root,ty=pk.ty;scLast=ty.n+root;SKN=scPick(scLast);
  const tones=scTones(root,ty),n=tones.length,kind=$('scTask').value;
@@ -725,13 +734,14 @@ function scNew(){const roots=[...scSel.roots],types=SCALES.filter(s=>scSel.types
  else{const others=shuf(types.filter(s=>s.n!==ty.n)),fill=shuf(SCALES.filter(s=>s.n!==ty.n&&!others.includes(s)));
   SK.opts=shuf([ty,...others.concat(fill).slice(0,3)]).map(s=>s.n)}
  $('scNext').textContent='Weiter';scShow();evalHeld()}
+const SKST={};
 function scNote(m){const s=SK;if(area!=='scale'||!s||s.kind!=='play'||s.done)return;
  const exp=s.tones[s.seq[s.step].ti].pc;
- if(m%12===exp){if(s.hand==='B'){s.pend=s.pend||[];if(s.pend.some(x=>Math.abs(x-m)<12))return;s.pend.push(m);if(s.pend.length<2){$('scFb').textContent='Jetzt die zweite Hand: derselbe Ton in einer anderen Oktave';$('scFb').className='fb';scShow();return}s.pend=[]}
-  s.step++;s.bad=-1;if(s.step===s.seq.length){s.done=true;if(!s.errs){okCount++;cntTxt();}
-  $('scFb').textContent=s.errs?`Geschafft, aber mit ${s.errs} Fehler${s.errs>1?'n':''} (zählt nicht)`:'✓ Geschafft, fehlerfrei!';$('scFb').className='fb '+(s.errs?'bad':'ok');
+ if(m%12===exp){if(s.hand==='B'){s.pend=s.pend||[];if(s.pend.some(x=>Math.abs(x-m)<12))return;SKST[m]='ok';s.pend.push(m);if(s.pend.length<2){$('scFb').textContent='Jetzt die zweite Hand: derselbe Ton in einer anderen Oktave';$('scFb').className='fb';scShow();return}s.pend=[]}
+  SKST[m]='ok';s.step++;s.bad=-1;if(s.step===s.seq.length){s.done=true;if(!s.errs){okCount++;cntTxt();}
+  $('scFb').textContent=s.errs?`Geschafft, aber mit ${s.errs} Fehler${s.errs>1?'n':''}`:'✓ Geschafft, fehlerfrei!';$('scFb').className='fb '+(s.errs?'bad':'ok');
   if($('scAuto').checked)setTimeout(()=>{if(SK===s)scNew()},550)}else{$('scFb').textContent='';$('scFb').className='fb'}}
- else{s.pend=[];s.errs++;s.bad=s.step;const n=m%12;$('scFb').textContent='✗ Falscher Ton: '+(DEF[n][0]+acc(DEF[n][1]));$('scFb').className='fb bad'}
+ else{SKST[m]='bad';s.pend=[];s.errs++;s.bad=s.step;const n=m%12;$('scFb').textContent='✗ Falscher Ton: '+(DEF[n][0]+acc(DEF[n][1]));$('scFb').className='fb bad'}
  scShow()}
 const scaleNote=scNote;
 function scAnswer(n){const s=SK;if(!s||s.done)return;
@@ -838,11 +848,11 @@ function kbSvg(tones,rp,degs){const nm={},dg={};tones.forEach((t,i)=>{nm[t.pc]=t
  for(let o=0;o<2;o++)B.forEach(([pc,wi])=>{const x=(o*7+wi)*kw+kw*.68;s+=`<rect x="${x}" y="0" width="${kw*.64}" height="58" fill="${has(pc)?(pc===rp?'#c2410c':'#15803d'):'#111'}" stroke="#000"/>`+(has(pc)?`<text x="${x+kw*.32}" y="43" font-size="7" text-anchor="middle" fill="#fff">${nm[pc]}</text><text x="${x+kw*.32}" y="53" font-size="6" font-weight="700" text-anchor="middle" fill="#fff">${dg[pc]}</text>`:'')});
  return s+'</svg>'}
 function staffRow(tones,rp){const m0=60+rp,mp={};tones.forEach(t=>mp[t.pc]=[t.l,t.a]);
- const ns=[...tones.map(t=>m0+(((t.pc-rp)%12)+12)%12),m0+12].map(m=>mkNote(m,mp)),W=64+ns.length*26,y=i=>95-(i-30)*5,g=(k,x,yy)=>`<path transform="translate(${x},${yy}) scale(.04,-.04)" d="${GL[k]}" fill="#000"/>`;
+ const ns=[...tones.map(t=>m0+(((t.pc-rp)%12)+12)%12),m0+12].map(m=>mkNote(m,mp)),W=72+ns.length*40,y=i=>95-(i-30)*5,g=(k,x,yy)=>`<path transform="translate(${x},${yy}) scale(.04,-.04)" d="${GL[k]}" fill="#000"/>`;
  let s=`<svg viewBox="0 10 ${W} 120" style="width:100%;max-width:${W*1.6}px;display:block;margin:6px auto"><rect x="0" y="10" width="${W}" height="120" fill="#fff" rx="6"/>`;
  for(let i=30;i<=38;i+=2)s+=`<line x1="6" x2="${W-6}" y1="${y(i)}" y2="${y(i)}" stroke="#000"/>`;
  s+=g('g',10,y(32));
- ns.forEach((n,k)=>{const cx=56+k*26;for(let e=28;e>=n.idx;e-=2)s+=`<line x1="${cx-11}" x2="${cx+11}" y1="${y(e)}" y2="${y(e)}" stroke="#000"/>`;for(let e=40;e<=n.idx;e+=2)s+=`<line x1="${cx-11}" x2="${cx+11}" y1="${y(e)}" y2="${y(e)}" stroke="#000"/>`;
+ ns.forEach((n,k)=>{const cx=64+k*40;for(let e=28;e>=n.idx;e-=2)s+=`<line x1="${cx-11}" x2="${cx+11}" y1="${y(e)}" y2="${y(e)}" stroke="#000"/>`;for(let e=40;e<=n.idx;e+=2)s+=`<line x1="${cx-11}" x2="${cx+11}" y1="${y(e)}" y2="${y(e)}" stroke="#000"/>`;
   s+=g('n',cx-6,y(n.idx));if(n.a>0)s+=g('sh',cx-23,y(n.idx));else if(n.a<0)s+=g('fl',cx-19,y(n.idx))});
  return s+'</svg>'}
 $('scTask').onchange=()=>scNew();
@@ -893,6 +903,7 @@ function scShow(){const s=SK;if(!s)return;$('scHow').textContent=s.kind==='play'
  if(s.kind==='play'){$('scName').textContent='';
   const B=s.hand==='B',put=(pos,e,fg)=>{if(m[pos])return;m[pos]={root:e.ti===0,label:s.tones[e.ti].name,deg:e.ti===0?(pos>s.rootPc?'8':'1'):s.tones[e.ti].deg,f:f&&fg!=null?fg:null}};
   s.seq.forEach((e,i)=>{if(!(i<s.step||s.rev||s.done||(i===s.step&&s.pend&&s.pend.length)))return;if(B){put(e.s,e,e.fl);put(e.s2,e,e.f)}else put(e.s,e,e.f)});
+  {const ne=s.seq[Math.min(s.step,s.seq.length-1)],ref=ne?ne.s:s.rootPc,top=s.octs*12;Object.entries(SKST).forEach(([mm,st])=>{if(st!=='bad'||!H.has(+mm))return;const pc=((+mm%12)+12)%12;let best=null;for(let p=pc;p<top;p+=12)if(best===null||Math.abs(p-ref)<Math.abs(best-ref))best=p;if(best!==null)m[best]={bad:true,f:null}})}
   svg=kbPlay(m,s.octs,B?`LH@${s.rootPc}|RH@${s.rootPc+12*s.oct}`:s.hand==='L'?'LH':'RH');
   const cs=!s.done&&s.seq[s.step]?s.seq[s.step]:null,nx=f&&s.hasF&&cs?cs.f:null,nl=f&&s.hasF&&cs?cs.fl:null;
   $('scInfo').textContent=(f?(s.hasF?(B?`Fingersatz beide Hände${nx!=null?`, nächste Finger: rechts ${nx}, links ${nl}`:''}`:`Fingersatz ${s.hand==='L'?'links':'rechts'}${nx!=null?', nächster Finger: '+nx:''}`):''):'')+`${f&&s.hasF?' · ':''}Ton ${Math.min(s.step+1,s.seq.length)} von ${s.seq.length}`}
@@ -920,7 +931,7 @@ $('lbChordL').onclick=e=>{const b=e.target.closest('[data-r],[data-m],[data-v],[
  else if(D.m!==undefined)LC.mode=D.m;else LC.root=D.r;lcBuild();chLearnRender()};
 function triBuild(){document.querySelectorAll('.triSw').forEach(el=>{el.innerHTML=[['3','Dreiklänge'],['4','Vierklänge']].map(([v,l])=>`<button type="button" class="chip${(TRI?'3':'4')===v?' on':''}" data-tri="${v}">${l}</button>`).join('')})}
 function setTri(v){if(TRI===v)return;TRI=v;triBuild();if(race.on)endRace(false);rebuildLists();$('modeSel').onchange();if(area==='chord'&&LEARN.chord)chLearnRender()}
-$('leftBar').addEventListener('click',e=>{const b=e.target.closest('[data-tri]');if(b)setTri(b.dataset.tri==='3')});
+$('leftBar').addEventListener('click',e=>{const b=e.target.closest('[data-tri]');if(b){triManual=true;setTri(b.dataset.tri==='3')}});
 triBuild();
 lnBuild();
 /* ===== Üben/Lernen-Schalter, Akkord-Lernmodus, Farbschemen ===== */
@@ -1135,7 +1146,7 @@ function srBuild(){const HN={T:'Violinschlüssel',B:'Bassschlüssel',TB:'Beide H
  $('srCF').innerHTML=FAMS.map(([f,l])=>`<div class="akg"><h2 class="akh" data-cf="${f}" title="Alle oder keine auswählen">${l}</h2><div class="chips">${CHQ.filter(d=>d[1]===f).map(d=>`<button type="button" class="chip${SRS.cq.has(d[0])?' on':''}" data-ct="${d[0]}">${d[2]||'maj'}</button>`).join('')}</div></div>`).join('');
  $('srIV').innerHTML=IVD.map(([n])=>`<button type="button" class="chip${SRS.iv.has(n)?' on':''}" data-iv="${n}">${n}</button>`).join('');
  $('srIA').innerHTML=[['h','gleichzeitig'],['m','nacheinander']].map(([v,l])=>`<button type="button" class="chip${SRS.ia.has(v)?' on':''}" data-ia="${v}">${l}</button>`).join('');
- const st=(lo,hi)=>`<div class="rng"><div class="rngc"><div class="stp"><span class="lb">von</span><button type="button" data-st="${lo}-">−</button><b>${idxName(SRS[lo])}</b><button type="button" data-st="${lo}+">+</button></div><div class="stp"><span class="lb">bis</span><button type="button" data-st="${hi}-">−</button><b>${idxName(SRS[hi])}</b><button type="button" data-st="${hi}+">+</button></div></div><div class="rngst">${srRangeSvg(lo[0]==='t'?'T':'B',SRS[lo],SRS[hi])}</div></div>`;
+ const st=(lo,hi)=>`<div class="rng"><div class="rngc"><div class="stp"><span class="lb">bis</span><button type="button" data-st="${hi}-">−</button><b>${idxName(SRS[hi])}</b><button type="button" data-st="${hi}+">+</button></div><div class="stp"><span class="lb">von</span><button type="button" data-st="${lo}-">−</button><b>${idxName(SRS[lo])}</b><button type="button" data-st="${lo}+">+</button></div></div><div class="rngst">${srRangeSvg(lo[0]==='t'?'T':'B',SRS[lo],SRS[hi])}</div></div>`;
  $('srTBlk').style.display=SRS.hands==='B'?'none':'';$('srBBlk').style.display=SRS.hands==='T'?'none':'';
  $('srRT').innerHTML=st('tLo','tHi');$('srRB').innerHTML=st('bLo','bHi');
  $('srNum').innerHTML=`<div class="stp"><button type="button" data-st="n-">−</button><b>${SRS.n}</b><button type="button" data-st="n+">+</button></div>`;
@@ -1281,7 +1292,7 @@ Automatik: Pause¦Auto mode: pause¦Automático: pausa
 Sekunden¦seconds¦segundos
 Zeitrennen¦Time attack¦Contrarreloj
 Dauer¦Duration¦Duración
-Leertaste = Weiter, Enter = Lösung zeigen. Ansage auf Deutsch: B♭ heißt „Bäs", B heißt „B".¦Space = next, Enter = show solution. Notes are announced by letter name (B♭ = "B flat", B = "B").¦Barra espaciadora = siguiente, Intro = mostrar la solución. Las notas se anuncian por su letra (B♭ = «B bemol», B = «B»).
+Leertaste = Weiter, Enter = Lösung zeigen (bei aktiver Wiederholung = nächste Aufgabe). Ansage auf Deutsch: B♭ heißt „Bäs", B heißt „B".¦Space = next, Enter = show solution (with repeat on = next task). Notes are announced by letter name (B♭ = "B flat", B = "B").¦Barra espaciadora = siguiente, Intro = mostrar la solución (con la repetición activada = siguiente tarea). Las notas se anuncian por su letra (B♭ = «B bemol», B = «B»).
 Sprache¦Language¦Idioma
 Farbschema¦Color scheme¦Esquema de color
 Alle löschen¦Delete all¦Borrar todo
@@ -1469,7 +1480,7 @@ Kleine Terz / große Sexte: oft Parallelklänge (Dur und paralleles Moll teilen 
 Große Terz / kleine Sexte: Terzverwandtschaft (Mediante) oder ♭VI-Wechsel (Modalmischung), farbig mit wenigen gemeinsamen Tönen.¦Major third / minor sixth: third relation (mediant) or a ♭VI change (modal mixture), colourful with few common tones.¦Tercera mayor / sexta menor: relación de tercera (mediante) o cambio a ♭VI (mezcla modal), colorido y con pocas notas comunes.
 Quarte / Quinte: die klassische Bewegung Dominante → Tonika (V → I), II → V oder plagal IV → I.¦Fourth / fifth: the classic motion dominant → tonic (V → I), II → V or plagal IV → I.¦Cuarta / quinta: el movimiento clásico dominante → tónica (V → I), II → V o plagal IV → I.
 Tritonus: Tritonus-Substitution, wenn beide Akkorde Dominantseptakkorde sind.¦Tritone: tritone substitution when both chords are dominant seventh chords.¦Tritono: sustitución por tritono cuando ambos acordes son acordes de séptima dominante.
-Diese Folge immer wieder üben. „Weiter“ startet sie von vorn. Zum Beenden Wiederholen ausschalten.¦Practise this sequence over and over. “Next” restarts it from the beginning. Switch repeat off to get a new task.¦Practica esta secuencia una y otra vez. «Siguiente» la reinicia desde el principio. Desactiva la repetición para obtener una tarea nueva.
+Diese Folge immer wieder üben. „Weiter“ oder Enter holt trotzdem die nächste Aufgabe, die Wiederholung bleibt an. Zum Beenden den Knopf erneut drücken.¦Practise this sequence over and over. “Next” or Enter still brings the next task, and repeat stays on. Press the button again to stop.¦Practica esta secuencia una y otra vez. «Siguiente» o Intro trae igualmente la tarea siguiente y la repetición sigue activa. Pulsa de nuevo el botón para detenerla.
 ▼ Halbton tiefer¦▼ Half step down¦▼ Semitono abajo
 ▲ Halbton höher¦▲ Half step up¦▲ Semitono arriba
 Anzeige¦Display¦Mostrar
@@ -1569,6 +1580,7 @@ const RULES=[
  [/^Richtig: (\d+)$/,m=>Lg(`Correct: ${m[1]}`,`Correctas: ${m[1]}`)],
  [/^✗ Falscher Ton: (.+)$/,m=>Lg(`✗ Wrong note: ${m[1]}`,`✗ Nota incorrecta: ${m[1]}`)],
  [/^Noch (\d+) (?:Ton|Töne|Tone) fehlen$/,m=>Lg(`${m[1]} note${m[1]>1?'s':''} still missing`,`Falta${m[1]>1?'n':''} ${m[1]} nota${m[1]>1?'s':''}`)],
+ [/^Geschafft, aber mit (\d+) Fehlern?$/,m=>Lg(`Done, but with ${m[1]} mistake${m[1]>1?'s':''}`,`Hecho, pero con ${m[1]} error${m[1]>1?'es':''}`)],
  [/^Geschafft, aber mit (\d+) Fehlern? \(zählt nicht\)$/,m=>Lg(`Done, but with ${m[1]} mistake${m[1]>1?'s':''} (does not count)`,`Hecho, pero con ${m[1]} error${m[1]>1?'es':''} (no cuenta)`)],
  [/^Zeit abgelaufen: (\d+) richtige Akkorde in (\d+) s( – neuer Highscore! 🎉)?$/,m=>Lg(`Time is up: ${m[1]} correct chord${m[1]==1?'':'s'} in ${m[2]} s${m[3]?' – new high score! 🎉':''}`,`Tiempo agotado: ${m[1]} acorde${m[1]==1?'':'s'} correcto${m[1]==1?'':'s'} en ${m[2]} s${m[3]?' – ¡nuevo récord! 🎉':''}`)],
  [/^Zeit abgelaufen: (\d+) Noten in (\d+) s( – neuer Highscore! 🎉)?$/,m=>Lg(`Time is up: ${m[1]} note${m[1]==1?'':'s'} in ${m[2]} s${m[3]?' – new high score! 🎉':''}`,`Tiempo agotado: ${m[1]} nota${m[1]==1?'':'s'} en ${m[2]} s${m[3]?' – ¡nuevo récord! 🎉':''}`)],
