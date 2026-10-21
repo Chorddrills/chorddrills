@@ -187,6 +187,25 @@ body.nomidiapi #volBox,body.nomidiapi #midiTop{display:none}
 #mobNote .mt{font-weight:700;margin-bottom:4px}
 #mobNote .ms{color:var(--mut);font-size:.9rem;margin-bottom:10px}
 #mobNote button{padding:7px 26px;border-radius:10px;background:var(--ac);color:var(--acfg);border:0;font-weight:700;cursor:pointer}
+.vsel{display:flex;gap:6px}.vsel select{flex:1;min-width:0;padding:8px;border-radius:10px}
+.keyrow{position:relative}
+.repbtn{position:absolute;right:2px;top:50%;transform:translateY(-50%);width:38px;height:38px;border-radius:50%;border:1.5px solid var(--bd);background:var(--chip);color:var(--mut);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;padding:0;transition:background .15s,color .15s,border-color .15s}
+.repbtn svg{width:20px;height:20px}
+.repbtn:hover{color:var(--fg);border-color:var(--ac)}
+.repbtn.on{background:var(--ac);border-color:var(--ac);color:var(--acfg)}
+.tiles.vp .ch .r{font-size:2rem}
+.tiles.vp .tile{min-height:90px}
+.vrel{margin-top:14px;text-align:left;font-size:.86rem;color:var(--mut);line-height:1.6}
+.vrel b{color:var(--fg)}
+.vrel .vh{font-weight:700;color:var(--fg);margin-right:4px}
+.vrel .vk{white-space:nowrap}
+.vrel .vn{font-size:.75rem}
+.vrel .vi{margin-left:10px}
+.vrel .vhint{margin-top:6px;font-style:italic}
+.wcell{min-width:0}
+.wcell .kn{font-size:.72rem;color:var(--mut);margin:0 0 3px 3px;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wcell.on .kn{color:var(--ac);font-weight:700}
+.wcell:not(.on){opacity:.85}
 .invblk{margin:16px 0 4px;padding-top:4px;border-top:1px solid var(--bd)}
 .invnm{font-size:1.35rem;font-weight:800;margin:0 0 2px}
 .invrow{display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap}
@@ -220,6 +239,7 @@ tr.hl td{background:var(--chip);font-weight:700}
 <div class="shell">
 <aside id="leftBar" class="card">
 <div id="lbChord"><h2 style="margin-top:0">Akkordtyp</h2><div class="chips triSw"></div>
+<div class="hint" id="wdHint" style="display:none;margin-top:10px">Die Tonart wechselt hier fortlaufend. Gestartet wird in einer zufälligen Tonart. Verlauf und Weg wählst du über dem Aufgabenfenster.</div>
 <h2 data-all="maj" title="Alle oder keine auswählen">Dur-Tonarten</h2><div class="chips" id="majKeys"></div>
 <h2 data-all="min" title="Alle oder keine auswählen">Moll-Tonarten (natürlich Moll)</h2><div class="chips" id="minKeys"></div>
 <h2 data-all="deg" title="Alle oder keine auswählen">Stufen</h2><div class="chips" id="degs"></div>
@@ -227,6 +247,12 @@ tr.hl td{background:var(--chip);font-weight:700}
 <div id="lbChordA" style="display:none"><div id="akFam"></div><div class="hint" style="margin-top:8px">Extension-Akkorde: Terz, Septime und Extension genügen, Grundton und Quinte sind optional.</div>
 <h2 data-all="akr" title="Alle oder keine auswählen">Grundtöne</h2><div class="chips" id="akRoots"></div>
 <h2 data-all="akp" title="Alle oder keine auswählen">Lage</h2><div class="chips" id="akPos"></div></div>
+<div id="lbVamp" style="display:none"><h2 style="margin-top:0">Akkord 1</h2><div class="vsel"><select id="vA"></select><select id="vAq"></select></div>
+<h2>Akkord 2</h2><div class="vsel"><select id="vB"></select><select id="vBq"></select></div>
+<div class="row"><button type="button" class="sec" id="vSwap">⇄ Tauschen</button></div>
+<div class="row" style="gap:6px"><button type="button" class="sec" id="vDown">▼ Halbton tiefer</button><button type="button" class="sec" id="vUp">▲ Halbton höher</button></div>
+<h2>Beispiele</h2><select id="vEx" style="width:100%;padding:8px;border-radius:10px"></select>
+<div class="hint" style="margin-top:10px">Wähle zwei Akkorde. Sie werden abwechselnd gespielt, ohne Ende. Unter den Kacheln siehst du, wie sie zueinander stehen könnten.</div></div>
 <div id="lbSight" style="display:none"><h2 style="margin-top:0">Schlüssel und Hände</h2><div class="chips" id="srHands"></div>
 <div id="srChordBlk" style="display:none"><div id="srCF"></div><label style="margin-top:8px"><input type="checkbox" id="srInv"> Umkehrungen erlauben</label></div>
 <div id="srIntBlk" style="display:none"><h2 data-ivall="1" title="Alle oder keine auswählen">Intervalle</h2><div class="chips" id="srIV"></div><h2>Anordnung</h2><div class="chips" id="srIA"></div></div>
@@ -245,13 +271,14 @@ tr.hl td{background:var(--chip);font-weight:700}
 <main>
 <div class="top">
 <div id="chordCol">
-<div class="msel"><select id="modeSel"><option value="akk">Modus: Zufällige Akkorde</option><option value="stufen">Modus: Stufenakkorde</option><option value="verlauf">Modus: Progressions</option><option value="inter">Modus: Akkordketten</option></select></div>
+<div class="msel"><select id="modeSel"><option value="akk">Modus: Zufällige Akkorde</option><option value="stufen">Modus: Stufenakkorde</option><option value="verlauf">Modus: Progressions</option><option value="inter">Modus: Akkordketten</option><option value="wander">Modus: Tonart-Wanderung (endlos)</option><option value="vamp">Modus: Zwei Akkorde im Wechsel</option></select></div>
 <div class="row" id="progRow" style="display:none;align-items:center"><select id="progSel" style="flex:1;padding:10px;border-radius:10px"></select></div>
-<div class="row" id="ivRow" style="display:none;align-items:center"><select id="ivSel" style="padding:8px"><option value="Sekunde">Sekunde</option><option value="Terz" selected>Terz</option><option value="Quarte">Quarte</option><option value="Quinte">Quinte</option><option value="Sexte">Sexte</option><option value="Septime">Septime</option></select><select id="ivDir" style="padding:8px"><option value="auf">aufwärts</option><option value="ab">abwärts</option><option value="zufall">zufällig</option></select><select id="ivTyp" style="padding:8px"><option value="dia">diatonisch</option><option value="m7">alle m7</option><option value="maj7">alle maj7</option><option value="7">alle 7</option></select><label style="margin:0">Länge <input type="number" id="ivLen" value="7" min="2" max="13" style="width:56px"></label><label style="margin:0" title="Nur bei „alle …“: kleine statt große Sekunde/Terz/Sexte/Septime"><input type="checkbox" id="ivMin"> klein</label><label style="margin:0" title="Nur diatonisch: nicht auf der I starten"><input type="checkbox" id="ivRnd"> Start zufällig</label></div>
+<div class="row" id="wdRow" style="display:none;align-items:center;gap:8px;flex-wrap:wrap"><select id="wdPat" style="padding:8px"></select><select id="wdMove" style="padding:8px"></select></div>
+<div class="row" id="ivRow" style="display:none;align-items:center"><select id="ivSel" style="padding:8px"><option value="Sekunde">Sekunde</option><option value="Terz" selected>Terz</option><option value="Quarte">Quarte</option><option value="Quinte">Quinte</option><option value="Sexte">Sexte</option><option value="Septime">Septime</option></select><select id="ivDir" style="padding:8px"><option value="auf">aufwärts</option><option value="ab">abwärts</option><option value="zufall">zufällig</option></select><select id="ivTyp" style="padding:8px"><option value="dia">diatonisch</option><option value="m7">alle m7</option><option value="maj7">alle maj7</option><option value="7">alle 7</option></select><label style="margin:0">Länge <input type="number" id="ivLen" value="7" min="2" max="24" style="width:56px"></label><label style="margin:0" title="Nur bei „alle …“: kleine statt große Sekunde/Terz/Sexte/Septime"><input type="checkbox" id="ivMin"> klein</label><label style="margin:0" title="Nur diatonisch: nicht auf der I starten"><input type="checkbox" id="ivRnd"> Start zufällig</label></div>
 <div class="card task">
 <div class="midihint" role="button" tabindex="0"><span class="mh-t">Verbinde dein MIDI-Keyboard über das Symbol oben rechts.</span></div>
 <div class="coptw" id="coptw"><div class="copt" id="dispRow" style="display:none"><span>Anzeige</span><div class="chips" id="dispChips"></div></div><div class="copt" id="diaRow"><label id="diaLab" title="Moll: natürliches Moll. Aus = im Stufen-Modus kommen auch chromatische Akkorde dazu."><input type="checkbox" id="diaOnly" checked> nur diatonische Akkorde</label></div></div>
-  <div class="key" id="key">–</div>
+  <div class="keyrow"><div class="key" id="key">–</div><button type="button" class="repbtn" id="repBtn" style="display:none" aria-pressed="false" title="Diese Folge immer wieder üben. „Weiter“ startet sie von vorn. Zum Beenden Wiederholen ausschalten."><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11V9.5A3.5 3.5 0 0 1 7.5 6H18"/><path d="M15 2.8 18.2 6 15 9.2"/><path d="M20 13v1.5a3.5 3.5 0 0 1-3.5 3.5H6"/><path d="M9 21.2 5.8 18 9 14.8"/></svg></button></div>
   <div class="deg" id="deg">Drück „Start"</div>
   <div id="solKb" style="margin-top:6px"></div>
   <div class="cnt"><span id="cnt"></span> <button type="button" id="resetCnt" title="Zähler zurücksetzen" style="padding:0 7px;border-radius:8px;font-size:.95rem">↺</button></div>
@@ -403,7 +430,7 @@ function evalHeldCore(){if(area==='sight')return;if(area==='scale'){const mp={};
  const miss=[...need].filter(p=>!pcs.has(p)),bad=[...pcs].filter(p=>!allow.has(p));
  const bassOk=!(cur.akk&&cur.inv!=null)||held[0]%12===cur.bassPc;
  if(!miss.length&&!bad.length&&bassOk){fb.textContent='✓ Richtig!';fb.className='fb ok';
-  if(!solved){solved=true;if(cur.prog&&cur.step<cur.prog.t.length-1){pendingStep=true;reveal()}else{okCount++;if(race.on)race.score++;cntTxt();if(!race.on)reveal();if($('autoNext').checked||race.on)pendingNext=true}}}
+  if(!solved){solved=true;if(cur.vamp||cur.prog&&(cur.wander||cur.step<cur.prog.t.length-1)){if(cur.wander||cur.vamp){okCount++;if(race.on)race.score++;cntTxt()}pendingStep=true;reveal()}else{okCount++;if(race.on)race.score++;cntTxt();if(!race.on)reveal();if($('autoNext').checked||race.on)pendingNext=true}}}
  else if(bad.length){fb.textContent='✗ Falscher Ton: '+bad.map(p=>DEF[p][0]+acc(DEF[p][1])).join(', ');fb.className='fb bad'}
  else if(!miss.length){fb.textContent='Der tiefste Ton muss '+cur.bassName+' sein';fb.className='fb bad'}
  else fb.textContent=`Noch ${miss.length} ${miss.length>1?'Töne':'Ton'} fehlen`}
@@ -419,22 +446,24 @@ function chKb(){const el=$('solKb');if(area!=='chord'||LEARN.chord||!cur){el.inn
  held.forEach(pc=>{if(allow.has(pc))return;const c=[];for(let p=pc;p<top;p+=12)if(m[p]===undefined)c.push(p);if(c.length){c.sort((a,b)=>Math.abs(a-ctr)-Math.abs(b-ctr));m[c[0]]={bad:true,f:null}}})
  el.innerHTML=`<div style="overflow-x:auto">${kbPlay(m,Math.max(2,Math.ceil((mx+1)/12)),'')}</div>`}
 /* Aufgaben */
-function ansTxt(c){return c.akk?`${c.name} = <b>${tonesChord(c.key,c.def).map(t=>t.name).join(' – ')}</b>`:c.prog?`${kt(c)}, ${c.prog.n} = <b>${rowsHtml(nameItems(c))}</b>`:c.tok?`${c.key}-${c.mode}, ${pt(c.tok)} = <b>${chordTok(c.key,c.tok)}</b>`:`${c.key}-${c.mode}, Stufe ${RO[c.i]} = <b>${chordAt(c.key,c.mode,c.i)}</b>`}
+function ansTxt(c){return c.akk?`${c.name} = <b>${tonesChord(c.key,c.def).map(t=>t.name).join(' – ')}</b>`:c.vamp?`Wechsel ${c.vc[0].name} ↔ ${c.vc[1].name}: ${c.step} Akkorde gespielt`:c.wander?`Tonart-Wanderung: ${c.step} Akkorde gespielt`:c.prog?`${kt(c)}, ${c.prog.n} = <b>${rowsHtml(nameItems(c))}</b>`:c.tok?`${c.key}-${c.mode}, ${pt(c.tok)} = <b>${chordTok(c.key,c.tok)}</b>`:`${c.key}-${c.mode}, Stufe ${RO[c.i]} = <b>${chordAt(c.key,c.mode,c.i)}</b>`}
 function say(){if(!$('speak').checked||!cur||!window.speechSynthesis)return;speechSynthesis.cancel();
- const u=new SpeechSynthesisUtterance(cur.akk?spkChord(cur):cur.prog?`${sk(cur.key)} ${sm(cur.mode)}, ${cur.prog.t.map(spk).join(', ')}`:cur.tok?`${sk(cur.key)} ${sm(cur.mode)}, ${spk(cur.tok)}`:`${sk(cur.key)} ${sm(cur.mode)}, ${sd(cur.i+1)}`);u.lang=SLANG[LANG];u.rate=.95;speechSynthesis.speak(u)}
+ const u=new SpeechSynthesisUtterance(cur.akk?spkChord(cur):cur.vamp?spkChord({key:cur.vc[cur.step%2].root,def:cur.vc[cur.step%2].def,inv:null}):cur.wander?`${sk(cur.prog.ks[cur.step])} ${sm(cur.prog.md[cur.step])}, ${spk(cur.prog.t[cur.step])}`:cur.prog?`${sk(cur.key)} ${sm(cur.mode)}, ${cur.prog.t.map(spk).join(', ')}`:cur.tok?`${sk(cur.key)} ${sm(cur.mode)}, ${spk(cur.tok)}`:`${sk(cur.key)} ${sm(cur.mode)}, ${sd(cur.i+1)}`);u.lang=SLANG[LANG];u.rate=.95;speechSynthesis.speak(u)}
 function pick(){const pool=[];
  sel.maj.forEach(k=>sel.deg.forEach(i=>pool.push({key:k,mode:'Dur',i})));
  sel.min.forEach(k=>sel.deg.forEach(i=>pool.push({key:k,mode:'Moll',i})));
  if(!$('diaOnly').checked){sel.maj.forEach(k=>chrL(CHR_MAJ).forEach(tok=>pool.push({key:k,mode:'Dur',i:0,tok})));sel.min.forEach(k=>chrL(CHR_MIN).forEach(tok=>pool.push({key:k,mode:'Moll',i:0,tok})))}
  if(!pool.length)return null;let c,t=0;do{c=pool[Math.floor(Math.random()*pool.length)];t++}while(pool.length>1&&c.key+c.mode+c.i+(c.tok||'')===last&&t<20);
  last=c.key+c.mode+c.i+(c.tok||'');return c}
-function next(){const c=gm==='verlauf'?pickProg():gm==='inter'?pickInt():gm==='akk'?(nextC||pickAkk()):(nextC||pick());if(!c){$('deg').textContent=emptyMsg();return}
+function restartSame(){cur.step=0;cur.shown=0;cur.rev=false;solved=false;pendingNext=false;pendingStep=false;showTask();$('solWrap').style.display='none';$('chord').textContent='';say();evalHeld()}
+$('repBtn').onclick=()=>{if(!cur||!cur.prog||cur.wander)return;cur.rep=!cur.rep;$('repBtn').classList.toggle('on',!!cur.rep);$('repBtn').setAttribute('aria-pressed',String(!!cur.rep))};
+function next(force){if(cur&&cur.rep&&cur.prog&&!cur.wander&&!force){stopAuto();restartSame();return}if((gm==='wander'&&cur&&cur.wander||gm==='vamp'&&cur&&cur.vamp)&&!force){stopAuto();advanceStep();return}const c=gm==='vamp'?pickVamp():gm==='wander'?pickWander():gm==='verlauf'?pickProg():gm==='inter'?pickInt():gm==='akk'?(nextC||pickAkk()):(nextC||pick());if(!c){$('deg').textContent=emptyMsg();return}
  if(cur)$('prev').innerHTML='Vorherige Aufgabe: '+ansTxt(cur);
  cur=c;n++;solved=false;pendingNext=false;pendingStep=false;nextC=gm==='stufen'?pick():gm==='akk'?pickAkk():null;showTask();
  $('chord').textContent='';$('solWrap').style.display='none';cntTxt();$('next').textContent='Weiter';say();evalHeld();
  if($('showAns').checked&&!auto)setTimeout(()=>reveal(undefined,true),2500)}
 function degLabels(ts){const ri=L.indexOf(ts[0].l),MX=[0,2,4,5,7,9,11];return ts.map(t=>{const st=(L.indexOf(t.l)-ri+7)%7,o=t.off,ext=o>=12,diff=o-(MX[st]+(ext?12:0)),num=ext?({1:'9',3:'11',5:'13'}[st]||String(st+1)):String(st+1);return(diff<0?'♭'.repeat(-diff):diff>0?'♯'.repeat(diff):'')+num})}
-function reveal(a,st){if(!cur)return;if(cur.prog){cur.shown=(a===true||cur.step>=cur.prog.t.length-1)?cur.prog.t.length:cur.step+1;showTask()}else $('chord').textContent=cur.akk?`${cur.name}: ${curTones().map(t=>t.name).join(' – ')}`:cur.tok?chordTok(cur.key,cur.tok):chordAt(cur.key,cur.mode,cur.i);
+function reveal(a,st){if(!cur)return;if(cur.prog){cur.shown=(a===true||cur.step>=cur.prog.t.length-1)?cur.prog.t.length:cur.step+1;showTask()}else if(cur.vamp)showTask();else $('chord').textContent=cur.akk?`${cur.name}: ${curTones().map(t=>t.name).join(' – ')}`:cur.tok?chordTok(cur.key,cur.tok):chordAt(cur.key,cur.mode,cur.i);
  if(a!==true&&st!==true)return;
  const t=curTones(),map=expMap();
  cur.rev=true;chKb();
@@ -537,12 +566,12 @@ function tonesTok(key,tok){const m=tok.match(/^([b#]?)(VII|VI|IV|V|III|II|I)(.*)
  const rs=(r.semi+MS[idx]+(m[1]==='b'?-1:m[1]==='#'?1:0)+12)%12,l0=L[(L.indexOf(r.l)+idx)%7];
  const a=ls.map((s,k)=>{const l=L[(L.indexOf(l0)+s)%7],t=(rs+iv[k])%12,ac=((t-S[l]+18)%12)-6;return{l,a:ac,pc:t,name:l+acc(ac),off:iv[k],rs}});a.q=q;return a}
 function rotTones(ts,k){const a=ts.slice(k).concat(ts.slice(0,k).map(t=>({...t,off:t.off+12})));if(ts.need)a.need=ts.need;return a}
-function curTones(){return cur.akk?(cur.inv>0?rotTones(tonesChord(cur.key,cur.def),cur.inv):tonesChord(cur.key,cur.def)):cur.prog?tonesTok(cur.key,cur.prog.t[cur.step]):cur.tok?tonesTok(cur.key,cur.tok):tones(cur.key,cur.mode,cur.i)}
+function curTones(){return cur.akk?(cur.inv>0?rotTones(tonesChord(cur.key,cur.def),cur.inv):tonesChord(cur.key,cur.def)):cur.vamp?tonesChord(cur.vc[cur.step%2].root,cur.vc[cur.step%2].def):cur.prog?tonesTok(cur.prog.ks?cur.prog.ks[cur.step]:cur.key,cur.prog.t[cur.step]):cur.tok?tonesTok(cur.key,cur.tok):tones(cur.key,cur.mode,cur.i)}
 const chordTok=(k,t)=>{const a=tonesTok(k,t);return a[0].name+(a.q in QP?QP[a.q]:a.q)};
 function labelTok(t){const m=t.match(/^([b#]?)(VII|VI|IV|V|III|II|I)(.*)$/),q=m[3];return[(m[1]==='b'?'♭':m[1]==='#'?'♯':'')+m[2],q in QP?QP[q]:q]}
 const tokHtml=t=>{const[r,q]=labelTok(t);return r+(q?`<sup>${q}</sup>`:'')};
 const CHR_MAJ=['I7','II7','III7','VI7','bII7','bIII7','bIIImaj7','IVm7','#IVm7b5','bVImaj7','bVII7'],CHR_MIN=['V7','IV7','bII7','VIIdim7'];
-function progNames(c){return c.prog.t.map(t=>{const a=tonesTok(c.key,t);return a[0].name+(a.q in QP?QP[a.q]:a.q)})}
+function progNames(c){return c.prog.t.map((t,i)=>{const a=tonesTok(c.prog.ks?c.prog.ks[i]:c.key,t);return a[0].name+(a.q in QP?QP[a.q]:a.q)})}
 function spk(t){const m=t.match(/^([b#]?)(VII|VI|IV|V|III|II|I)/);return(m[1]==='b'?{de:'b ',en:'flat ',es:'bemol '}[LANG]:m[1]==='#'?{de:'Kreuz ',en:'sharp ',es:'sostenido '}[LANG]:'')+(RM[m[2]]+1)}
 function pickProg(){const v=$('progSel').value,kmaj=[...sel.maj],kmin=sel.min.size?[...sel.min]:kmaj,pool=[];
  PROGS.forEach((p,i)=>{if((v==='all'||+v===i)&&(!$('diaOnly').checked||progDia(p)))(p.m?kmin:kmaj).forEach(k=>pool.push({key:k,mode:p.m?'Moll':'Dur',prog:TRI?triP(p):p,step:0,i:0}))});
@@ -560,13 +589,14 @@ function tilesHtml(c){const p=c.prog,bl=p.bl||p.t.map(()=>1),sh=c.shown||0,names
   inner+=`<span class="ch${i===c.step?' cur':i<c.step?' done':''}"><span class="r">${main}</span>${sub?`<span class="nm">${sub}</span>`:''}</span>`}
   h+=`<div class="tile${on?' on':''}">${inner}</div>`});
  return`<div class="tiles" style="--n:${perRow()}">${h}</div>`}
-function refreshNext(){if(area==='scale'){if(SK)scNew();return}nextC=null;if(cur)next()}
+function refreshNext(){if(area==='scale'){if(SK)scNew();return}nextC=null;if(cur)next(true)}
 function emptyMsg(){const nk=!sel.maj.size&&!sel.min.size;if(gm==='akk')return'Wähl mindestens eine Akkordart und einen Grundton';if(gm==='stufen')return nk?'Wähl mindestens eine Tonart':'Wähl mindestens eine Stufe';if(nk)return'Wähl mindestens eine Tonart';return $('diaOnly').checked?'Nichts Diatonisches gefunden: Haken oder Taktbereich ändern':'Wähl mindestens eine Tonart'}
-function showTask(){const c=cur,d=$('deg');$('key').textContent=kt(c);$('key').style.display=c.prog?'':'none';
- if(c.prog){d.style.fontSize='';d.innerHTML=tilesHtml(c);$('song').textContent=c.prog.line||`${c.prog.n} · z. B. in: ${c.prog.s}`;$('chord').style.fontSize=''}
+function showTask(){const c=cur,d=$('deg');$('repBtn').classList.toggle('on',!!c.rep);$('repBtn').setAttribute('aria-pressed',String(!!c.rep));$('repBtn').style.display=c.prog&&!c.wander?'':'none';$('key').textContent=kt(c);$('key').style.display=c.prog?'':'none';
+ if(c.vamp){d.style.fontSize='';d.innerHTML=vampHtml(c);$('song').textContent=`${c.vc[0].name} ↔ ${c.vc[1].name} · endlos`;$('chord').style.fontSize=''}
+ else if(c.prog){d.style.fontSize='';d.innerHTML=c.wander?wanderHtml(c):tilesHtml(c);$('song').textContent=c.prog.line||`${c.prog.n} · z. B. in: ${c.prog.s}`;$('chord').style.fontSize=''}
  else{d.style.fontSize='';d.innerHTML=nextC?`<div class="pair"><div class="lab hid">·</div><div class="lab">Nächste</div><div class="kk big">${kkTxt(c)}</div><div class="kk sm">${kkTxt(nextC)}</div><div class="tile on"><span class="r">${tileTxt(c)}</span></div><div class="tile nx"><span class="r">${tileTxt(nextC)}</span></div></div>`:`<div class="pair" style="grid-template-columns:1fr"><div class="kk big">${kkTxt(c)}</div><div class="tile on"><span class="r">${tileTxt(c)}</span></div></div>`;$('song').textContent=c.akk?(c.inv!=null?`${POSL[c.inv]} · tiefster Ton: ${c.bassName}`:c.def[4]?'Terz, Septime und Extension genügen (Grundton und Quinte optional)':''):'';$('chord').style.fontSize=''}}
-function advanceStep(){cur.step++;cur.rev=false;solved=false;showTask();$('solWrap').style.display='none';evalHeld()}
-$('modeSel').onchange=()=>{gm=$('modeSel').value;$('ivRow').style.display=gm==='inter'?'flex':'none';$('progRow').style.display=gm==='verlauf'?'flex':'none';$('dispRow').style.display=gm==='verlauf'?'flex':'none';$('how').textContent=({akk:'Spiele den angezeigten Akkord. Die Oktave ist egal.',stufen:'Spiele den Akkord auf der angezeigten Stufe der Tonart.',verlauf:'Spiele die Akkorde der Reihe nach, einen pro Kachel.',inter:'Spiele die Akkorde der Reihe nach. Die Grundtöne wandern um das gewählte Intervall.'})[gm]||'';$('diaRow').style.display=gm==='akk'?'none':'';$('coptw').style.display=gm==='akk'?'none':'';$('diaOnly').checked=DIA[gm];rebuildLists();stopAuto();cur=null;nextC=null;last='';pendingNext=pendingStep=false;$('key').textContent='–';$('key').style.display='';$('next').textContent='Start';$('deg').style.fontSize='';$('deg').textContent='Drück „Start"';$('song').textContent='';$('chord').textContent='';$('prev').textContent='';$('solWrap').style.display='none';applyView();evalHeld();next()};
+function advanceStep(){const was=cur.step;pendingStep=false;cur.step++;cur.rev=false;solved=false;if(cur.vamp){$('prev').innerHTML='Vorheriger Akkord: '+cur.vc[was%2].name;say()}if(cur.wander){extendWander(cur);cur.key=cur.prog.ks[cur.step];cur.mode=cur.prog.md[cur.step];$('prev').innerHTML='Vorheriger Akkord: '+chordTok(cur.prog.ks[was],cur.prog.t[was]);say()}showTask();$('solWrap').style.display='none';evalHeld()}
+$('modeSel').onchange=()=>{gm=$('modeSel').value;$('ivRow').style.display=gm==='inter'?'flex':'none';$('progRow').style.display=gm==='verlauf'?'flex':'none';$('wdRow').style.display=gm==='wander'?'flex':'none';$('repBtn').style.display='none';$('repBtn').classList.remove('on');$('auto').style.display=gm==='wander'||gm==='vamp'?'none':'';$('dispRow').style.display=gm==='verlauf'||gm==='inter'||gm==='wander'?'flex':'none';$('how').textContent=({akk:'Spiele den angezeigten Akkord. Die Oktave ist egal.',stufen:'Spiele den Akkord auf der angezeigten Stufe der Tonart.',verlauf:'Spiele die Akkorde der Reihe nach, einen pro Kachel.',inter:'Spiele die Akkorde der Reihe nach. Die Grundtöne wandern um das gewählte Intervall.',wander:'Spiele die Akkorde der Reihe nach. Die Tonart wechselt fortlaufend, ohne Ende.',vamp:'Spiele die beiden Akkorde abwechselnd, so lange du willst.'})[gm]||'';$('diaRow').style.display=gm==='akk'||gm==='wander'||gm==='vamp'?'none':'';$('coptw').style.display=gm==='akk'||gm==='vamp'?'none':'';$('diaOnly').checked=DIA[gm];rebuildLists();stopAuto();cur=null;nextC=null;last='';pendingNext=pendingStep=false;$('key').textContent='–';$('key').style.display='';$('next').textContent='Start';$('deg').style.fontSize='';$('deg').textContent='Drück „Start"';$('song').textContent='';$('chord').textContent='';$('prev').textContent='';$('solWrap').style.display='none';applyView();evalHeld();next()};
 $('perRow').onchange=()=>{if(cur&&cur.prog)showTask()};
 const SCM=[0,2,4,5,7,9,11],SCN=[0,2,3,5,7,8,10],pcMemo={};
 function tokDia(t,minor){const k=t+(minor?'m':'M');if(k in pcMemo)return pcMemo[k];
@@ -579,21 +609,86 @@ function rebuildLists(){const dia=$('diaOnly').checked;
  const ps=$('progSel'),pv=ps.value,l=PROGS.map((p,i)=>[p,i]).filter(([p])=>!dia||progDia(p));
  ps.innerHTML=`<option value="all">Alle Verläufe (${l.length})</option>`+PGO.map(g=>{const m=l.filter(([p,i])=>PGRP[i]===g);return m.length?`<option value="" disabled>— ${g} —</option>`+m.map(([p,i])=>`<option value="${i}">${p.n}</option>`).join(''):''}).join('');
  ps.value=[...ps.options].some(o=>o.value===pv)?pv:'all'}
-const DIA={stufen:true,verlauf:false,inter:true,akk:false};
+const DIA={stufen:true,verlauf:false,inter:true,akk:false,wander:false,vamp:false};
 $('diaOnly').onchange=()=>{DIA[gm]=$('diaOnly').checked;rebuildLists();refreshNext()};
 rebuildLists();
 const IVL={Sekunde:[1,[2,1],'Sekunden'],Terz:[2,[4,3],'Terzen'],Quarte:[3,[5,5],'Quarten'],Quinte:[4,[7,7],'Quinten'],Sexte:[5,[9,8],'Sexten'],Septime:[6,[11,10],'Septimen']};
 const DT={Dur:['Imaj7','IIm7','IIIm7','IVmaj7','V7','VIm7','VIIm7b5'],Moll:['Im7','IIm7b5','bIIImaj7','IVm7','Vm7','bVImaj7','bVII7']};
 const ROMX=['I','bII','II','bIII','III','IV','#IV','V','bVI','VI','bVII','VII'];
 const kt=c=>c.mode?`${c.key}-${c.mode}`:c.key,gcd=(a,b)=>b?gcd(b,a%b):a;
-function pickInt(){const iv=$('ivSel').value,[steps,[big,small],pl]=IVL[iv],typ=$('ivTyp').value,dr=$('ivDir').value,up=dr==='zufall'?Math.random()<.5:dr!=='ab',sg=up?1:-1,len=Math.max(2,Math.min(13,+$('ivLen').value||7)),klein=$('ivMin').checked&&typ!=='dia'&&['Sekunde','Terz','Sexte','Septime'].includes(iv),pool=[];
+function pickInt(){const iv=$('ivSel').value,[steps,[big,small],pl]=IVL[iv],typ=$('ivTyp').value,dr=$('ivDir').value,up=dr==='zufall'?Math.random()<.5:dr!=='ab',sg=up?1:-1,len=Math.max(2,Math.min(24,+$('ivLen').value||7)),klein=$('ivMin').checked&&typ!=='dia'&&['Sekunde','Terz','Sexte','Septime'].includes(iv),pool=[];
  if(typ==='dia'){sel.maj.forEach(k=>pool.push({key:k,mode:'Dur'}));sel.min.forEach(k=>pool.push({key:k,mode:'Moll'}))}
  else[...new Set([...sel.maj,...sel.min])].forEach(k=>pool.push({key:k,mode:''}));
  if(!pool.length)return null;let c,t=0;do{c=pool[Math.floor(Math.random()*pool.length)];t++}while(pool.length>1&&c.key+c.mode===last&&t<20);last=c.key+c.mode;
  let toks;const dirTxt=up?'aufwärts':'abwärts';
- if(typ==='dia'){const n=Math.min(len,8),st=$('ivRnd').checked?Math.floor(Math.random()*7):0;toks=Array.from({length:n},(_,i)=>qt(DT[c.mode][(((st+sg*steps*i)%7)+7)%7]))}
- else{const sm=klein?small:big,n=Math.min(len,12/gcd(12,sm)+1);toks=Array.from({length:n},(_,i)=>qt(ROMX[(((sg*sm*i)%12)+12)%12]+typ))}
+ if(typ==='dia'){const n=len,st=$('ivRnd').checked?Math.floor(Math.random()*7):0;toks=Array.from({length:n},(_,i)=>qt(DT[c.mode][(((st+sg*steps*i)%7)+7)%7]))}
+ else{const sm=klein?small:big,n=len;toks=Array.from({length:n},(_,i)=>qt(ROMX[(((sg*sm*i)%12)+12)%12]+typ))}
  return{key:c.key,mode:c.mode,step:0,i:0,prog:{n:`${klein?'kleine ':''}${pl} ${dirTxt}`,t:toks,m:c.mode==='Moll'?1:0,nohide:typ!=='dia',line:`${klein?'kleine ':''}${pl} ${dirTxt} · ${typ==='dia'?'diatonisch':(TRI?'alle '+({m7:'m','7':'maj',maj7:'maj'}[typ]):'alle '+typ)}${typ==='dia'?'':' (Start: '+c.key+')'}`}}}
+/* ===== Tonart-Wanderung: endlose Reise durch Tonarten ===== */
+const WDM={q4:['Quintenzirkel (Quarten aufwärts)',5],q5:['Quinten aufwärts',7],t2d:['Ganztöne abwärts',-2],t2u:['Ganztöne aufwärts',2],m3:['Kleine Terzen aufwärts',3],M3:['Große Terzen aufwärts',4],h1d:['Halbtöne abwärts',-1],h1u:['Halbtöne aufwärts',1],rnd:['Zufällige Tonarten',null]};
+$('wdPat').innerHTML=PROGS.map((p,i)=>[p,i]).filter(([p])=>p.t.length<=8&&!p.t.some((t,i)=>i&&t===p.t[i-1])).map(([p,i])=>`<option value="${i}">${p.n}</option>`).join('');
+$('wdMove').innerHTML=Object.entries(WDM).map(([k,[l]])=>`<option value="${k}">${l}</option>`).join('');
+function wdAdd(c,pc){const p=PROGS[+$('wdPat').value]||PROGS[0],minor=!!p.m,key=(minor?MIN:MAJ).find(k=>parse(k).semi===pc),mode=minor?'Moll':'Dur',toks=(TRI?triP(p):p).t,pr=c.prog;
+ pr.cl.push({key,mode,start:pr.t.length,len:toks.length});toks.forEach(t=>{pr.t.push(t);pr.ks.push(key);pr.md.push(mode)});c.wpc=pc}
+function wdNext(c){const mv=WDM[$('wdMove').value][1];if(mv===null){let n;do{n=Math.floor(Math.random()*12)}while(n===c.wpc);return n}return(c.wpc+mv+12)%12}
+function extendWander(c){while(c.prog.t.length-c.step<16)wdAdd(c,wdNext(c))}
+function pickWander(){const p=PROGS[+$('wdPat').value]||PROGS[0],c={key:'',mode:p.m?'Moll':'Dur',step:0,i:0,wander:true,wpc:0,prog:{n:'Tonart-Wanderung',t:[],ks:[],md:[],cl:[],m:p.m?1:0,nohide:true,line:''}};
+ wdAdd(c,Math.floor(Math.random()*12));extendWander(c);c.key=c.prog.ks[0];c.mode=c.prog.md[0];c.prog.line=`${p.n} · ${WDM[$('wdMove').value][0]} · endlos`;return c}
+function wanderHtml(c){const p=c.prog,cl=p.cl,ci=cl.findIndex(x=>c.step<x.start+x.len),from=Math.max(0,ci-1),cnt=Math.max(2,Math.min(perRow(),6)),to=Math.min(cl.length,from+cnt),sh=c.shown||0;let h='';
+ for(let k=from;k<to;k++){const x=cl[k],on=k===ci;let inner='';
+  for(let j=0;j<x.len;j++){const i=x.start+j,t=p.t[i],[r,q]=labelTok(t),deg=`${r}${q?`<sup>${q}</sup>`:''}`,nm=chordTok(x.key,t);let main=deg,sub=i<sh?nm:'';
+   if(DISP==='both')sub=nm;else if(DISP==='chord'){main=nm;sub=i<sh?deg:''}
+   inner+=`<span class="ch${i===c.step?' cur':i<c.step?' done':''}"><span class="r">${main}</span>${sub?`<span class="nm">${sub}</span>`:''}</span>`}
+  h+=`<div class="wcell${on?' on':''}"><div class="kn">${x.key}-${x.mode}</div><div class="tile${on?' on':''}">${inner}</div></div>`}
+ return`<div class="tiles wd" style="--n:${to-from}">${h}</div>`}
+/* ===== Zwei Akkorde im Wechsel (Vamp) mit Analyse der Beziehung ===== */
+const VEX=[['D','m7','G','7','II–V'],['C','maj7','F','maj7','I–IV'],['A','m7','D','7','Zwischendominante'],['C','m7','F','7','Dorisch-Vamp'],['G','7','D♭','7','Tritonus-Substitution'],['C','maj7','A','m7','Parallelklang'],['C','maj7','C','m7','Dur ↔ Moll'],['C','maj7','B♭','maj7','I–♭VII (mixolydisch)']];
+const vq=id=>CHQ.find(d=>d[0]===id),vnm=(r,q)=>r+vq(q)[2];
+const VR=['C','C♯','D♭','D','D♯','E♭','E','F','F♯','G♭','G','G♯','A♭','A','A♯','B♭','B'];
+function vampInit(){['vA','vB'].forEach(id=>$(id).innerHTML=VR.map(r=>`<option value="${r}">${r}</option>`).join(''));
+['vAq','vBq'].forEach(id=>$(id).innerHTML=CHQ.map(d=>`<option value="${d[0]}">${d[2]||'Dur'}</option>`).join(''));
+$('vEx').innerHTML='<option value="">Beispiele …</option>'+VEX.map((e,i)=>`<option value="${i}">${vnm(e[0],e[1])} ↔ ${vnm(e[2],e[3])} · ${e[4]}</option>`).join('');
+$('vA').value='D';$('vAq').value='m7';$('vB').value='G';$('vBq').value='7'}
+const FAMQ={maj:'M',maj7:'M',maj9:'M',maj7s11:'M',maj13:'M','6':'M',m:'m',m7:'m',m9:'m',m11:'m',m13:'m',m6:'m','7':'D','9':'D','7b9':'D','7s9':'D','7s11':'D','13':'D','13b9':'D',m7b5:'h',dim:'d',dim7:'d',aug:'a',sus4:'s',mmaj7:'mm'};
+const TRIAD=new Set(['maj','m','dim','aug','sus4']);
+function qmatch(id,dq){const f=FAMQ[id];if(id==='sus4')return true;if(TRIAD.has(id))return id==='maj'?(dq==='M'||dq==='D'):id==='m'?dq==='m':id==='dim'?(dq==='h'||dq==='d'):dq==='a';if(f==='M')return dq==='M';if(f==='m')return dq==='m';if(f==='D')return dq==='D';if(f==='h')return dq==='h';if(f==='d')return dq==='d';if(f==='mm')return dq==='mm';return false}
+const DEGQ={Dur:['M','m','m','M','D','m','h'],Moll:['m','h','M','m','m','M','D']},ROMD=['I','II','III','IV','V','VI','VII'],ROMM=['I','II','♭III','IV','V','♭VI','♭VII'];
+function degOf(pc,tonic,mode,id){const st=mode==='Dur'?ST.Dur:ST.Moll;for(let i=0;i<7;i++){if((tonic+st[i])%12===pc&&qmatch(id,DEGQ[mode][i]))return{r:mode==='Dur'?ROMD[i]:ROMM[i],h:false}}
+ if(mode==='Moll'){if((tonic+7)%12===pc&&qmatch(id,'D'))return{r:'V',h:true};if((tonic+11)%12===pc&&qmatch(id,'d'))return{r:'VII',h:true}}return null}
+const IVN=['Prim','kleine Sekunde','große Sekunde','kleine Terz','große Terz','reine Quarte','Tritonus','reine Quinte','kleine Sexte','große Sexte','kleine Septime','große Septime'];
+const ivPhrase=i=>i===0?'gleicher Grundton':i===6?'Tritonus (in beide Richtungen gleich)':`${IVN[i]} aufwärts (= ${IVN[12-i]} abwärts)`;
+const IVH={0:'Gleicher Grundton: nur die Klangfarbe wechselt, zum Beispiel Dur ↔ Moll oder maj7 ↔ 7.',1:'Halbtonschritt: chromatische Bewegung, oft ein Durchgang oder eine Tritonus-Substitution (♭II7 → I).',2:'Ganztonschritt: typisch modal, zum Beispiel I ↔ ♭VII (mixolydisch) oder I ↔ II (dorisch).',3:'Kleine Terz / große Sexte: oft Parallelklänge (Dur und paralleles Moll teilen eine Tonart) oder ein ♭III-Wechsel.',4:'Große Terz / kleine Sexte: Terzverwandtschaft (Mediante) oder ♭VI-Wechsel (Modalmischung), farbig mit wenigen gemeinsamen Tönen.',5:'Quarte / Quinte: die klassische Bewegung Dominante → Tonika (V → I), II → V oder plagal IV → I.',6:'Tritonus: Tritonus-Substitution, wenn beide Akkorde Dominantseptakkorde sind.'};
+function vampRel(A,B){const ra=parse(A.root).semi,rb=parse(B.root).semi,i=(rb-ra+12)%12,cls=Math.min(i,12-i),fa=FAMQ[A.def[0]],fb=FAMQ[B.def[0]];
+ const ta=tonesChord(A.root,A.def),tb=tonesChord(B.root,B.def),com=ta.filter(t=>tb.some(u=>u.pc===t.pc)).map(t=>t.name);
+ let h=`<div><span class="vh">Grundtonabstand</span> <b>${A.name}</b> → <b>${B.name}</b>: <span>${ivPhrase(i)}</span></div>`;
+ h+=`<div><span class="vh">Gemeinsame Töne</span> ${com.length?`<b>${com.join(', ')}</b>`:'<span>keine</span>'}</div>`;
+ const keys=[];
+ MAJ.forEach(k=>{const t=parse(k).semi,a=degOf(ra,t,'Dur',A.def[0]),b=degOf(rb,t,'Dur',B.def[0]);if(a&&b)keys.push({k,m:'Dur',a:a.r+A.def[2],b:b.r+B.def[2],h:false})});
+ MIN.forEach(k=>{const t=parse(k).semi,a=degOf(ra,t,'Moll',A.def[0]),b=degOf(rb,t,'Moll',B.def[0]);if(a&&b)keys.push({k,m:'Moll',a:a.r+A.def[2],b:b.r+B.def[2],h:a.h||b.h})});
+ const shown=keys.slice(0,6);
+ h+=`<div><span class="vh">${keys.length?'Gemeinsam diatonisch in':'Gemeinsame Tonart'}</span> ${keys.length?shown.map(x=>`<span class="vk"><span>${x.k}-${x.m}</span>: ${x.a} ↔ ${x.b}${x.h?' <span class="vn">harmonisch</span>':''}</span>`).join(' · ')+(keys.length>6?` · <span>+${keys.length-6} weitere</span>`:''):'<span>keine</span>'}</div>`;
+ const L2=[];
+ const dom=(X,Y,rx,ry)=>FAMQ[X.def[0]]==='D'&&(ry-rx+12)%12===5?`<div class="vi"><b>${X.name}</b> <span>ist die Dominante von</span> <b>${Y.name}</b></div>`:'';
+ const sub=(X,Y,rx,ry)=>FAMQ[X.def[0]]==='D'&&(ry-rx+12)%12===11?`<div class="vi"><b>${X.name}</b> <span>ist der Tritonus-Ersatz der Dominante von</span> <b>${Y.name}</b></div>`:'';
+ L2.push(dom(A,B,ra,rb),dom(B,A,rb,ra),sub(A,B,ra,rb),sub(B,A,rb,ra));
+ if(fa==='D'&&fb==='D'&&i===6)L2.push(`<div class="vi"><span>Tritonus-Substitution: beide Akkorde teilen Terz und Septime</span></div>`);
+ const maj=f=>f==='M',min=f=>f==='m';
+ if((maj(fa)&&min(fb)&&i===9)||(maj(fb)&&min(fa)&&i===3))L2.push(`<div class="vi"><span>Parallelklänge (relatives Dur und Moll, gleiche Tonart)</span></div>`);
+ if(i===0&&((maj(fa)&&min(fb))||(min(fa)&&maj(fb))))L2.push(`<div class="vi"><span>Dur und Moll auf demselben Grundton (Modalmischung)</span></div>`);
+ const dl=L2.filter(Boolean);
+ if(dl.length)h+=`<div><span class="vh">Mögliche Deutung</span></div>${dl.join('')}`;
+ h+=`<div class="vhint">${IVH[cls]}</div>`;return h}
+function vampHtml(c){const[A,B]=c.vc,cell=(x,k)=>{const on=(c.step%2)===k,tn=on&&(solved||c.rev)?tonesChord(x.root,x.def).map(t=>t.name).join(' – '):'';return`<div class="wcell${on?' on':''}"><div class="kn">${k?'Akkord 2':'Akkord 1'}</div><div class="tile${on?' on':''}" style="flex-direction:column"><span class="ch${on?' cur':''}"><span class="r">${x.name}</span>${tn?`<span class="nm">${tn}</span>`:''}</span></div></div>`};
+ return`<div class="tiles wd vp" style="--n:2">${cell(A,0)}${cell(B,1)}</div><div class="vrel">${vampRel(A,B)}</div>`}
+function pickVamp(){const mk=(r,q)=>({root:r,def:vq(q),name:vnm(r,q)});return{vamp:true,key:$('vA').value,mode:'',step:0,i:0,vc:[mk($('vA').value,$('vAq').value),mk($('vB').value,$('vBq').value)]}}
+['vA','vAq','vB','vBq'].forEach(id=>$(id).addEventListener('change',()=>{if(area==='chord'&&gm==='vamp'&&cur)refreshNext()}));
+$('vSwap').onclick=()=>{const a=[$('vA').value,$('vAq').value];$('vA').value=$('vB').value;$('vAq').value=$('vBq').value;$('vB').value=a[0];$('vBq').value=a[1];if(cur&&gm==='vamp')refreshNext()};
+const VFL=['C','D♭','D','E♭','E','F','G♭','G','A♭','A','B♭','B'],VSH=['C','C♯','D','D♯','E','F','F♯','G','G♯','A','A♯','B'];
+function vTrans(d){const a=[$('vA').value,$('vB').value],pcs=a.map(r=>parse(r).semi).map(x=>(x+d+12)%12),q=[vq($('vAq').value),vq($('vBq').value)],
+ fams=a.some(r=>r.includes('♯'))?[VSH,VFL]:[VFL,VSH],ok=f=>pcs.every((x,i)=>tonesChord(f[x],q[i]).every(t=>Math.abs(t.a)<=1)),f=fams.find(ok)||fams[0];
+ $('vA').value=f[pcs[0]];$('vB').value=f[pcs[1]];if(cur&&gm==='vamp')refreshNext()}
+$('vDown').onclick=()=>vTrans(-1);$('vUp').onclick=()=>vTrans(1);
+$('vEx').onchange=()=>{const e=VEX[+$('vEx').value];if(!e)return;$('vA').value=e[0];$('vAq').value=e[1];$('vB').value=e[2];$('vBq').value=e[3];$('vEx').value='';if(cur&&gm==='vamp')refreshNext()};
 /* ===== Skalen ===== */
 const SCG=[['Dur-Modi',[['Ionisch (Dur)','1 2 3 4 5 6 7','ion'],['Dorisch','1 2 b3 4 5 6 b7'],['Phrygisch','1 b2 b3 4 5 b6 b7'],['Lydisch','1 2 3 #4 5 6 7'],['Mixolydisch','1 2 3 4 5 6 b7'],['Äolisch (natürlich Moll)','1 2 b3 4 5 b6 b7','aeo'],['Lokrisch','1 b2 b3 4 b5 b6 b7']]],
 ['Melodisch-Moll-Modi',[['Melodisch Moll','1 2 b3 4 5 6 7','mel'],['Dorisch ♭2','1 b2 b3 4 5 6 b7'],['Lydisch ♯5','1 2 3 #4 #5 6 7'],['Lydisch Dominant','1 2 3 #4 5 6 b7'],['Mixolydisch ♭6','1 2 3 4 5 b6 b7'],['Lokrisch ♮2','1 2 b3 4 b5 b6 b7'],['Alteriert','1 b2 b3 b4 b5 b6 b7']]],
@@ -830,10 +925,10 @@ triBuild();
 lnBuild();
 /* ===== Üben/Lernen-Schalter, Akkord-Lernmodus, Farbschemen ===== */
 const LEARN={chord:false,scale:false,sight:false};let lcSel=0;
-function applyView(){document.querySelector('.logo').dataset.a=area;const L=LEARN[area],c=area==='chord',sc=area==='scale',sg=area==='sight';
+function applyView(){document.querySelector('.logo').dataset.a=area;['majKeys','minKeys','degs'].forEach(id=>{const e=$(id),w=gm==='wander'?'none':'';e.style.display=w;if(e.previousElementSibling)e.previousElementSibling.style.display=w});$('wdHint').style.display=gm==='wander'?'':'none';const L=LEARN[area],c=area==='chord',sc=area==='scale',sg=area==='sight';
  $('chordCol').style.display=c&&!L?'':'none';$('chLearn').style.display=c&&L?'':'none';$('scaleCol').style.display=sc?'':'none';$('sightCol').style.display=sg?'':'none';
  $('chordSet').style.display=c&&!L?'':'none';$('sightSet').style.display=sg?'':'none';$('settings').style.display=(c&&!L)||sg?'':'none';
- $('lbChord').style.display=c&&!L&&gm!=='akk'?'':'none';$('lbChordA').style.display=c&&!L&&gm==='akk'?'':'none';$('lbChordL').style.display=c&&L?'':'none';$('lbScale').style.display=sc&&!L?'':'none';$('lbScaleL').style.display=sc&&L?'':'none';$('lbSight').style.display=sg?'':'none';$('leftBar').style.display='';
+ $('lbChord').style.display=c&&!L&&gm!=='akk'&&gm!=='vamp'?'':'none';$('lbVamp').style.display=c&&!L&&gm==='vamp'?'':'none';$('lbChordA').style.display=c&&!L&&gm==='akk'?'':'none';$('lbChordL').style.display=c&&L?'':'none';$('lbScale').style.display=sc&&!L?'':'none';$('lbScaleL').style.display=sc&&L?'':'none';$('lbSight').style.display=sg?'':'none';$('leftBar').style.display='';
  $('metroSlot').appendChild($('metro'));const noSide=L;document.querySelector('.shell').classList.toggle('learn',L);document.querySelector('.side').style.display=noSide?'none':'';document.querySelector('.top').classList.toggle('solo',noSide);document.querySelector('.side').classList.toggle('metOnly',sg);document.querySelector('.top').classList.toggle('sg',sg);
  $('scLearn').style.display=sc&&L?'':'none';['scCard','scBtnRow','scTaskRow','scOptRow'].forEach(id=>$(id).style.display=sc&&L?'none':'');
  $('learnRow').style.display=sg?'none':'';
@@ -883,8 +978,10 @@ const SPW={de:{maj:'Dur',m:'Moll',dim:'vermindert',aug:'übermäßig',sus4:'sus 
  es:{maj:'mayor',m:'menor',dim:'disminuido',aug:'aumentado',sus4:'sus cuatro',maj7:'mayor siete',m7:'menor siete','7':'siete',m7b5:'menor siete bemol cinco',dim7:'disminuido siete',mmaj7:'menor mayor siete','6':'seis',m6:'menor seis',maj9:'mayor nueve',m9:'menor nueve','9':'nueve','7b9':'siete bemol nueve','7s9':'siete sostenido nueve',m11:'menor once',maj7s11:'mayor siete sostenido once','7s11':'siete sostenido once',maj13:'mayor trece',m13:'menor trece','13':'trece','13b9':'trece bemol nueve'}};
 function tonesChord(root,d){const r=parse(root),ri=L.indexOf(r.l),ts=d[3].map(([s,ls])=>{const l=L[(ri+ls)%7],t=(r.semi+s)%12,a=((t-S[l]+18)%12)-6;return{l,a,pc:t,name:l+acc(a),off:s,rs:r.semi}});
  if(d[4])ts.need=d[4].map(s=>(r.semi+s)%12);return ts}
+const ENH={'D♭':'C♯','C♯':'D♭','E♭':'D♯','D♯':'E♭','F♯':'G♭','G♭':'F♯','A♭':'G♯','G♯':'A♭','B♭':'A♯','A♯':'B♭'};
+function spellRoot(r,d){const alt=ENH[r];if(!alt||Math.random()>.5)return r;return tonesChord(alt,d).every(t=>Math.abs(t.a)<=1)?alt:r}
 function pickAkk(){const roots=[...AK.roots],defs=CHQ.filter(d=>AK.types.has(d[0]));if(!roots.length||!defs.length)return null;
- const opts=AK.pos.size?[...AK.pos]:['any'],mk=(r,d,o)=>{const n=d[3].length,tn=tonesChord(r,d),inv=o==='any'?null:o,b=inv==null?null:tn[inv%n];return{akk:true,key:r,mode:'',def:d,i:0,inv,bassPc:b?b.pc:null,bassName:b?b.name:null,name:r+d[2]+(inv>0?'/'+b.name:'')}};
+ const opts=AK.pos.size?[...AK.pos]:['any'],mk=(r0,d,o)=>{const r=spellRoot(r0,d),n=d[3].length,tn=tonesChord(r,d),inv=o==='any'?null:o,b=inv==null?null:tn[inv%n];return{akk:true,key:r,mode:'',def:d,i:0,inv,bassPc:b?b.pc:null,bassName:b?b.name:null,name:r+d[2]+(inv>0?'/'+b.name:'')}};
  let c=null;for(let t=0;t<80;t++){const r=rnd(roots),d=rnd(defs),n=d[3].length,valid=opts.filter(o=>o==='any'||(n<=4&&o<=n-1));if(!valid.length)continue;const x=mk(r,d,rnd(valid));c=x;if(x.name+x.inv!==last)break}
  if(!c)c=mk(rnd(roots),rnd(defs),'any');last=c.name+c.inv;return c}
 const spkChord=c=>`${sk(c.key)} ${SPW[LANG][c.def[0]]}${c.inv>0?' '+({de:'über',en:'over',es:'sobre'})[LANG]+' '+sk(c.bassName):''}`;
@@ -1094,7 +1191,7 @@ try{const sv=localStorage.getItem('pt-vol');if(sv!==null&&!isNaN(+sv)){PV.vol=Ma
 volUi();
 document.addEventListener('pointerdown',()=>{try{const c=ac();if(c.state==='suspended')c.resume()}catch(e){}},{once:true});
 /* Änderungen wirken sofort auf die aktuelle Aufgabe */
-['ivSel','ivTyp','ivDir','ivLen','ivMin','ivRnd','progSel'].forEach(id=>$(id).addEventListener('change',()=>{if(area==='chord'&&cur)refreshNext()}));
+['ivSel','ivTyp','ivDir','ivLen','ivMin','ivRnd','progSel','wdPat','wdMove'].forEach(id=>$(id).addEventListener('change',()=>{if(area==='chord'&&cur)refreshNext()}));
 ['scDir','scOct','scHand','scFing'].forEach(id=>$(id).addEventListener('change',()=>{if(area==='scale'&&SK)scNew()}));
 /* Alle oder keine auswählen: Klick auf die Überschrift einer Auswahl */
 function selAll(k){
@@ -1316,6 +1413,65 @@ Spiele jeden Ton mit beiden Händen gleichzeitig, in zwei verschiedenen Oktaven.
 Jetzt die zweite Hand: derselbe Ton in einer anderen Oktave¦Now the second hand: the same note in another octave¦Ahora la otra mano: la misma nota en otra octava
 Impressum¦Legal notice¦Legal notice
 Datenschutz¦Privacy policy¦Privacy policy
+Modus: Tonart-Wanderung (endlos)¦Mode: Key journey (endless)¦Modo: Viaje por tonalidades (sin fin)
+Spiele die Akkorde der Reihe nach. Die Tonart wechselt fortlaufend, ohne Ende.¦Play the chords in order. The key keeps changing, with no end.¦Toca los acordes en orden. La tonalidad cambia sin parar, sin fin.
+Die Tonart wechselt hier fortlaufend. Gestartet wird in einer zufälligen Tonart. Verlauf und Weg wählst du über dem Aufgabenfenster.¦The key keeps changing here. You start in a random key. Choose the progression and the path above the task window.¦Aquí la tonalidad cambia sin parar. Empiezas en una tonalidad al azar. Elige el recorrido y el camino sobre la ventana de la tarea.
+Quintenzirkel (Quarten aufwärts)¦Circle of fifths (up a fourth)¦Círculo de quintas (cuarta ascendente)
+Quinten aufwärts¦Up a fifth each time¦Quinta ascendente
+Ganztöne abwärts¦Down a whole step¦Tono entero descendente
+Ganztöne aufwärts¦Up a whole step¦Tono entero ascendente
+Kleine Terzen aufwärts¦Up a minor third¦Tercera menor ascendente
+Große Terzen aufwärts¦Up a major third¦Tercera mayor ascendente
+Halbtöne abwärts¦Down a half step¦Semitono descendente
+Halbtöne aufwärts¦Up a half step¦Semitono ascendente
+Zufällige Tonarten¦Random keys¦Tonalidades al azar
+Modus: Zwei Akkorde im Wechsel¦Mode: Two chords alternating¦Modo: Dos acordes alternados
+Spiele die beiden Akkorde abwechselnd, so lange du willst.¦Play the two chords alternately for as long as you like.¦Toca los dos acordes alternadamente todo el tiempo que quieras.
+Wähle zwei Akkorde. Sie werden abwechselnd gespielt, ohne Ende. Unter den Kacheln siehst du, wie sie zueinander stehen könnten.¦Choose two chords. They are played alternately, without end. Below the tiles you can see how they might relate to each other.¦Elige dos acordes. Se tocan alternadamente, sin fin. Debajo de las casillas ves cómo podrían relacionarse entre sí.
+Akkord 1¦Chord 1¦Acorde 1
+Akkord 2¦Chord 2¦Acorde 2
+⇄ Tauschen¦⇄ Swap¦⇄ Intercambiar
+Beispiele …¦Examples …¦Ejemplos …
+Am7 ↔ D7 · Zwischendominante¦Am7 ↔ D7 · secondary dominant¦Am7 ↔ D7 · dominante secundaria
+Cm7 ↔ F7 · Dorisch-Vamp¦Cm7 ↔ F7 · Dorian vamp¦Cm7 ↔ F7 · vamp dórico
+G7 ↔ D♭7 · Tritonus-Substitution¦G7 ↔ D♭7 · tritone substitution¦G7 ↔ D♭7 · sustitución por tritono
+Cmaj7 ↔ Am7 · Parallelklang¦Cmaj7 ↔ Am7 · relative chord¦Cmaj7 ↔ Am7 · acorde paralelo
+Cmaj7 ↔ Cm7 · Dur ↔ Moll¦Cmaj7 ↔ Cm7 · major ↔ minor¦Cmaj7 ↔ Cm7 · mayor ↔ menor
+Cmaj7 ↔ B♭maj7 · I–♭VII (mixolydisch)¦Cmaj7 ↔ B♭maj7 · I–♭VII (Mixolydian)¦Cmaj7 ↔ B♭maj7 · I–♭VII (mixolidio)
+Grundtonabstand¦Root distance¦Distancia entre fundamentales
+Gemeinsame Töne¦Common tones¦Notas comunes
+keine¦none¦ninguna
+Gemeinsam diatonisch in¦Diatonic together in¦Diatónicos juntos en
+Gemeinsame Tonart¦Shared key¦Tonalidad común
+harmonisch¦harmonic¦armónica
+Mögliche Deutung¦Possible reading¦Posible interpretación
+ist die Dominante von¦is the dominant of¦es la dominante de
+ist der Tritonus-Ersatz der Dominante von¦is the tritone substitute for the dominant of¦es el sustituto por tritono de la dominante de
+Tritonus-Substitution: beide Akkorde teilen Terz und Septime¦Tritone substitution: both chords share the third and the seventh¦Sustitución por tritono: ambos acordes comparten la tercera y la séptima
+Parallelklänge (relatives Dur und Moll, gleiche Tonart)¦Relative chords (relative major and minor, same key)¦Acordes paralelos (mayor y menor relativos, misma tonalidad)
+Dur und Moll auf demselben Grundton (Modalmischung)¦Major and minor on the same root (modal mixture)¦Mayor y menor sobre la misma fundamental (mezcla modal)
+gleicher Grundton¦same root¦misma fundamental
+Tritonus (in beide Richtungen gleich)¦tritone (the same in both directions)¦tritono (igual en ambos sentidos)
+kleine Sekunde aufwärts (= große Septime abwärts)¦minor second up (= major seventh down)¦segunda menor ascendente (= séptima mayor descendente)
+große Sekunde aufwärts (= kleine Septime abwärts)¦major second up (= minor seventh down)¦segunda mayor ascendente (= séptima menor descendente)
+kleine Terz aufwärts (= große Sexte abwärts)¦minor third up (= major sixth down)¦tercera menor ascendente (= sexta mayor descendente)
+große Terz aufwärts (= kleine Sexte abwärts)¦major third up (= minor sixth down)¦tercera mayor ascendente (= sexta menor descendente)
+reine Quarte aufwärts (= reine Quinte abwärts)¦perfect fourth up (= perfect fifth down)¦cuarta justa ascendente (= quinta justa descendente)
+reine Quinte aufwärts (= reine Quarte abwärts)¦perfect fifth up (= perfect fourth down)¦quinta justa ascendente (= cuarta justa descendente)
+kleine Sexte aufwärts (= große Terz abwärts)¦minor sixth up (= major third down)¦sexta menor ascendente (= tercera mayor descendente)
+große Sexte aufwärts (= kleine Terz abwärts)¦major sixth up (= minor third down)¦sexta mayor ascendente (= tercera menor descendente)
+kleine Septime aufwärts (= große Sekunde abwärts)¦minor seventh up (= major second down)¦séptima menor ascendente (= segunda mayor descendente)
+große Septime aufwärts (= kleine Sekunde abwärts)¦major seventh up (= minor second down)¦séptima mayor ascendente (= segunda menor descendente)
+Gleicher Grundton: nur die Klangfarbe wechselt, zum Beispiel Dur ↔ Moll oder maj7 ↔ 7.¦Same root: only the colour changes, for example major ↔ minor or maj7 ↔ 7.¦Misma fundamental: solo cambia el color, por ejemplo mayor ↔ menor o maj7 ↔ 7.
+Halbtonschritt: chromatische Bewegung, oft ein Durchgang oder eine Tritonus-Substitution (♭II7 → I).¦Half step: chromatic motion, often a passing chord or a tritone substitution (♭II7 → I).¦Semitono: movimiento cromático, a menudo un acorde de paso o una sustitución por tritono (♭II7 → I).
+Ganztonschritt: typisch modal, zum Beispiel I ↔ ♭VII (mixolydisch) oder I ↔ II (dorisch).¦Whole step: typically modal, for example I ↔ ♭VII (Mixolydian) or I ↔ II (Dorian).¦Tono entero: típicamente modal, por ejemplo I ↔ ♭VII (mixolidio) o I ↔ II (dórico).
+Kleine Terz / große Sexte: oft Parallelklänge (Dur und paralleles Moll teilen eine Tonart) oder ein ♭III-Wechsel.¦Minor third / major sixth: often relative chords (major and its relative minor share a key) or a ♭III change.¦Tercera menor / sexta mayor: a menudo acordes paralelos (mayor y su menor relativo comparten tonalidad) o un cambio a ♭III.
+Große Terz / kleine Sexte: Terzverwandtschaft (Mediante) oder ♭VI-Wechsel (Modalmischung), farbig mit wenigen gemeinsamen Tönen.¦Major third / minor sixth: third relation (mediant) or a ♭VI change (modal mixture), colourful with few common tones.¦Tercera mayor / sexta menor: relación de tercera (mediante) o cambio a ♭VI (mezcla modal), colorido y con pocas notas comunes.
+Quarte / Quinte: die klassische Bewegung Dominante → Tonika (V → I), II → V oder plagal IV → I.¦Fourth / fifth: the classic motion dominant → tonic (V → I), II → V or plagal IV → I.¦Cuarta / quinta: el movimiento clásico dominante → tónica (V → I), II → V o plagal IV → I.
+Tritonus: Tritonus-Substitution, wenn beide Akkorde Dominantseptakkorde sind.¦Tritone: tritone substitution when both chords are dominant seventh chords.¦Tritono: sustitución por tritono cuando ambos acordes son acordes de séptima dominante.
+Diese Folge immer wieder üben. „Weiter“ startet sie von vorn. Zum Beenden Wiederholen ausschalten.¦Practise this sequence over and over. “Next” restarts it from the beginning. Switch repeat off to get a new task.¦Practica esta secuencia una y otra vez. «Siguiente» la reinicia desde el principio. Desactiva la repetición para obtener una tarea nueva.
+▼ Halbton tiefer¦▼ Half step down¦▼ Semitono abajo
+▲ Halbton höher¦▲ Half step up¦▲ Semitono arriba
 Anzeige¦Display¦Mostrar
 Stufe¦Degree¦Grado
 Akkord¦Chord¦Acorde
@@ -1416,6 +1572,12 @@ const RULES=[
  [/^Geschafft, aber mit (\d+) Fehlern? \(zählt nicht\)$/,m=>Lg(`Done, but with ${m[1]} mistake${m[1]>1?'s':''} (does not count)`,`Hecho, pero con ${m[1]} error${m[1]>1?'es':''} (no cuenta)`)],
  [/^Zeit abgelaufen: (\d+) richtige Akkorde in (\d+) s( – neuer Highscore! 🎉)?$/,m=>Lg(`Time is up: ${m[1]} correct chord${m[1]==1?'':'s'} in ${m[2]} s${m[3]?' – new high score! 🎉':''}`,`Tiempo agotado: ${m[1]} acorde${m[1]==1?'':'s'} correcto${m[1]==1?'':'s'} en ${m[2]} s${m[3]?' – ¡nuevo récord! 🎉':''}`)],
  [/^Zeit abgelaufen: (\d+) Noten in (\d+) s( – neuer Highscore! 🎉)?$/,m=>Lg(`Time is up: ${m[1]} note${m[1]==1?'':'s'} in ${m[2]} s${m[3]?' – new high score! 🎉':''}`,`Tiempo agotado: ${m[1]} nota${m[1]==1?'':'s'} en ${m[2]} s${m[3]?' – ¡nuevo récord! 🎉':''}`)],
+ [/^Wechsel (.+) ↔ (.+): (\d+) Akkorde gespielt$/,m=>Lg(`Alternating ${m[1]} ↔ ${m[2]}: ${m[3]} chords played`,`Alternancia ${m[1]} ↔ ${m[2]}: ${m[3]} acordes tocados`)],
+ [/^(.+) ↔ (.+) · endlos$/,m=>Lg(`${m[1]} ↔ ${m[2]} · endless`,`${m[1]} ↔ ${m[2]} · sin fin`)],
+ [/^\+(\d+) weitere$/,m=>Lg(`+${m[1]} more`,`+${m[1]} más`)],
+ [/^Tonart-Wanderung: (\d+) Akkorde gespielt$/,m=>Lg(`Key journey: ${m[1]} chords played`,`Viaje por tonalidades: ${m[1]} acordes tocados`)],
+ [/^Vorheriger Akkord: (.+)$/,m=>Lg(`Previous chord: ${m[1]}`,`Acorde anterior: ${m[1]}`)],
+ [/^(.+) · (.+) · endlos$/,m=>Lg(`${trs(m[1])} · ${trs(m[2])} · endless`,`${trs(m[1])} · ${trs(m[2])} · sin fin`)],
  [/^Der tiefste Ton muss (.+) sein$/,m=>Lg(`The lowest note must be ${m[1]}`,`La nota más grave debe ser ${m[1]}`)],
  [/^(Grundstellung|\d\. Umkehrung) · tiefster Ton: (.+)$/,m=>Lg(`${trs(m[1])} · lowest note: ${m[2]}`,`${trs(m[1])} · nota más grave: ${m[2]}`)],
  [/^Note (\d+) von (\d+)$/,m=>Lg(`Note ${m[1]} of ${m[2]}`,`Nota ${m[1]} de ${m[2]}`)],
@@ -1460,6 +1622,7 @@ function setLang(l){LANG=l;ftLinks();try{localStorage.setItem('pt-lang',l)}catch
 $('langs').onclick=e=>{const b=e.target.closest('[data-lang]');if(b&&b.dataset.lang!==LANG)setLang(b.dataset.lang)};
 langBuild();
 {let l0='en';try{l0=localStorage.getItem('pt-lang')||'en'}catch(e){}if(l0!=='de'&&LANGS.some(x=>x[0]===l0))setLang(l0)}
+vampInit();
 $('modeSel').onchange();
 cntTxt();
 evalHeld();
