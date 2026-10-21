@@ -6,6 +6,7 @@
 <title>Chord Drills – free MIDI chord, scale & sight-reading drills</title>
 <meta name="description" content="Free browser app to drill chords, scales and sight reading with a MIDI keyboard: random chords, inversions, progressions, metronome. No sign-up.">
 <meta name="theme-color" content="#171513">
+<link rel="canonical" href="https://www.chorddrills.org/">
 <link rel="icon" href="favicon.ico?v=2" sizes="32x32">
 <link rel="icon" href="favicon.svg?v=2" type="image/svg+xml">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
@@ -14,7 +15,6 @@
 <meta property="og:description" content="Free chord, scale and sight-reading drills for MIDI keyboards. Runs in your browser.">
 <meta property="og:image" content="https://www.chorddrills.org/og-image.png">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="canonical" href="https://www.chorddrills.org/">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Chord Drills","url":"https://www.chorddrills.org/","applicationCategory":"EducationalApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript. MIDI input needs a browser with Web MIDI (Chrome, Edge).","description":"Free browser app to drill chords, scales and sight reading with a MIDI keyboard. Random chords with inversions, progressions, chord chains, key journeys and a metronome.","inLanguage":["en","de","es"],"offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"}}</script>
 <style>
 :root{--bg:#faf8f4;--fg:#1f1d1a;--mut:#7a746b;--card:#fff;--bd:#ddd6ca;--ac:#c2410c;--acfg:#fff;--chip:#efe9de;--ok:#15803d;--bad:#dc2626;
@@ -101,6 +101,10 @@ h1.logo{margin:4px 0 12px;line-height:1}
 .ft{text-align:center;font-size:.8rem;color:var(--mut);padding:6px 12px 30px}
 .ft a{color:var(--mut);text-decoration:underline;text-underline-offset:3px}
 .ft a:hover{color:var(--fg)}
+.seo{max-width:780px;margin:64px auto 6px;padding:22px 18px 0;border-top:1px solid var(--bd);color:var(--mut);font-size:.85rem;line-height:1.6;text-align:center}
+.seo a{color:var(--mut);text-decoration:underline;text-underline-offset:3px}
+.seo a:hover{color:var(--fg)}
+.seo p{margin:.35em 0}
 .midiTop:hover{color:var(--fg);opacity:1}
 .midiTop svg{width:15px;height:15px}
 .midiTop.on{color:var(--fg);opacity:1}
@@ -374,6 +378,14 @@ tr.hl td{background:var(--chip);font-weight:700}
 </details>
 </main>
 </div>
+<section class="seo seo-en" id="about-en" lang="en">
+<p><b>Chord Drills</b> is a free practice tool for chords, scales and sight reading with a MIDI keyboard. It runs in your browser, needs no sign-up and is a drill tool, not a course.</p>
+<p><a href="random-chord-generator.html">Random chords</a> · <a href="ii-v-i-all-keys.html">ii–V–I in all keys</a> · <a href="scale-practice-midi.html">Scales</a> · <a href="sight-reading-midi.html">Sight reading</a> · <a href="chord-inversions-practice.html">Inversions</a> · <a href="faq.html">FAQ</a></p>
+</section>
+<section class="seo seo-de" id="about-de" lang="de" hidden>
+<p><b>Chord Drills</b> ist ein kostenloses Übungswerkzeug für Akkorde, Skalen und Notenlesen mit einem MIDI-Keyboard. Es läuft im Browser, braucht keine Anmeldung und ist ein Übungswerkzeug, kein Kurs.</p>
+<p><a href="zufaelliger-akkord-generator.html">Zufällige Akkorde</a> · <a href="ii-v-i-alle-tonarten.html">II–V–I in allen Tonarten</a> · <a href="skalen-ueben-midi.html">Skalen</a> · <a href="notenlesen-ueben-midi.html">Notenlesen</a> · <a href="akkord-umkehrungen-ueben.html">Umkehrungen</a> · <a href="haeufige-fragen.html">Häufige Fragen</a></p>
+</section>
 <footer class="ft"><a data-k="i" href="impressum.html">Impressum</a> · <a data-k="p" href="datenschutz.html">Datenschutz</a></footer>
 <div id="hsOv"><div class="panel"><h2 style="margin:0 0 8px;font-size:1.1rem;color:var(--fg)">🏆 Highscores</h2><div id="hsMsg" style="font-weight:600;margin-bottom:6px"></div><label style="margin:6px 0">Dauer <select id="hsFilter"></select></label><div style="overflow-x:auto"><table id="hsTab"></table></div><div class="row"><button class="sec" id="hsClear">Alle löschen</button><button class="main" id="hsClose">Schließen</button></div></div></div>
 <script>
@@ -1626,7 +1638,7 @@ function trWalk(root){if(root.nodeType===3){if(!SKIP[root.parentNode&&root.paren
 new MutationObserver(ms=>{if(LANG==='de')return;for(const m of ms){if(m.type==='childList')m.addedNodes.forEach(trWalk);else if(m.type==='characterData')trText(m.target);else if(m.type==='attributes')trAttr(m.target)}}).observe(document.body,{childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:['title']});
 const LANGS=[['de','Deutsch'],['en','English'],['es','Español']];
 function langBuild(){$('langs').innerHTML=LANGS.map(([c,n])=>`<button type="button" class="chip${LANG===c?' on':''}" data-lang="${c}">${n}</button>`).join('')}
-function ftLinks(){const de=LANG==='de';document.querySelectorAll('.ft a').forEach(x=>{if(x.dataset.k==='p')x.setAttribute('href',de?'datenschutz.html':'privacy.html');else if(x.dataset.k==='i')x.setAttribute('href',de?'impressum.html':'legal-notice.html')})}
+function ftLinks(){const de=LANG==='de';document.querySelectorAll('.ft a').forEach(x=>{if(x.dataset.k==='p')x.setAttribute('href',de?'datenschutz.html':'privacy.html');else if(x.dataset.k==='i')x.setAttribute('href',de?'impressum.html':'legal-notice.html')});document.querySelectorAll('.seo-de').forEach(e=>{e.hidden=!de});document.querySelectorAll('.seo-en').forEach(e=>{e.hidden=de})}
 function setLang(l){LANG=l;ftLinks();try{localStorage.setItem('pt-lang',l)}catch(e){}document.documentElement.lang=l;trWalk(document.body);langBuild();
  rebuildLists();lnBuild();lcBuild();triBuild();akBuild();srBuild();cntTxt();
  if(area==='chord'&&!LEARN.chord&&cur)showTask();if(area==='scale'&&!LEARN.scale&&SK)scShow();if(LEARN.scale)learnRender();if(LEARN.chord)chLearnRender();
@@ -1634,6 +1646,7 @@ function setLang(l){LANG=l;ftLinks();try{localStorage.setItem('pt-lang',l)}catch
 $('langs').onclick=e=>{const b=e.target.closest('[data-lang]');if(b&&b.dataset.lang!==LANG)setLang(b.dataset.lang)};
 langBuild();
 {let l0='en';try{l0=localStorage.getItem('pt-lang')||'en'}catch(e){}if(l0!=='de'&&LANGS.some(x=>x[0]===l0))setLang(l0)}
+ftLinks();
 vampInit();
 $('modeSel').onchange();
 cntTxt();
