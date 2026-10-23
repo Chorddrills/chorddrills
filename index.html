@@ -900,16 +900,16 @@ const POSTER_KEY={'Ionisch (Dur)':'ion','Dorisch':'dor','Phrygisch':'phr','Lydis
 const ROOTLBL=['C','C♯ / D♭','D','D♯ / E♭','E','F','F♯ / G♭','G','G♯ / A♭','A','A♯ / B♭','B'];
 const ROOTCAND=['C','C♯','D♭','D','D♯','E♭','E','F','F♯','G♭','G','G♯','A♭','A','A♯','B♭','B'];
 function bestRoot(pc,sc){let best=null,bs=1e9;ROOTCAND.filter(n=>parse(n).semi===pc).forEach(n=>{const v=scTones(n,sc).reduce((a,t)=>a+Math.abs(t.a)+(Math.abs(t.a)>1?10:0),0);if(v<bs){bs=v;best=n}});return best}
-function pKb(names,offs,rp,lh,rh,degs){const KW=34,KH=96,BW=20,BH=60,LB=30,WHp={0:0,2:1,4:2,5:3,7:4,9:5,11:6},BKp={1:0,3:1,6:3,8:4,10:5},INK='#1b1b1b',SC='#8fd6cb',SCD='#5cb5a7',RT='#45d6b0',RTD='#1fb08c';
+function pKb(names,offs,rp,lh,rh,degs){const KW=34,KH=96,BW=20,BH=60,LB=30,WHp={0:0,2:1,4:2,5:3,7:4,9:5,11:6},BKp={1:0,3:1,6:3,8:4,10:5},INK='#1b1b1b',SC='#8fd6cb',SCD='#17685e',RT='#f7a23c',RTD='#e08a1c';
  const ks={};offs.forEach((o,k)=>{ks[rp+o]=k});const rows=(lh||rh)?(lh&&rh?2:1):0,H=KH+(rows?12+rows*38:6);
  let s=`<svg viewBox="0 0 ${2*LB+14*KW} ${H}" style="width:100%;min-width:440px;max-width:640px;display:block;margin:6px auto;color:var(--fg)" font-family="inherit">`;
  const wh=[],bl=[],circ=[];
  for(let t=0;t<24;t++){const p=t%12,oc=Math.floor(t/12),k=ks[t],root=k===0||k===offs.length-1;
   if(p in WHp){const w=oc*7+WHp[p],x=LB+w*KW;wh.push(`<rect x="${x}" y="0" width="${KW}" height="${KH}" rx="4" fill="${k!=null?(root?RT:SC):'#fff'}" stroke="${INK}" stroke-width="1.5"/>`+(k!=null?`<text x="${x+KW/2}" y="${KH-20}" text-anchor="middle" font-size="15" font-weight="800" fill="${INK}">${names[k]}</text><text x="${x+KW/2}" y="${KH-7}" text-anchor="middle" font-size="10" font-weight="700" fill="${INK}">${degs[k]}</text>`:''));if(k!=null)circ.push([x+KW/2,false,root,k])}
-  else{const w=oc*7+BKp[p],x=LB+(w+1)*KW-BW/2;bl.push(`<rect x="${x}" y="0" width="${BW}" height="${BH}" rx="3" fill="${k!=null?(root?RTD:SCD):INK}" stroke="${INK}" stroke-width="1.5"/>`+(k!=null?`<text x="${x+BW/2}" y="${BH-17}" text-anchor="middle" font-size="12" font-weight="800" fill="#1b1b1b">${names[k]}</text><text x="${x+BW/2}" y="${BH-6}" text-anchor="middle" font-size="9" font-weight="700" fill="#1b1b1b">${degs[k]}</text>`:''));if(k!=null)circ.push([LB+(w+1)*KW,true,root,k])}}
+  else{const w=oc*7+BKp[p],x=LB+(w+1)*KW-BW/2;bl.push(`<rect x="${x}" y="0" width="${BW}" height="${BH}" rx="3" fill="${k!=null?(root?RTD:SCD):INK}" stroke="${INK}" stroke-width="1.5"/>`+(k!=null?`<text x="${x+BW/2}" y="${BH-17}" text-anchor="middle" font-size="12" font-weight="800" fill="${root?'#1b1b1b':'#fff'}">${names[k]}</text><text x="${x+BW/2}" y="${BH-6}" text-anchor="middle" font-size="9" font-weight="700" fill="${root?'#1b1b1b':'#fff'}">${degs[k]}</text>`:''));if(k!=null)circ.push([LB+(w+1)*KW,true,root,k])}}
  s+=wh.join('')+bl.join('');
  [['RH',rh],['LH',lh]].filter(r=>r[1]).forEach(([lab,arr],ri)=>{const y0=KH+12+ri*38;s+=`<text x="0" y="${y0+22}" font-size="13" font-weight="800" fill="currentColor">${lab}</text>`;
-  circ.forEach(([cx,black,root,k])=>{const cy=y0+(black?10:24),bg=black?(root?RTD:SCD):(root?RT:SC),col=INK;s+=`<circle cx="${cx}" cy="${cy}" r="10" fill="${bg}" stroke="${INK}" stroke-width="1.5"/><text x="${cx}" y="${cy+4.5}" text-anchor="middle" font-size="13" font-weight="800" fill="${col}">${arr[k]}</text>`})});
+  circ.forEach(([cx,black,root,k])=>{const cy=y0+(black?10:24),bg=black?(root?RTD:SCD):(root?RT:SC),col=black&&!root?'#fff':INK;s+=`<circle cx="${cx}" cy="${cy}" r="10" fill="${bg}" stroke="${INK}" stroke-width="1.5"/><text x="${cx}" y="${cy+4.5}" text-anchor="middle" font-size="13" font-weight="800" fill="${col}">${arr[k]}</text>`})});
  return s+'</svg>'}
 function learnRender(){const pc=LN.pc,sc=SCALES[LN.scale],root=bestRoot(pc,sc),tones=scTones(root,sc),n=tones.length,rp=pc,inf=SCINFO[sc.n]||[];
  const gaps=tones.map((t,i)=>{const g=(((i<n-1?tones[i+1].pc:tones[0].pc)-t.pc)%12+12)%12;return g===1?'H':g===2?'G':g===3?'ÜS':String(g)}),all=[...tones,tones[0]];
@@ -920,22 +920,22 @@ function learnRender(){const pc=LN.pc,sc=SCALES[LN.scale],root=bestRoot(pc,sc),t
  else{const a=fingering(root,sc,'R',n+1),b=fingering(root,sc,'L',n+1);if(a||b){rh=a;lh=b}}
  const offs=[...tones.map(t=>(((t.pc-rp)%12)+12)%12),12];
  h+=`<h2>Klaviatur und Fingersatz</h2><div style="overflow-x:auto">${pKb(all.map(t=>t.name),offs,rp,lh,rh,[...tones.map((t,i)=>i===0?'1':t.deg),'8'])}</div>`;
- h+=(lh||rh)?`<div class="hint">Abwärts gelten dieselben Finger rückwärts. Grundton = kräftiges Türkis, weitere Töne = helles Türkis, Kreise der schwarzen Tasten sitzen höher. Kleine Zahl unter dem Tonnamen: Intervall zum Grundton (8 = Oktave).</div>`:'<div class="hint">Grundton = kräftiges Türkis, weitere Töne = helles Türkis.</div>';
+ h+=(lh||rh)?`<div class="hint">Abwärts gelten dieselben Finger rückwärts. Orange = Grundton, grün = weitere Töne, Kreise der schwarzen Tasten sitzen höher. Kleine Zahl unter dem Tonnamen: Intervall zum Grundton (8 = Oktave).</div>`:'<div class="hint">Orange = Grundton, grün = weitere Töne.</div>';
  h+=`<h2>Notenbild</h2>${staffRow(tones,rp)}`;
  if(inf[0]){h+=`<h2>Klang</h2><p>${inf[0]}</p><h2>Merkmal</h2><p>${inf[1]}</p><h2>Typische Akkorde</h2><p>${inf[2]}</p>`;
   if(inf[3]){const pp=(rp-PAR[inf[3]][inf[4]]+12)%12,pn=inf[3]==='D'?PN[pp]+'-Dur':PMN[pp]+'-Moll ('+(inf[3]==='M'?'melodisch':'harmonisch')+')';h+=`<h2>Verwandtschaft</h2><p>${inf[4]+1}. Modus von ${pn}: dieselben Töne, aber ab dem ${inf[4]+1}. Ton.</p>`}}
  $('lnBody').innerHTML=h}
 /* ===== Skalen: Klaviatur statt Kacheln beim Üben, Chips statt Dropdowns beim Lernen ===== */
-function kbPlay(m,octs,hand){const KW=34,KH=96,BW=20,BH=60,LB=30,WHp={0:0,2:1,4:2,5:3,7:4,9:5,11:6},BKp={1:0,3:1,6:3,8:4,10:5},INK='#1b1b1b',SC='#8fd6cb',SCD='#5cb5a7',RT='#45d6b0',RTD='#1fb08c',BAD='#f28b82',BADD='#b3261e';
+function kbPlay(m,octs,hand){const KW=34,KH=96,BW=20,BH=60,LB=30,WHp={0:0,2:1,4:2,5:3,7:4,9:5,11:6},BKp={1:0,3:1,6:3,8:4,10:5},INK='#1b1b1b',SC='#8fd6cb',SCD='#17685e',RT='#f7a23c',RTD='#e08a1c',BAD='#f28b82',BADD='#b3261e';
  const hasF=Object.values(m).some(k=>k.f!=null),H=KH+(hasF?12+38+(hand.includes('@')?16:0):6);
  let s=`<svg viewBox="0 0 ${2*LB+7*octs*KW} ${H}" style="width:100%;min-width:${Math.min(octs*210,560)}px;max-width:${octs*320}px;display:block;margin:6px auto;color:var(--fg)" font-family="inherit">`;
  const wh=[],bl=[],circ=[];
  for(let t=0;t<12*octs;t++){const p=t%12,oc=Math.floor(t/12),k=m[t];
   if(p in WHp){const w=oc*7+WHp[p],x=LB+w*KW;wh.push(`<rect x="${x}" y="0" width="${KW}" height="${KH}" rx="4" fill="${k?(k.bad?BAD:k.root?RT:SC):'#fff'}" stroke="${INK}" stroke-width="1.5"/>`+(k&&k.label?`<text x="${x+KW/2}" y="${KH-20}" text-anchor="middle" font-size="15" font-weight="800" fill="${INK}">${k.label}</text><text x="${x+KW/2}" y="${KH-7}" text-anchor="middle" font-size="10" font-weight="700" fill="${INK}">${k.deg}</text>`:''));if(k&&k.f!=null)circ.push([x+KW/2,false,k])}
-  else{const w=oc*7+BKp[p],x=LB+(w+1)*KW-BW/2;bl.push(`<rect x="${x}" y="0" width="${BW}" height="${BH}" rx="3" fill="${k?(k.bad?BADD:k.root?RTD:SCD):INK}" stroke="${INK}" stroke-width="1.5"/>`+(k&&k.label?`<text x="${x+BW/2}" y="${BH-17}" text-anchor="middle" font-size="12" font-weight="800" fill="#1b1b1b">${k.label}</text><text x="${x+BW/2}" y="${BH-6}" text-anchor="middle" font-size="9" font-weight="700" fill="#1b1b1b">${k.deg}</text>`:''));if(k&&k.f!=null)circ.push([LB+(w+1)*KW,true,k])}}
+  else{const w=oc*7+BKp[p],x=LB+(w+1)*KW-BW/2;bl.push(`<rect x="${x}" y="0" width="${BW}" height="${BH}" rx="3" fill="${k?(k.bad?BADD:k.root?RTD:SCD):INK}" stroke="${INK}" stroke-width="1.5"/>`+(k&&k.label?`<text x="${x+BW/2}" y="${BH-17}" text-anchor="middle" font-size="12" font-weight="800" fill="${k.root?'#1b1b1b':'#fff'}">${k.label}</text><text x="${x+BW/2}" y="${BH-6}" text-anchor="middle" font-size="9" font-weight="700" fill="${k.root?'#1b1b1b':'#fff'}">${k.deg}</text>`:''));if(k&&k.f!=null)circ.push([LB+(w+1)*KW,true,k])}}
  s+=wh.join('')+bl.join('');
  if(hasF){const y0=KH+12;s+=hand.split('|').map(h=>{const[t,q]=h.split('@');if(q===undefined)return`<text x="0" y="${y0+22}" font-size="13" font-weight="800" fill="currentColor">${t}</text>`;const pp=+q%12,oc=Math.floor(+q/12),cx=pp in WHp?LB+(oc*7+WHp[pp])*KW+KW/2:LB+(oc*7+BKp[pp]+1)*KW;return`<text x="${cx}" y="${y0+51}" text-anchor="middle" font-size="12" font-weight="800" fill="currentColor">${t}</text>`}).join('');
-  circ.forEach(([cx,black,k])=>{const cy=y0+(black?10:24),bg=black?(k.root?RTD:SCD):(k.root?RT:SC),col=INK;s+=`<circle cx="${cx}" cy="${cy}" r="10" fill="${bg}" stroke="${INK}" stroke-width="1.5"/><text x="${cx}" y="${cy+4.5}" text-anchor="middle" font-size="13" font-weight="800" fill="${col}">${k.f}</text>`})}
+  circ.forEach(([cx,black,k])=>{const cy=y0+(black?10:24),bg=black?(k.root?RTD:SCD):(k.root?RT:SC),col=black&&!k.root?'#fff':INK;s+=`<circle cx="${cx}" cy="${cy}" r="10" fill="${bg}" stroke="${INK}" stroke-width="1.5"/><text x="${cx}" y="${cy+4.5}" text-anchor="middle" font-size="13" font-weight="800" fill="${col}">${k.f}</text>`})}
  return s+'</svg>'}
 function scShow(){const s=SK;if(!s)return;$('scHow').textContent=s.kind==='play'?(s.hand==='B'?'Spiele jeden Ton mit beiden Händen gleichzeitig, in zwei verschiedenen Oktaven.':s.ord?SQHOW[s.ord]:'Spiele die Töne der Skala nacheinander.'):'Wähle unten die richtige Skala.';const f=$('scFing').checked,m={};let svg;
  if(s.kind==='play'){$('scName').textContent='';
@@ -1391,7 +1391,7 @@ Zusätzliche Vorzeichen (♯ ♭ ♮)¦Extra accidentals (♯ ♭ ♮)¦Alteraci
 Bei Fehler Notennamen verraten¦Reveal the note name on a mistake¦Revelar el nombre de la nota al fallar
 Nach einer fehlerfreien Zeile automatisch weiter¦Continue automatically after a line without mistakes¦Continuar automáticamente tras una línea sin errores
 Spiele die angezeigten Noten. Töne, die übereinander stehen (Akkorde, Intervalle, beide Hände), spielst du gleichzeitig in beliebiger Reihenfolge. Die Oktave zählt.¦Play the notes shown. Notes stacked on top of each other (chords, intervals, both hands) are played together, in any order. The octave counts.¦Toca las notas mostradas. Las notas apiladas (acordes, intervalos, ambas manos) se tocan juntas, en cualquier orden. La octava cuenta.
-Abwärts gelten dieselben Finger rückwärts. Grundton = kräftiges Türkis, weitere Töne = helles Türkis, Kreise der schwarzen Tasten sitzen höher. Kleine Zahl unter dem Tonnamen: Intervall zum Grundton (8 = Oktave).¦Descending, the same fingers apply in reverse. Root note = strong turquoise, other notes = light turquoise, circles of the black keys sit higher. Small number below the note name: interval above the root (8 = octave).¦Al bajar valen los mismos dedos a la inversa. Fundamental = turquesa intenso, demás notas = turquesa claro, los círculos de las teclas negras están más arriba. Número pequeño bajo el nombre de la nota: intervalo respecto a la fundamental (8 = octava).
+Abwärts gelten dieselben Finger rückwärts. Orange = Grundton, grün = weitere Töne, Kreise der schwarzen Tasten sitzen höher. Kleine Zahl unter dem Tonnamen: Intervall zum Grundton (8 = Oktave).¦Descending, the same fingers apply in reverse. Orange = root note, green = other notes, circles of the black keys sit higher. Small number below the note name: interval above the root (8 = octave).¦Al bajar valen los mismos dedos a la inversa. Naranja = fundamental, verde = demás notas, los círculos de las teclas negras están más arriba. Número pequeño bajo el nombre de la nota: intervalo respecto a la fundamental (8 = octava).
 Je 4 Noten ergeben einen Takt (4/4).¦Every 4 notes make one bar (4/4).¦Cada 4 notas forman un compás (4/4).
 Wähl mindestens eine Stufe¦Choose at least one degree¦Elige al menos un grado
 Wähl Schlüssel oder Hände¦Choose a clef or hands¦Elige una clave o las manos
@@ -1443,7 +1443,7 @@ Grundstellung¦Root position¦Estado fundamental
 2. Umkehrung¦2nd inversion¦2.ª inversión
 3. Umkehrung¦3rd inversion¦3.ª inversión
 Wähl mindestens eine Umkehrung¦Choose at least one inversion¦Elige al menos una inversión
-Grundton = kräftiges Türkis, weitere Töne = helles Türkis.¦Root note = strong turquoise, other notes = light turquoise.¦Fundamental = turquesa intenso, demás notas = turquesa claro.
+Orange = Grundton, grün = weitere Töne.¦Orange = root note, green = other notes.¦Naranja = fundamental, verde = demás notas.
 Lautstärke¦Volume¦Volumen
 Ton an/aus¦Sound on/off¦Sonido activado/desactivado
 Darstellung und Sprache¦Appearance and language¦Apariencia e idioma
