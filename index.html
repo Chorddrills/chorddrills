@@ -452,14 +452,20 @@ function evalHeldCore(){if(area==='sight')return;if(area==='scale'){const mp={};
 
 function evalHeld(){evalHeldCore();chKb()}
 /* Klaviatur unter der Aufgabe: zeigt gedrückte Töne, nach Lösung oder Auflösung alle Akkordtöne */
+const KB={cur:null,d:null};
 function chKb(){const el=$('solKb');if(area!=='chord'||LEARN.chord||!cur){el.innerHTML='';return}
  const ts=curTones();let dl=degLabels(ts);if(cur.akk&&cur.inv>0){const bl=degLabels(tonesChord(cur.key,cur.def));dl=bl.slice(cur.inv).concat(bl.slice(0,cur.inv))}
  const rp=ts[0].rs,m={};let mx=0;ts.forEach(t=>{mx=Math.max(mx,rp+t.off)});const ctr=ts.reduce((a,t)=>a+rp+t.off,0)/ts.length,top=Math.max(2,Math.ceil((mx+1)/12))*12;
- const allow=new Set(ts.map(t=>t.pc)),held=new Set([...H].map(h=>h%12));
- if(solved||cur.rev)ts.forEach((t,i)=>{m[rp+t.off]={root:t.off%12===0,label:t.name,deg:dl[i],f:null}});
- else ts.forEach((t,i)=>{if(held.has(t.pc))m[rp+t.off]={root:t.off%12===0,label:t.name,deg:dl[i],f:null}});
- held.forEach(pc=>{if(allow.has(pc))return;const c=[];for(let p=pc;p<top;p+=12)if(m[p]===undefined)c.push(p);if(c.length){c.sort((a,b)=>Math.abs(a-ctr)-Math.abs(b-ctr));m[c[0]]={bad:true,f:null}}})
- el.innerHTML=`<div style="overflow-x:auto">${kbPlay(m,Math.max(2,Math.ceil((mx+1)/12)),'')}</div>`}
+ const allow=new Set(ts.map(t=>t.pc)),hm=[...H].sort((a,b)=>a-b),pcOf=mn=>((mn%12)+12)%12,tix=pc=>ts.findIndex(x=>x.pc===pc);
+ /* gehaltene Töne dort zeigen, wo sie wirklich liegen: relativ zum tiefsten gehaltenen richtigen Ton */
+ if(KB.cur!==cur){KB.cur=cur;KB.d=null}
+ for(const mn of hm){const i=tix(pcOf(mn));if(i>=0){KB.d=rp+ts[i].off-mn;break}}
+ const dlt=KB.d!==null?KB.d:-60,pos=mn=>{let q=mn+dlt;while(q<0)q+=12;while(q>=60)q-=12;return q};
+ const hp=new Set(hm.map(pcOf));
+ if(solved||cur.rev)ts.forEach((t,i)=>{if(cur.rev||!hp.has(t.pc))m[rp+t.off]={root:t.off%12===0,label:t.name,deg:dl[i],f:null}});
+ hm.forEach(mn=>{const i=tix(pcOf(mn)),q=pos(mn);if(i<0)m[q]={bad:true,f:null};else if(!cur.rev&&!m[q])m[q]={root:ts[i].off%12===0,label:ts[i].name,deg:dl[i],f:null}});
+ const allPos=Object.keys(m).map(Number);
+ el.innerHTML=`<div style="overflow-x:auto">${kbPlay(m,Math.max(2,Math.ceil((Math.max(mx,...allPos)+1)/12)),'')}</div>`}
 /* Aufgaben */
 function ansTxt(c){return c.akk?`${c.name} = <b>${tonesChord(c.key,c.def).map(t=>t.name).join(' – ')}</b>`:c.vamp?`Wechsel ${c.vc[0].name} ↔ ${c.vc[1].name}: ${c.step} Akkorde gespielt`:c.wander?`Tonart-Wanderung: ${c.step} Akkorde gespielt`:c.prog?`${kt(c)}, ${c.prog.n} = <b>${rowsHtml(nameItems(c))}</b>`:c.tok?`${c.key}-${c.mode}, ${pt(c.tok)} = <b>${chordTok(c.key,c.tok)}</b>`:`${c.key}-${c.mode}, Stufe ${RO[c.i]} = <b>${chordAt(c.key,c.mode,c.i)}</b>`}
 function say(){if(!$('speak').checked||!cur||!window.speechSynthesis)return;speechSynthesis.cancel();
@@ -567,9 +573,12 @@ const PROGS=[
 ["Rock-Kadenz I–♭VII–IV–I", "I7 bVII7 IV7 I7", 0, "Hey Jude (Coda, The Beatles)"],
 ["12-Takt-Blues (Dur)", "I7 I7 I7 I7 IV7 IV7 I7 I7 V7 IV7 I7 V7", 0, "Johnny B. Goode, Hound Dog, Sweet Home Chicago"],
 ["12-Takt-Blues (Moll)", "Im7 Im7 Im7 Im7 IVm7 IVm7 Im7 Im7 bVI7 V7 Im7 V7", 1, "The Thrill Is Gone (B. B. King)"],
-["Ragtime-Kette III–VI–II–V–I", "III7 VI7 II7 V7 Imaj7", 0, "Five Foot Two, Eyes of Blue"]
-].map(([n,t,m,s])=>{const a=t.split(' ');return{n,t:a,m,s,rep:a.map((x,i)=>i>0&&x===a[i-1])}});
-const PGO=['Jazz','Klassik','Pop & Rock','Blues'],PGRP=["Jazz", "Jazz", "Jazz", "Jazz", "Jazz", "Jazz", "Jazz", "Jazz", "Jazz", "Jazz", "Jazz", "Jazz", "Jazz", "Jazz", "Jazz", "Pop & Rock", "Pop & Rock", "Pop & Rock", "Pop & Rock", "Klassik", "Pop & Rock", "Pop & Rock", "Klassik", "Klassik", "Klassik", "Klassik", "Klassik", "Klassik", "Klassik", "Klassik", "Klassik", "Klassik", "Pop & Rock", "Pop & Rock", "Blues", "Blues", "Jazz"];
+["Ragtime-Kette III–VI–II–V–I", "III7 VI7 II7 V7 Imaj7", 0, "Five Foot Two, Eyes of Blue"],
+["Quintfall durch alle Stufen", "Imaj7 IVmaj7 VIIm7b5 IIIm7 VIm7 IIm7 V7 Imaj7", 0, "§Übung: alle sieben diatonischen Septakkorde"],
+["Terzfall durch alle Stufen", "Imaj7 VIm7 IVmaj7 IIm7 VIIm7b5 V7 IIIm7 Imaj7", 0, "§Übung: alle sieben diatonischen Septakkorde"],
+["Stufen aufwärts (I–II–III–IV–V–VI–VII)", "Imaj7 IIm7 IIIm7 IVmaj7 V7 VIm7 VIIm7b5 Imaj7", 0, "§Übung: alle sieben diatonischen Septakkorde"]
+].map(([n,t,m,s])=>{const a=t.split(' '),ex=s.startsWith('§');return{n,t:a,m,s:ex?s.slice(1):s,ex,rep:a.map((x,i)=>i>0&&x===a[i-1])}});
+const PGO=['Jazz','Klassik','Pop & Rock','Blues'],PGRP=["Jazz", "Jazz", "Jazz", "Jazz", "Jazz", "Jazz", "Jazz", "Jazz", "Jazz", "Jazz", "Jazz", "Jazz", "Jazz", "Jazz", "Jazz", "Pop & Rock", "Pop & Rock", "Pop & Rock", "Pop & Rock", "Klassik", "Pop & Rock", "Pop & Rock", "Klassik", "Klassik", "Klassik", "Klassik", "Klassik", "Klassik", "Klassik", "Klassik", "Klassik", "Klassik", "Pop & Rock", "Pop & Rock", "Blues", "Blues", "Jazz", "Jazz", "Jazz", "Jazz"];
 const RM={I:0,II:1,III:2,IV:3,V:4,VI:5,VII:6},MS=[0,2,4,5,7,9,11],LS={'6':[0,2,4,5],'m6':[0,2,4,5],'sus4':[0,3,4]};
 const IVX={'maj7':[0,4,7,11],'m7':[0,3,7,10],'7':[0,4,7,10],'m7b5':[0,3,6,10],'6':[0,4,7,9],'m6':[0,3,7,9],'dim7':[0,3,6,9],'mmaj7':[0,3,7,11],'maj':[0,4,7],'m':[0,3,7],'dim':[0,3,6],'sus4':[0,5,7],'aug':[0,4,8]};
 const QP={m7b5:'m7♭5',mmaj7:'m(maj7)',maj:'',aug:'aug'};
@@ -615,7 +624,7 @@ function refreshNext(){jazzSevenths();if(area==='scale'){if(SK)scNew();return}ne
 function emptyMsg(){const nk=!sel.maj.size&&!sel.min.size;if(gm==='akk')return'Wähl mindestens eine Akkordart und einen Grundton';if(gm==='stufen')return nk?'Wähl mindestens eine Tonart':'Wähl mindestens eine Stufe';if(nk)return'Wähl mindestens eine Tonart';return $('diaOnly').checked?'Nichts Diatonisches gefunden: Haken oder Taktbereich ändern':'Wähl mindestens eine Tonart'}
 function showTask(){const c=cur,d=$('deg');$('repBtn').classList.toggle('on',!!c.rep);$('repBtn').setAttribute('aria-pressed',String(!!c.rep));$('repBtn').style.display=c.prog&&!c.wander?'':'none';$('key').textContent=kt(c);$('key').style.display=c.prog?'':'none';
  if(c.vamp){d.style.fontSize='';d.innerHTML=vampHtml(c);$('song').textContent=`${c.vc[0].name} ↔ ${c.vc[1].name} · endlos`;$('chord').style.fontSize=''}
- else if(c.prog){d.style.fontSize='';d.innerHTML=c.wander?wanderHtml(c):tilesHtml(c);$('song').textContent=c.prog.line||`${c.prog.n} · z. B. in: ${c.prog.s}`;$('chord').style.fontSize=''}
+ else if(c.prog){d.style.fontSize='';d.innerHTML=c.wander?wanderHtml(c):tilesHtml(c);$('song').textContent=c.prog.line||(c.prog.ex?`${c.prog.n} · ${c.prog.s}`:`${c.prog.n} · z. B. in: ${c.prog.s}`);$('chord').style.fontSize=''}
  else{d.style.fontSize='';d.innerHTML=nextC?`<div class="pair"><div class="lab hid">·</div><div class="lab">Nächste</div><div class="kk big">${kkTxt(c)}</div><div class="kk sm">${kkTxt(nextC)}</div><div class="tile on"><span class="r">${tileTxt(c)}</span></div><div class="tile nx"><span class="r">${tileTxt(nextC)}</span></div></div>`:`<div class="pair" style="grid-template-columns:1fr"><div class="kk big">${kkTxt(c)}</div><div class="tile on"><span class="r">${tileTxt(c)}</span></div></div>`;$('song').textContent=c.akk?(c.inv!=null?`${POSL[c.inv]} · tiefster Ton: ${c.bassName}`:c.def[4]?'Terz, Septime und Extension genügen (Grundton und Quinte optional)':''):'';$('chord').style.fontSize=''}}
 function advanceStep(){const was=cur.step;pendingStep=false;cur.step++;cur.rev=false;solved=false;if(cur.vamp){$('prev').innerHTML='Vorheriger Akkord: '+cur.vc[was%2].name;say()}if(cur.wander){extendWander(cur);cur.key=cur.prog.ks[cur.step];cur.mode=cur.prog.md[cur.step];$('prev').innerHTML='Vorheriger Akkord: '+chordTok(cur.prog.ks[was],cur.prog.t[was]);say()}showTask();$('solWrap').style.display='none';evalHeld()}
 $('modeSel').onchange=()=>{gm=$('modeSel').value;jazzSevenths();$('ivRow').style.display=gm==='inter'?'flex':'none';$('progRow').style.display=gm==='verlauf'?'flex':'none';$('wdRow').style.display=gm==='wander'?'flex':'none';$('repBtn').style.display='none';$('repBtn').classList.remove('on');$('auto').style.display=gm==='wander'||gm==='vamp'?'none':'';$('dispRow').style.display=gm==='verlauf'||gm==='inter'||gm==='wander'?'flex':'none';$('how').textContent=({akk:'Spiele den angezeigten Akkord. Die Oktave ist egal.',stufen:'Spiele den Akkord auf der angezeigten Stufe der Tonart.',verlauf:'Spiele die Akkorde der Reihe nach, einen pro Kachel.',inter:'Spiele die Akkorde der Reihe nach. Die Grundtöne wandern um das gewählte Intervall.',wander:'Spiele die Akkorde der Reihe nach. Die Tonart wechselt fortlaufend, ohne Ende.',vamp:'Spiele die beiden Akkorde abwechselnd, so lange du willst.'})[gm]||'';$('diaRow').style.display=gm==='akk'||gm==='wander'||gm==='vamp'?'none':'';$('coptw').style.display=gm==='akk'||gm==='vamp'?'none':'';$('diaOnly').checked=DIA[gm];rebuildLists();stopAuto();cur=null;nextC=null;last='';pendingNext=pendingStep=false;$('key').textContent='–';$('key').style.display='';$('next').textContent='Start';$('deg').style.fontSize='';$('deg').textContent='Drück „Start"';$('song').textContent='';$('chord').textContent='';$('prev').textContent='';$('solWrap').style.display='none';applyView();evalHeld();next()};
@@ -987,7 +996,7 @@ function chLearnRender(){if(LC.view==='one'){chOneRender();return}const root=LC.
  h+=`<p><b>Akkordtöne:</b> ${ch.map(t=>t.name).join(' – ')} <span class="hint">(${FFORM[q[i]]})</span></p><p><b>Passende Skala:</b> ${ch[0].name} ${FSCALE[mode][i]}</p><p><b>Spannungstöne:</b> ${FTENS[q[i]]}</p>`;
  h+=`<h2>Auf der Klaviatur</h2>${chordKb(ch)}<h2>Notenbild</h2>${staff(ch.map(t=>{const x=mkNote(60+t.rs+t.off,mp);x.col='#000';return x}))}`;
  const ps=PROGS.filter(p=>!!p.m===(mode==='Moll'));
- h+=`<h2>Typische Verläufe in ${root}-${mode}</h2>`+ps.map(p=>`<div class="pl"><b>${p.n}</b><div>${progNames({key:root,prog:TRI?triP(p):p}).join(' – ')}</div><div class="hint">z. B. in: ${p.s}</div></div>`).join('');
+ h+=`<h2>Typische Verläufe in ${root}-${mode}</h2>`+ps.map(p=>`<div class="pl"><b>${p.n}</b><div>${progNames({key:root,prog:TRI?triP(p):p}).join(' – ')}</div><div class="hint">${p.ex?p.s:'z. B. in: '+p.s}</div></div>`).join('');
  $('lcBody').innerHTML=h}
 $('lcBody').onclick=e=>{const sc=e.target.closest('[data-sc]');if(sc){LEARN.scale=true;LN.scale=+sc.dataset.sc;LN.pc=parse(LC.root1).semi;lnBuild();setArea('scale');return}const t=e.target.closest('[data-d]');if(t){lcSel=+t.dataset.d;chLearnRender()}};
 const THEMES=[['dark','Dunkel','#171513','#fb923c'],['elfenbein','Elfenbein','#f4eedd','#8a4f24'],['mokka','Mokka','#3b2a1c','#efe3c2'],['palisander','Palisander','#2b1618','#d8a65a'],['ebenholz','Ebenholz','#0f0f10','#d6b46a'],['kirsche','Kirsche','#f6e5df','#a52a1c'],['ozean','Ozean','#0d1b2a','#4cc9f0'],['wald','Wald','#2b2016','#a3d36a'],['lavendel','Lavendel','#f5f2ff','#6d3ff0']];
@@ -1518,6 +1527,10 @@ Spiele die Töne der Skala nacheinander. Die Grundtöne fallen in Halbtönen.¦P
 Spiele die Töne der Skala nacheinander. Die Grundtöne steigen in Ganztönen.¦Play the notes of the scale one after another. The roots rise by whole steps.¦Toca las notas de la escala una tras otra. Las fundamentales suben por tonos enteros.
 Spiele die Töne der Skala nacheinander. Die Grundtöne steigen in kleinen Terzen.¦Play the notes of the scale one after another. The roots rise by minor thirds.¦Toca las notas de la escala una tras otra. Las fundamentales suben por terceras menores.
 Spiele die Töne der Skala nacheinander. Die Grundtöne steigen in großen Terzen.¦Play the notes of the scale one after another. The roots rise by major thirds.¦Toca las notas de la escala una tras otra. Las fundamentales suben por terceras mayores.
+Quintfall durch alle Stufen¦Falling fifths through all degrees¦Quintas descendentes por todos los grados
+Terzfall durch alle Stufen¦Falling thirds through all degrees¦Terceras descendentes por todos los grados
+Stufen aufwärts (I–II–III–IV–V–VI–VII)¦Degrees ascending (I–II–III–IV–V–VI–VII)¦Grados ascendentes (I–II–III–IV–V–VI–VII)
+Übung: alle sieben diatonischen Septakkorde¦Exercise: all seven diatonic seventh chords¦Ejercicio: los siete acordes de séptima diatónicos
 Anzeige¦Display¦Mostrar
 Stufe¦Degree¦Grado
 Akkord¦Chord¦Acorde
@@ -1622,6 +1635,7 @@ const RULES=[
  [/^Wechsel (.+) ↔ (.+): (\d+) Akkorde gespielt$/,m=>Lg(`Alternating ${m[1]} ↔ ${m[2]}: ${m[3]} chords played`,`Alternancia ${m[1]} ↔ ${m[2]}: ${m[3]} acordes tocados`)],
  [/^(.+) ↔ (.+) · endlos$/,m=>Lg(`${m[1]} ↔ ${m[2]} · endless`,`${m[1]} ↔ ${m[2]} · sin fin`)],
  [/^\+(\d+) weitere$/,m=>Lg(`+${m[1]} more`,`+${m[1]} más`)],
+ [/^(.+) · Übung: alle sieben diatonischen Septakkorde$/,m=>Lg(`${trs(m[1])} · exercise: all seven diatonic seventh chords`,`${trs(m[1])} · ejercicio: los siete acordes de séptima diatónicos`)],
  [/^Tonart-Wanderung: (\d+) Akkorde gespielt$/,m=>Lg(`Key journey: ${m[1]} chords played`,`Viaje por tonalidades: ${m[1]} acordes tocados`)],
  [/^Vorheriger Akkord: (.+)$/,m=>Lg(`Previous chord: ${m[1]}`,`Acorde anterior: ${m[1]}`)],
  [/^(.+) · (.+) · endlos$/,m=>Lg(`${trs(m[1])} · ${trs(m[2])} · endless`,`${trs(m[1])} · ${trs(m[2])} · sin fin`)],
