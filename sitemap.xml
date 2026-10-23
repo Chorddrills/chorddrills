@@ -1,66 +1,66 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://www.chorddrills.org/</loc>
+    <loc>https://www.pianodrills.org/</loc>
   </url>
   <url>
-    <loc>https://www.chorddrills.org/random-chord-generator.html</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://www.chorddrills.org/random-chord-generator.html"/>
-    <xhtml:link rel="alternate" hreflang="de" href="https://www.chorddrills.org/zufaelliger-akkord-generator.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.chorddrills.org/random-chord-generator.html"/>
+    <loc>https://www.pianodrills.org/random-chord-generator.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.pianodrills.org/random-chord-generator.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://www.pianodrills.org/zufaelliger-akkord-generator.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.pianodrills.org/random-chord-generator.html"/>
   </url>
   <url>
-    <loc>https://www.chorddrills.org/zufaelliger-akkord-generator.html</loc>
-    <xhtml:link rel="alternate" hreflang="de" href="https://www.chorddrills.org/zufaelliger-akkord-generator.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://www.chorddrills.org/random-chord-generator.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.chorddrills.org/random-chord-generator.html"/>
+    <loc>https://www.pianodrills.org/zufaelliger-akkord-generator.html</loc>
+    <xhtml:link rel="alternate" hreflang="de" href="https://www.pianodrills.org/zufaelliger-akkord-generator.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.pianodrills.org/random-chord-generator.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.pianodrills.org/random-chord-generator.html"/>
   </url>
   <url>
-    <loc>https://www.chorddrills.org/chord-progressions-practice.html</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://www.chorddrills.org/chord-progressions-practice.html"/>
-    <xhtml:link rel="alternate" hreflang="de" href="https://www.chorddrills.org/akkordfolgen-ueben-midi.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.chorddrills.org/chord-progressions-practice.html"/>
+    <loc>https://www.pianodrills.org/chord-progressions-practice.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.pianodrills.org/chord-progressions-practice.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://www.pianodrills.org/akkordfolgen-ueben-midi.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.pianodrills.org/chord-progressions-practice.html"/>
   </url>
   <url>
-    <loc>https://www.chorddrills.org/akkordfolgen-ueben-midi.html</loc>
-    <xhtml:link rel="alternate" hreflang="de" href="https://www.chorddrills.org/akkordfolgen-ueben-midi.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://www.chorddrills.org/chord-progressions-practice.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.chorddrills.org/chord-progressions-practice.html"/>
+    <loc>https://www.pianodrills.org/akkordfolgen-ueben-midi.html</loc>
+    <xhtml:link rel="alternate" hreflang="de" href="https://www.pianodrills.org/akkordfolgen-ueben-midi.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.pianodrills.org/chord-progressions-practice.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.pianodrills.org/chord-progressions-practice.html"/>
   </url>
   <url>
-    <loc>https://www.chorddrills.org/scale-practice-midi.html</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://www.chorddrills.org/scale-practice-midi.html"/>
-    <xhtml:link rel="alternate" hreflang="de" href="https://www.chorddrills.org/skalen-ueben-midi.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.chorddrills.org/scale-practice-midi.html"/>
+    <loc>https://www.pianodrills.org/scale-practice-midi.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.pianodrills.org/scale-practice-midi.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://www.pianodrills.org/skalen-ueben-midi.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.pianodrills.org/scale-practice-midi.html"/>
   </url>
   <url>
-    <loc>https://www.chorddrills.org/skalen-ueben-midi.html</loc>
-    <xhtml:link rel="alternate" hreflang="de" href="https://www.chorddrills.org/skalen-ueben-midi.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://www.chorddrills.org/scale-practice-midi.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.chorddrills.org/scale-practice-midi.html"/>
+    <loc>https://www.pianodrills.org/skalen-ueben-midi.html</loc>
+    <xhtml:link rel="alternate" hreflang="de" href="https://www.pianodrills.org/skalen-ueben-midi.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.pianodrills.org/scale-practice-midi.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.pianodrills.org/scale-practice-midi.html"/>
   </url>
   <url>
-    <loc>https://www.chorddrills.org/sight-reading-midi.html</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://www.chorddrills.org/sight-reading-midi.html"/>
-    <xhtml:link rel="alternate" hreflang="de" href="https://www.chorddrills.org/notenlesen-ueben-midi.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.chorddrills.org/sight-reading-midi.html"/>
+    <loc>https://www.pianodrills.org/sight-reading-midi.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.pianodrills.org/sight-reading-midi.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://www.pianodrills.org/notenlesen-ueben-midi.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.pianodrills.org/sight-reading-midi.html"/>
   </url>
   <url>
-    <loc>https://www.chorddrills.org/notenlesen-ueben-midi.html</loc>
-    <xhtml:link rel="alternate" hreflang="de" href="https://www.chorddrills.org/notenlesen-ueben-midi.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://www.chorddrills.org/sight-reading-midi.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.chorddrills.org/sight-reading-midi.html"/>
+    <loc>https://www.pianodrills.org/notenlesen-ueben-midi.html</loc>
+    <xhtml:link rel="alternate" hreflang="de" href="https://www.pianodrills.org/notenlesen-ueben-midi.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.pianodrills.org/sight-reading-midi.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.pianodrills.org/sight-reading-midi.html"/>
   </url>
   <url>
-    <loc>https://www.chorddrills.org/faq.html</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://www.chorddrills.org/faq.html"/>
-    <xhtml:link rel="alternate" hreflang="de" href="https://www.chorddrills.org/haeufige-fragen.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.chorddrills.org/faq.html"/>
+    <loc>https://www.pianodrills.org/faq.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.pianodrills.org/faq.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://www.pianodrills.org/haeufige-fragen.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.pianodrills.org/faq.html"/>
   </url>
   <url>
-    <loc>https://www.chorddrills.org/haeufige-fragen.html</loc>
-    <xhtml:link rel="alternate" hreflang="de" href="https://www.chorddrills.org/haeufige-fragen.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://www.chorddrills.org/faq.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.chorddrills.org/faq.html"/>
+    <loc>https://www.pianodrills.org/haeufige-fragen.html</loc>
+    <xhtml:link rel="alternate" hreflang="de" href="https://www.pianodrills.org/haeufige-fragen.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.pianodrills.org/faq.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.pianodrills.org/faq.html"/>
   </url>
 </urlset>
