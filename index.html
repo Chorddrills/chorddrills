@@ -108,7 +108,7 @@ h1.logo{margin:4px 0 12px;line-height:1}
 .midiTop:hover{color:var(--fg);opacity:1}
 .midiTop svg{width:15px;height:15px}
 .midiTop.on{color:var(--fg);opacity:1}
-@media(max-width:640px){.hd{padding-top:26px}.midiTop:not(.on) #midiTopTxt{display:none}.coffee .tx{display:none}.vol input{width:46px}}
+@media(max-width:640px){.hd{padding-top:34px}.midiTop:not(.on) #midiTopTxt{display:none}.coffee .tx{display:none}.vol input{width:46px}}
 .top.sg #sightCol{display:contents}
 .top.sg #sightCol>.msel{grid-column:1;grid-row:1;margin:0;align-self:start}
 .top.sg .side{grid-column:2;grid-row:1;align-self:start}
@@ -453,7 +453,11 @@ function holdClear(){if(holdT){clearTimeout(holdT);holdT=null}}
 function holdArm(){if(holdT||nextMode()!=='hold'||!(pendingStep||pendingNext))return;const sec=Math.min(10,Math.max(.5,+$('holdSecs').value||2));holdT=setTimeout(()=>{holdT=null;holdFire()},sec*1000)}
 function holdFire(){if(!cur||!solved||!H.size)return;IGN.clear();H.forEach(m=>IGN.add(m));if(pendingStep){pendingStep=false;advanceStep()}else if(pendingNext){pendingNext=false;stopAuto();autoAdvance()}}
 /* Nach dem richtigen Akkord: die nächste gedrückte Taste schaltet weiter und zählt schon für die neue Aufgabe */
-function chainAdv(nt){if(!cur||area==='sight'||area==='scale'||!solved||!(pendingStep||pendingNext)||!H.size||H.has(nt))return;IGN.clear();H.forEach(m=>IGN.add(m));holdClear();if(pendingStep){pendingStep=false;advanceStep()}else{pendingNext=false;stopAuto();autoAdvance()}}
+let solvedAt=0;const CHAIN_GRACE=600;
+function chainAdv(nt){if(!cur||area==='sight'||area==='scale'||!solved||!(pendingStep||pendingNext)||!H.size||H.has(nt))return;
+ /* Ton, der zum aktuellen Akkord gehört (zum Beispiel die Bassnote der linken Hand), kommt kurz nach dem Lösen noch dazu: gehört zum selben Akkord */
+ if(Date.now()-solvedAt<CHAIN_GRACE&&curTones().some(t=>t.pc===((nt%12)+12)%12))return;
+ IGN.clear();H.forEach(m=>IGN.add(m));holdClear();if(pendingStep){pendingStep=false;advanceStep()}else{pendingNext=false;stopAuto();autoAdvance()}}
 function evalHeldCore(){if(area==='sight')return;if(area==='scale'){const mp={};if(SK)SK.tones.forEach(t=>mp[t.pc]=[t.l,t.a]);$('staffPlay').innerHTML=staff([...H].sort((a,b)=>a-b).map(m=>{const x=mkNote(m,mp);x.col='#000';return x}));$('fb').textContent='';return}const map=expMap(),held=[...H].filter(m=>!IGN.has(m)).sort((a,b)=>a-b),pcs=new Set(held.map(m=>m%12));
  const ex=cur?curTones():[],allow=new Set(ex.map(t=>t.pc));
  $('staffPlay').innerHTML=staff(held.map(m=>{const x=mkNote(m,map);x.col=cur?(allow.has(x.pc)?'#15803d':'#dc2626'):'#000';return x}));
@@ -465,7 +469,7 @@ function evalHeldCore(){if(area==='sight')return;if(area==='scale'){const mp={};
  const miss=[...need].filter(p=>!pcs.has(p)),bad=[...pcs].filter(p=>!allow.has(p));
  const bassOk=!(cur.akk&&cur.inv!=null)||held[0]%12===cur.bassPc;
  if(!miss.length&&!bad.length&&bassOk){fb.textContent='✓ Richtig!';fb.className='fb ok';
-  if(!solved){solved=true;if(cur.vamp||cur.prog&&(cur.wander||cur.step<cur.prog.t.length-1)){if(cur.wander||cur.vamp){okCount++;if(race.on)race.score++;cntTxt()}pendingStep=true;reveal()}else{okCount++;if(race.on)race.score++;cntTxt();if(!race.on)reveal();if(nextMode()!=='off'||race.on)pendingNext=true}}holdArm()}
+  if(!solved){solved=true;solvedAt=Date.now();if(cur.vamp||cur.prog&&(cur.wander||cur.step<cur.prog.t.length-1)){if(cur.wander||cur.vamp){okCount++;if(race.on)race.score++;cntTxt()}pendingStep=true;reveal()}else{okCount++;if(race.on)race.score++;cntTxt();if(!race.on)reveal();if(nextMode()!=='off'||race.on)pendingNext=true}}holdArm()}
  else if(bad.length){holdClear();fb.textContent='✗ Falscher Ton: '+bad.map(p=>DEF[p][0]+acc(DEF[p][1])).join(', ');fb.className='fb bad'}
  else if(!miss.length){holdClear();fb.textContent='Der tiefste Ton muss '+cur.bassName+' sein';fb.className='fb bad'}
  else{holdClear();fb.textContent=`Noch ${miss.length} ${miss.length>1?'Töne':'Ton'} fehlen`}}
