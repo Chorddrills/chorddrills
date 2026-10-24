@@ -108,7 +108,7 @@ h1.logo{margin:4px 0 12px;line-height:1}
 .midiTop:hover{color:var(--fg);opacity:1}
 .midiTop svg{width:15px;height:15px}
 .midiTop.on{color:var(--fg);opacity:1}
-@media(max-width:640px){.midiTop:not(.on) #midiTopTxt{display:none}.coffee .tx{display:none}.vol input{width:46px}}
+@media(max-width:640px){.hd{padding-top:26px}.midiTop:not(.on) #midiTopTxt{display:none}.coffee .tx{display:none}.vol input{width:46px}}
 .top.sg #sightCol{display:contents}
 .top.sg #sightCol>.msel{grid-column:1;grid-row:1;margin:0;align-self:start}
 .top.sg .side{grid-column:2;grid-row:1;align-self:start}
@@ -361,7 +361,7 @@ tr.hl td{background:var(--chip);font-weight:700}
 <label><input type="checkbox" id="rootless"> Grundton darf fehlen (Rootless)</label>
 <label><input type="checkbox" id="fifth"> Quinte darf fehlen</label>
 <label>Weiter bei richtigem Akkord <select id="nextMode"><option value="hold">nach Halten des Akkords</option><option value="rel">sobald ich alle Tasten loslasse</option><option value="off">nur mit Weiter / Leertaste</option></select></label>
-<label id="holdRow">Haltezeit <input type="number" id="holdSecs" value="1" min="0.5" max="10" step="0.5"> Sekunden</label>
+<label id="holdRow">Haltezeit <input type="number" id="holdSecs" value="2" min="0.5" max="10" step="0.5"> Sekunden</label>
 <label>Zeilenlänge (Akkorde) <input type="number" id="perRow" value="4" min="2" max="12"></label>
 <label><input type="checkbox" id="speak"> Ansage per Sprachausgabe</label>
 <label><input type="checkbox" id="showAns"> Lösung automatisch zeigen</label>
@@ -450,8 +450,10 @@ let holdT=null;const IGN=new Set();
 const nextMode=()=>$('nextMode').value;
 function holdUi(){$('holdRow').style.display=nextMode()==='hold'?'':'none'}
 function holdClear(){if(holdT){clearTimeout(holdT);holdT=null}}
-function holdArm(){if(holdT||race.on||nextMode()!=='hold'||!(pendingStep||pendingNext))return;const sec=Math.min(10,Math.max(.5,+$('holdSecs').value||1));holdT=setTimeout(()=>{holdT=null;holdFire()},sec*1000)}
+function holdArm(){if(holdT||nextMode()!=='hold'||!(pendingStep||pendingNext))return;const sec=Math.min(10,Math.max(.5,+$('holdSecs').value||2));holdT=setTimeout(()=>{holdT=null;holdFire()},sec*1000)}
 function holdFire(){if(!cur||!solved||!H.size)return;IGN.clear();H.forEach(m=>IGN.add(m));if(pendingStep){pendingStep=false;advanceStep()}else if(pendingNext){pendingNext=false;stopAuto();autoAdvance()}}
+/* Nach dem richtigen Akkord: die nächste gedrückte Taste schaltet weiter und zählt schon für die neue Aufgabe */
+function chainAdv(nt){if(!cur||area==='sight'||area==='scale'||!solved||!(pendingStep||pendingNext)||!H.size||H.has(nt))return;IGN.clear();H.forEach(m=>IGN.add(m));holdClear();if(pendingStep){pendingStep=false;advanceStep()}else{pendingNext=false;stopAuto();autoAdvance()}}
 function evalHeldCore(){if(area==='sight')return;if(area==='scale'){const mp={};if(SK)SK.tones.forEach(t=>mp[t.pc]=[t.l,t.a]);$('staffPlay').innerHTML=staff([...H].sort((a,b)=>a-b).map(m=>{const x=mkNote(m,mp);x.col='#000';return x}));$('fb').textContent='';return}const map=expMap(),held=[...H].filter(m=>!IGN.has(m)).sort((a,b)=>a-b),pcs=new Set(held.map(m=>m%12));
  const ex=cur?curTones():[],allow=new Set(ex.map(t=>t.pc));
  $('staffPlay').innerHTML=staff(held.map(m=>{const x=mkNote(m,map);x.col=cur?(allow.has(x.pc)?'#15803d':'#dc2626'):'#000';return x}));
@@ -528,7 +530,7 @@ $('secUp').onclick=()=>{secsIn.value=Math.min(30,secGet()+1);secSync()};
 ['input','change'].forEach(ev=>secsIn.addEventListener(ev,secSync));secSync();
 
 /* MIDI */
-function onMidi(e){const[s,nt,v]=e.data,c=s&0xf0;if(c===0xB0&&nt===64){pianoSus(v>=64);return}if(c===0x90&&v>0){H.add(nt);IGN.delete(nt);pianoOn(nt,v)}else if(c===0x80||c===0x90){H.delete(nt);IGN.delete(nt);pianoOff(nt)}else return;if(c===0x90&&v>0){if(area==='scale')scaleNote(nt);else if(area==='sight')sightNote(nt)}else if(area==='scale'&&SKST[nt]){delete SKST[nt];if(SK&&SK.kind==='play')scShow()}evalHeld()}
+function onMidi(e){const[s,nt,v]=e.data,c=s&0xf0;if(c===0xB0&&nt===64){pianoSus(v>=64);return}if(c===0x90&&v>0){chainAdv(nt);H.add(nt);IGN.delete(nt);pianoOn(nt,v)}else if(c===0x80||c===0x90){H.delete(nt);IGN.delete(nt);pianoOff(nt)}else return;if(c===0x90&&v>0){if(area==='scale')scaleNote(nt);else if(area==='sight')sightNote(nt)}else if(area==='scale'&&SKST[nt]){delete SKST[nt];if(SK&&SK.kind==='play')scShow()}evalHeld()}
 function midiUi(ins,msg){const t=$('midiTop'),ok=!!(ins&&ins.length);document.body.classList.toggle('nomidi',!ok);if(!ok)document.querySelectorAll('.midihint .mh-t').forEach(e=>e.textContent=msg||'Verbinde dein MIDI-Keyboard über das Symbol oben rechts.');if(ins&&ins.length){t.classList.add('on');$('midiTopTxt').textContent='MIDI ✓';t.title='MIDI verbunden: '+ins.map(i=>i.name).join(', ')}else{t.classList.remove('on');$('midiTopTxt').textContent='MIDI verbinden';t.title=msg||'MIDI verbinden'}}
 async function midiConnect(){
  if(!navigator.requestMIDIAccess){midiUi(null,'Dieser Browser unterstützt kein Web MIDI. Nutze Chrome oder Edge am Computer.');return}
