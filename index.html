@@ -161,6 +161,12 @@ h2[data-all]:hover,h2.akh:hover,h2[data-ivall]:hover{text-decoration:underline d
 .prev{margin-top:16px;padding-top:12px;border-top:1px dashed var(--bd);color:var(--mut);font-size:.95rem;min-height:2.6rem}
 .prev b{color:var(--fg)}
 .row{display:flex;gap:10px;margin:14px 0;flex-wrap:wrap}
+.autoGrp{display:flex;flex:1;align-items:stretch;border:1px solid var(--bd);border-radius:12px;background:var(--card);overflow:hidden}
+.autoGrp #auto{flex:1;border:0;border-radius:0;background:transparent}
+.secSt{display:flex;align-items:center;border-left:1px solid var(--bd);background:var(--chip)}
+.secSt button{border:0;border-radius:0;background:transparent;color:var(--mut);align-self:stretch;min-width:42px;padding:0 10px;font-size:1.2rem;line-height:1}
+.secSt button:hover{color:var(--fg)}
+.secSt span{min-width:2.9em;text-align:center;font-size:.92rem;font-weight:600;color:var(--fg);font-variant-numeric:tabular-nums}
 button{font:inherit;border:1px solid var(--bd);background:var(--card);color:var(--fg);border-radius:12px;padding:12px 16px;cursor:pointer}
 button.main{background:var(--ac);color:var(--acfg);border-color:var(--ac);font-weight:600;flex:1}
 button.sec{flex:1}
@@ -298,7 +304,7 @@ tr.hl td{background:var(--chip);font-weight:700}
   <button class="sec" id="reveal">Lösung zeigen</button>
   <button class="main" id="next">Start</button>
 </div>
-<div class="row"><button class="sec" id="auto">▶ Automatik</button></div>
+<div class="row" id="autoRow"><div class="autoGrp"><button class="sec" id="auto">▶ Automatik</button><div class="secSt" role="group"><button type="button" id="secDn" title="Weniger Sekunden">−</button><span id="secLab" title="Pause in Sekunden, bevor die Lösung erscheint">4 s</span><button type="button" id="secUp" title="Mehr Sekunden">+</button></div></div></div>
 <div class="row"><button class="sec" id="raceBtn">⏱ Zeitrennen</button><button class="sec" id="hsBtn">🏆 Highscores</button></div>
 
 </div>
@@ -358,7 +364,7 @@ tr.hl td{background:var(--chip);font-weight:700}
 <label>Zeilenlänge (Akkorde) <input type="number" id="perRow" value="4" min="2" max="12"></label>
 <label><input type="checkbox" id="speak"> Ansage per Sprachausgabe</label>
 <label><input type="checkbox" id="showAns"> Lösung automatisch zeigen</label>
-<label>Automatik: Pause <input type="number" id="secs" value="6" min="2" max="30"> Sekunden</label>
+<label>Automatik: Pause <input type="number" id="secs" value="4" min="1" max="30"> Sekunden</label>
 <h2>Zeitrennen</h2>
 <label>Dauer <input type="number" id="raceSecs" value="60" min="5" max="600"> Sekunden</label>
 <div class="hint">Leertaste = Weiter, Enter = Lösung zeigen (bei aktiver Wiederholung = nächste Aufgabe). Ansage auf Deutsch: B♭ heißt „Bäs", B heißt „B".</div>
@@ -497,7 +503,7 @@ function reveal(a,st){if(!cur)return;if(cur.prog){cur.shown=(a===true||cur.step>
  $('staffSol').innerHTML=staff(t.map(x=>{const o=mkNote(60+x.rs+(x.off-0),map);o.col='#000';o.m=60+x.rs+x.off;const q=mkNote(o.m,map);q.col='#000';return q}));
  $('solWrap').style.display='block'}
 function stopAuto(){auto=false;clearTimeout(timer);$('auto').textContent='▶ Automatik'}
-function loop(){if(!auto)return;autoAdvance();const s=Math.max(2,+$('secs').value||6);
+function loop(){if(!auto)return;autoAdvance();const s=Math.max(1,+$('secs').value||4);
  timer=setTimeout(()=>{if(!auto)return;reveal(undefined,true);timer=setTimeout(loop,Math.min(2500,s*500))},s*1000)}
 $('next').onclick=()=>{stopAuto();next()};
 $('reveal').onclick=()=>reveal(true);
@@ -505,6 +511,12 @@ $('auto').onclick=()=>{if(race.on)return;if(auto){stopAuto();return}auto=true;$(
 document.addEventListener('keydown',e=>{if(e.target.tagName==='INPUT')return;
  if(e.code==='Space'){e.preventDefault();stopAuto();next()}else if(e.code==='Enter'){if(cur&&cur.rep&&cur.prog&&!cur.wander){stopAuto();next()}else reveal()}});
 $('rootless').onchange=evalHeld;$('fifth').onchange=evalHeld;
+/* Sekunden der Automatik direkt am Button einstellen (gleicher Wert wie in den Einstellungen) */
+const secsIn=$('secs'),secGet=()=>Math.min(30,Math.max(1,Math.round(+secsIn.value||4)));
+function secSync(){$('secLab').textContent=secGet()+' s'}
+$('secDn').onclick=()=>{secsIn.value=Math.max(1,secGet()-1);secSync()};
+$('secUp').onclick=()=>{secsIn.value=Math.min(30,secGet()+1);secSync()};
+['input','change'].forEach(ev=>secsIn.addEventListener(ev,secSync));secSync();
 
 /* MIDI */
 function onMidi(e){const[s,nt,v]=e.data,c=s&0xf0;if(c===0xB0&&nt===64){pianoSus(v>=64);return}if(c===0x90&&v>0){H.add(nt);pianoOn(nt,v)}else if(c===0x80||c===0x90){H.delete(nt);pianoOff(nt)}else return;if(c===0x90&&v>0){if(area==='scale')scaleNote(nt);else if(area==='sight')sightNote(nt)}else if(area==='scale'&&SKST[nt]){delete SKST[nt];if(SK&&SK.kind==='play')scShow()}evalHeld()}
@@ -631,7 +643,7 @@ function showTask(){const c=cur,d=$('deg');$('repBtn').classList.toggle('on',!!c
  else if(c.prog){d.style.fontSize='';d.innerHTML=c.wander?wanderHtml(c):tilesHtml(c);$('song').textContent=c.prog.line||(c.prog.ex?`${c.prog.n} · ${c.prog.s}`:`${c.prog.n} · z. B. in: ${c.prog.s}`);$('chord').style.fontSize=''}
  else{d.style.fontSize='';d.innerHTML=nextC?`<div class="pair"><div class="lab">Spiele diesen Akkord</div><div class="lab">Nächste</div><div class="kk big">${kkTxt(c)}</div><div class="kk sm">${kkTxt(nextC)}</div><div class="tile on"><span class="r">${tileTxt(c)}</span></div><div class="tile nx"><span class="r">${tileTxt(nextC)}</span></div></div>`:`<div class="pair" style="grid-template-columns:1fr"><div class="lab">Spiele diesen Akkord</div><div class="kk big">${kkTxt(c)}</div><div class="tile on"><span class="r">${tileTxt(c)}</span></div></div>`;$('song').textContent=c.akk?(c.inv!=null?`${POSL[c.inv]} · tiefster Ton: ${c.bassName}`:c.def[4]?'Terz, Septime und Extension genügen (Grundton und Quinte optional)':''):'';$('chord').style.fontSize=''}}
 function advanceStep(){const was=cur.step;pendingStep=false;cur.step++;cur.rev=false;solved=false;if(cur.vamp){$('prev').innerHTML='Vorheriger Akkord: '+cur.vc[was%2].name;say()}if(cur.wander){extendWander(cur);cur.key=cur.prog.ks[cur.step];cur.mode=cur.prog.md[cur.step];$('prev').innerHTML='Vorheriger Akkord: '+chordTok(cur.prog.ks[was],cur.prog.t[was]);say()}showTask();$('solWrap').style.display='none';evalHeld()}
-$('modeSel').onchange=()=>{gm=$('modeSel').value;jazzSevenths();$('ivRow').style.display=gm==='inter'?'flex':'none';$('progRow').style.display=gm==='verlauf'?'flex':'none';$('wdRow').style.display=gm==='wander'?'flex':'none';$('repBtn').style.display='none';$('repBtn').classList.remove('on');$('auto').style.display=gm==='wander'||gm==='vamp'?'none':'';$('dispRow').style.display=gm==='verlauf'||gm==='inter'||gm==='wander'?'flex':'none';$('how').textContent=({akk:'Spiele den angezeigten Akkord. Die Oktave ist egal.',stufen:'Spiele den Akkord auf der angezeigten Stufe der Tonart.',verlauf:'Spiele die Akkorde der Reihe nach, einen pro Kachel.',inter:'Spiele die Akkorde der Reihe nach. Die Grundtöne wandern um das gewählte Intervall.',wander:'Spiele die Akkorde der Reihe nach. Die Tonart wechselt fortlaufend, ohne Ende.',vamp:'Spiele die beiden Akkorde abwechselnd, so lange du willst.'})[gm]||'';$('diaRow').style.display=gm==='akk'||gm==='wander'||gm==='vamp'?'none':'';$('coptw').style.display=gm==='akk'||gm==='vamp'?'none':'';$('diaOnly').checked=DIA[gm];rebuildLists();stopAuto();cur=null;nextC=null;last='';pendingNext=pendingStep=false;$('key').textContent='–';$('key').style.display='';$('next').textContent='Start';$('deg').style.fontSize='';$('deg').textContent='Drück „Start"';$('song').textContent='';$('chord').textContent='';$('prev').textContent='';$('solWrap').style.display='none';applyView();evalHeld();next()};
+$('modeSel').onchange=()=>{gm=$('modeSel').value;jazzSevenths();$('ivRow').style.display=gm==='inter'?'flex':'none';$('progRow').style.display=gm==='verlauf'?'flex':'none';$('wdRow').style.display=gm==='wander'?'flex':'none';$('repBtn').style.display='none';$('repBtn').classList.remove('on');$('autoRow').style.display=gm==='wander'||gm==='vamp'?'none':'';$('dispRow').style.display=gm==='verlauf'||gm==='inter'||gm==='wander'?'flex':'none';$('how').textContent=({akk:'Spiele den angezeigten Akkord. Die Oktave ist egal.',stufen:'Spiele den Akkord auf der angezeigten Stufe der Tonart.',verlauf:'Spiele die Akkorde der Reihe nach, einen pro Kachel.',inter:'Spiele die Akkorde der Reihe nach. Die Grundtöne wandern um das gewählte Intervall.',wander:'Spiele die Akkorde der Reihe nach. Die Tonart wechselt fortlaufend, ohne Ende.',vamp:'Spiele die beiden Akkorde abwechselnd, so lange du willst.'})[gm]||'';$('diaRow').style.display=gm==='akk'||gm==='wander'||gm==='vamp'?'none':'';$('coptw').style.display=gm==='akk'||gm==='vamp'?'none':'';$('diaOnly').checked=DIA[gm];rebuildLists();stopAuto();cur=null;nextC=null;last='';pendingNext=pendingStep=false;$('key').textContent='–';$('key').style.display='';$('next').textContent='Start';$('deg').style.fontSize='';$('deg').textContent='Drück „Start"';$('song').textContent='';$('chord').textContent='';$('prev').textContent='';$('solWrap').style.display='none';applyView();evalHeld();next()};
 $('perRow').onchange=()=>{if(cur&&cur.prog)showTask()};
 const SCM=[0,2,4,5,7,9,11],SCN=[0,2,3,5,7,8,10],pcMemo={};
 function tokDia(t,minor){const k=t+(minor?'m':'M');if(k in pcMemo)return pcMemo[k];
@@ -1452,6 +1464,10 @@ Lage¦Position¦Posición
 egal¦any¦cualquiera
 Diese Seite funktioniert am besten am Computer.¦This site works best on a computer.¦Este sitio funciona mejor en un ordenador.
 Du brauchst ein MIDI-Keyboard und am besten Chrome oder Edge.¦You need a MIDI keyboard and, ideally, Chrome or Edge.¦Necesitas un teclado MIDI y, a ser posible, Chrome o Edge.
+Ohne MIDI-Keyboard probierst du am besten den Automatik-Modus: Er zeigt die Lösung nach ein paar Sekunden von selbst.¦Without a MIDI keyboard, try Auto mode: it shows the answer by itself after a few seconds.¦Sin teclado MIDI, prueba el modo automático: muestra la solución por sí solo tras unos segundos.
+Weniger Sekunden¦Fewer seconds¦Menos segundos
+Mehr Sekunden¦More seconds¦Más segundos
+Pause in Sekunden, bevor die Lösung erscheint¦Pause in seconds before the answer appears¦Pausa en segundos antes de mostrar la solución
 Verbinde dein MIDI-Keyboard über das Symbol oben rechts.¦Connect your MIDI keyboard using the icon at the top right.¦Conecta tu teclado MIDI con el icono de arriba a la derecha.
 Spiele den angezeigten Akkord. Die Oktave ist egal.¦Play the chord shown. The octave does not matter.¦Toca el acorde mostrado. La octava no importa.
 Spiele den Akkord auf der angezeigten Stufe der Tonart.¦Play the chord on the scale degree shown, in the key shown.¦Toca el acorde del grado mostrado en la tonalidad indicada.
@@ -1698,7 +1714,7 @@ evalHeld();
 const IS_MOB=(()=>{try{return /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent)||(window.matchMedia&&matchMedia('(pointer:coarse)').matches&&innerWidth<900)}catch(e){return false}})();
 if(IS_MOB&&!navigator.requestMIDIAccess)document.body.classList.add('nomidiapi');
 try{const mob=IS_MOB;
- if(mob&&localStorage.getItem('pt-mobile-note')!=='1')setTimeout(()=>{const d=document.createElement('div');d.id='mobNote';d.setAttribute('role','dialog');d.innerHTML='<div class="mn"><div class="mt">Diese Seite funktioniert am besten am Computer.</div><div class="ms">Du brauchst ein MIDI-Keyboard und am besten Chrome oder Edge.</div><button type="button" id="mobOk">OK</button></div>';document.body.appendChild(d);$('mobOk').onclick=()=>{d.remove();try{localStorage.setItem('pt-mobile-note','1')}catch(e){}}},700)}catch(e){}
+ if(mob&&localStorage.getItem('pt-mobile-note')!=='1')setTimeout(()=>{const d=document.createElement('div');d.id='mobNote';d.setAttribute('role','dialog');d.innerHTML='<div class="mn"><div class="mt">Diese Seite funktioniert am besten am Computer.</div><div class="ms">Du brauchst ein MIDI-Keyboard und am besten Chrome oder Edge.</div><div class="ms">Ohne MIDI-Keyboard probierst du am besten den Automatik-Modus: Er zeigt die Lösung nach ein paar Sekunden von selbst.</div><button type="button" id="mobOk">OK</button></div>';document.body.appendChild(d);$('mobOk').onclick=()=>{d.remove();try{localStorage.setItem('pt-mobile-note','1')}catch(e){}}},700)}catch(e){}
 </script>
 </body>
 </html>
