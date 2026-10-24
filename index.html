@@ -27,7 +27,7 @@ main{min-width:0}
 .shell.nolb{grid-template-columns:minmax(0,920px)}
 #leftBar{position:sticky;top:12px;max-height:calc(100vh - 24px);overflow:auto;padding:14px;text-align:left}
 #leftBar h2{margin-top:12px}
-@media(max-width:1000px){.shell,.shell.nolb{grid-template-columns:minmax(0,1fr)}#leftBar{order:2;position:static;max-height:none}.shell.learn #leftBar{order:-1}}
+@media(max-width:1000px){.shell,.shell.nolb{grid-template-columns:minmax(0,1fr)}main{display:contents}main>.top,main>details{min-width:0}main>details{margin-top:0}main>.top{order:0}#leftBar{order:1;position:static;max-height:none}main>#settings{order:2}main>#viewSet{order:3}.shell.learn #leftBar{order:-1}}
 .top.solo{grid-template-columns:1fr}
 .sw{display:inline-flex;align-items:center;gap:10px;cursor:pointer;user-select:none;font-weight:700;margin:0}
 .sw input{display:none}
@@ -360,7 +360,8 @@ tr.hl td{background:var(--chip);font-weight:700}
 <div id="chordSet">
 <label><input type="checkbox" id="rootless"> Grundton darf fehlen (Rootless)</label>
 <label><input type="checkbox" id="fifth"> Quinte darf fehlen</label>
-<label><input type="checkbox" id="autoNext" checked> Bei richtigem Akkord weiter, sobald ich alle Tasten loslasse</label>
+<label>Weiter bei richtigem Akkord <select id="nextMode"><option value="hold">nach Halten des Akkords</option><option value="rel">sobald ich alle Tasten loslasse</option><option value="off">nur mit Weiter / Leertaste</option></select></label>
+<label id="holdRow">Haltezeit <input type="number" id="holdSecs" value="1" min="0.5" max="10" step="0.5"> Sekunden</label>
 <label>Zeilenlänge (Akkorde) <input type="number" id="perRow" value="4" min="2" max="12"></label>
 <label><input type="checkbox" id="speak"> Ansage per Sprachausgabe</label>
 <label><input type="checkbox" id="showAns"> Lösung automatisch zeigen</label>
@@ -444,21 +445,28 @@ function staff(notes){const y=i=>95-(i-30)*5;let s='<svg class="staff" viewBox="
 /* Spiel-Auswertung */
 let cur=null,last='',n=0,timer=null,auto=false,solved=false,pendingNext=false,pendingStep=false,gm='akk',nextC=null,okCount=0,race={on:false,end:0,dur:60,score:0};const H=new Set();
 function expMap(){const m={};if(cur)curTones().forEach(t=>m[t.pc]=[t.l,t.a]);return m}
-function evalHeldCore(){if(area==='sight')return;if(area==='scale'){const mp={};if(SK)SK.tones.forEach(t=>mp[t.pc]=[t.l,t.a]);$('staffPlay').innerHTML=staff([...H].sort((a,b)=>a-b).map(m=>{const x=mkNote(m,mp);x.col='#000';return x}));$('fb').textContent='';return}const map=expMap(),held=[...H].sort((a,b)=>a-b),pcs=new Set(held.map(m=>m%12));
+/* Weiter nach Halten: richtiger Akkord wird X Sekunden gehalten (oder früher losgelassen) -> nächste Aufgabe/Schritt */
+let holdT=null;const IGN=new Set();
+const nextMode=()=>$('nextMode').value;
+function holdUi(){$('holdRow').style.display=nextMode()==='hold'?'':'none'}
+function holdClear(){if(holdT){clearTimeout(holdT);holdT=null}}
+function holdArm(){if(holdT||race.on||nextMode()!=='hold'||!(pendingStep||pendingNext))return;const sec=Math.min(10,Math.max(.5,+$('holdSecs').value||1));holdT=setTimeout(()=>{holdT=null;holdFire()},sec*1000)}
+function holdFire(){if(!cur||!solved||!H.size)return;IGN.clear();H.forEach(m=>IGN.add(m));if(pendingStep){pendingStep=false;advanceStep()}else if(pendingNext){pendingNext=false;stopAuto();autoAdvance()}}
+function evalHeldCore(){if(area==='sight')return;if(area==='scale'){const mp={};if(SK)SK.tones.forEach(t=>mp[t.pc]=[t.l,t.a]);$('staffPlay').innerHTML=staff([...H].sort((a,b)=>a-b).map(m=>{const x=mkNote(m,mp);x.col='#000';return x}));$('fb').textContent='';return}const map=expMap(),held=[...H].filter(m=>!IGN.has(m)).sort((a,b)=>a-b),pcs=new Set(held.map(m=>m%12));
  const ex=cur?curTones():[],allow=new Set(ex.map(t=>t.pc));
  $('staffPlay').innerHTML=staff(held.map(m=>{const x=mkNote(m,map);x.col=cur?(allow.has(x.pc)?'#15803d':'#dc2626'):'#000';return x}));
  const fb=$('fb');fb.className='fb';
  if(!cur){fb.textContent='Drück zuerst „Start"';return}
- if(!held.length){if(pendingStep){pendingStep=false;advanceStep();return}if(pendingNext){pendingNext=false;if(solved){stopAuto();autoAdvance()}return}if(!solved)fb.textContent='';return}
+ if(!held.length){holdClear();if(pendingStep){pendingStep=false;advanceStep();return}if(pendingNext){pendingNext=false;if(solved){stopAuto();autoAdvance()}return}if(!solved)fb.textContent='';return}
  const need=new Set(ex.need||ex.filter(t=>!($('rootless').checked&&t.off%12===0)).map(t=>t.pc));
  if(!ex.need&&$('fifth').checked){const f5=ex.find(t=>t.off%12===7);if(f5&&need.size>2&&!(cur.akk&&cur.inv!=null&&cur.bassPc===f5.pc))need.delete(f5.pc)}
  const miss=[...need].filter(p=>!pcs.has(p)),bad=[...pcs].filter(p=>!allow.has(p));
  const bassOk=!(cur.akk&&cur.inv!=null)||held[0]%12===cur.bassPc;
  if(!miss.length&&!bad.length&&bassOk){fb.textContent='✓ Richtig!';fb.className='fb ok';
-  if(!solved){solved=true;if(cur.vamp||cur.prog&&(cur.wander||cur.step<cur.prog.t.length-1)){if(cur.wander||cur.vamp){okCount++;if(race.on)race.score++;cntTxt()}pendingStep=true;reveal()}else{okCount++;if(race.on)race.score++;cntTxt();if(!race.on)reveal();if($('autoNext').checked||race.on)pendingNext=true}}}
- else if(bad.length){fb.textContent='✗ Falscher Ton: '+bad.map(p=>DEF[p][0]+acc(DEF[p][1])).join(', ');fb.className='fb bad'}
- else if(!miss.length){fb.textContent='Der tiefste Ton muss '+cur.bassName+' sein';fb.className='fb bad'}
- else fb.textContent=`Noch ${miss.length} ${miss.length>1?'Töne':'Ton'} fehlen`}
+  if(!solved){solved=true;if(cur.vamp||cur.prog&&(cur.wander||cur.step<cur.prog.t.length-1)){if(cur.wander||cur.vamp){okCount++;if(race.on)race.score++;cntTxt()}pendingStep=true;reveal()}else{okCount++;if(race.on)race.score++;cntTxt();if(!race.on)reveal();if(nextMode()!=='off'||race.on)pendingNext=true}}holdArm()}
+ else if(bad.length){holdClear();fb.textContent='✗ Falscher Ton: '+bad.map(p=>DEF[p][0]+acc(DEF[p][1])).join(', ');fb.className='fb bad'}
+ else if(!miss.length){holdClear();fb.textContent='Der tiefste Ton muss '+cur.bassName+' sein';fb.className='fb bad'}
+ else{holdClear();fb.textContent=`Noch ${miss.length} ${miss.length>1?'Töne':'Ton'} fehlen`}}
 
 function evalHeld(){evalHeldCore();chKb()}
 /* Klaviatur unter der Aufgabe: zeigt gedrückte Töne, nach Lösung oder Auflösung alle Akkordtöne */
@@ -466,7 +474,7 @@ const KB={cur:null,d:null};
 function chKb(){const el=$('solKb');if(area!=='chord'||LEARN.chord||!cur){el.innerHTML='';return}
  const ts=curTones();let dl=degLabels(ts);if(cur.akk&&cur.inv>0){const bl=degLabels(tonesChord(cur.key,cur.def));dl=bl.slice(cur.inv).concat(bl.slice(0,cur.inv))}
  const rp=ts[0].rs,m={};let mx=0;ts.forEach(t=>{mx=Math.max(mx,rp+t.off)});const ctr=ts.reduce((a,t)=>a+rp+t.off,0)/ts.length,top=Math.max(2,Math.ceil((mx+1)/12))*12;
- const allow=new Set(ts.map(t=>t.pc)),hm=[...H].sort((a,b)=>a-b),pcOf=mn=>((mn%12)+12)%12,tix=pc=>ts.findIndex(x=>x.pc===pc);
+ const allow=new Set(ts.map(t=>t.pc)),hm=[...H].filter(m=>!IGN.has(m)).sort((a,b)=>a-b),pcOf=mn=>((mn%12)+12)%12,tix=pc=>ts.findIndex(x=>x.pc===pc);
  /* gehaltene Töne dort zeigen, wo sie wirklich liegen: relativ zum tiefsten gehaltenen richtigen Ton */
  if(KB.cur!==cur){KB.cur=cur;KB.d=null}
  for(const mn of hm){const i=tix(pcOf(mn));if(i>=0){KB.d=rp+ts[i].off-mn;break}}
@@ -511,6 +519,7 @@ $('auto').onclick=()=>{if(race.on)return;if(auto){stopAuto();return}auto=true;$(
 document.addEventListener('keydown',e=>{if(e.target.tagName==='INPUT')return;
  if(e.code==='Space'){e.preventDefault();stopAuto();next()}else if(e.code==='Enter'){if(cur&&cur.rep&&cur.prog&&!cur.wander){stopAuto();next()}else reveal()}});
 $('rootless').onchange=evalHeld;$('fifth').onchange=evalHeld;
+$('nextMode').onchange=()=>{holdUi();holdClear();evalHeld()};holdUi();
 /* Sekunden der Automatik direkt am Button einstellen (gleicher Wert wie in den Einstellungen) */
 const secsIn=$('secs'),secGet=()=>Math.min(30,Math.max(1,Math.round(+secsIn.value||4)));
 function secSync(){$('secLab').textContent=secGet()+' s'}
@@ -519,7 +528,7 @@ $('secUp').onclick=()=>{secsIn.value=Math.min(30,secGet()+1);secSync()};
 ['input','change'].forEach(ev=>secsIn.addEventListener(ev,secSync));secSync();
 
 /* MIDI */
-function onMidi(e){const[s,nt,v]=e.data,c=s&0xf0;if(c===0xB0&&nt===64){pianoSus(v>=64);return}if(c===0x90&&v>0){H.add(nt);pianoOn(nt,v)}else if(c===0x80||c===0x90){H.delete(nt);pianoOff(nt)}else return;if(c===0x90&&v>0){if(area==='scale')scaleNote(nt);else if(area==='sight')sightNote(nt)}else if(area==='scale'&&SKST[nt]){delete SKST[nt];if(SK&&SK.kind==='play')scShow()}evalHeld()}
+function onMidi(e){const[s,nt,v]=e.data,c=s&0xf0;if(c===0xB0&&nt===64){pianoSus(v>=64);return}if(c===0x90&&v>0){H.add(nt);IGN.delete(nt);pianoOn(nt,v)}else if(c===0x80||c===0x90){H.delete(nt);IGN.delete(nt);pianoOff(nt)}else return;if(c===0x90&&v>0){if(area==='scale')scaleNote(nt);else if(area==='sight')sightNote(nt)}else if(area==='scale'&&SKST[nt]){delete SKST[nt];if(SK&&SK.kind==='play')scShow()}evalHeld()}
 function midiUi(ins,msg){const t=$('midiTop'),ok=!!(ins&&ins.length);document.body.classList.toggle('nomidi',!ok);if(!ok)document.querySelectorAll('.midihint .mh-t').forEach(e=>e.textContent=msg||'Verbinde dein MIDI-Keyboard über das Symbol oben rechts.');if(ins&&ins.length){t.classList.add('on');$('midiTopTxt').textContent='MIDI ✓';t.title='MIDI verbunden: '+ins.map(i=>i.name).join(', ')}else{t.classList.remove('on');$('midiTopTxt').textContent='MIDI verbinden';t.title=msg||'MIDI verbinden'}}
 async function midiConnect(){
  if(!navigator.requestMIDIAccess){midiUi(null,'Dieser Browser unterstützt kein Web MIDI. Nutze Chrome oder Edge am Computer.');return}
@@ -638,7 +647,7 @@ function jazzSevenths(){if(triManual)return;const back=()=>{TRI=true;triAuto=fal
  if(jazz&&TRI){TRI=false;triAuto=true;triBuild();rebuildLists()}else if(!jazz&&triAuto&&!TRI)back()}
 function refreshNext(){jazzSevenths();if(area==='scale'){if(SK)scNew();return}nextC=null;if(cur)next(true)}
 function emptyMsg(){const nk=!sel.maj.size&&!sel.min.size;if(gm==='akk')return'Wähl mindestens eine Akkordart und einen Grundton';if(gm==='stufen')return nk?'Wähl mindestens eine Tonart':'Wähl mindestens eine Stufe';if(nk)return'Wähl mindestens eine Tonart';return $('diaOnly').checked?'Nichts Diatonisches gefunden: Haken oder Taktbereich ändern':'Wähl mindestens eine Tonart'}
-function showTask(){const c=cur,d=$('deg');$('repBtn').classList.toggle('on',!!c.rep);$('repBtn').setAttribute('aria-pressed',String(!!c.rep));$('repBtn').style.display=c.prog&&!c.wander?'':'none';$('key').textContent=kt(c);$('key').style.display=c.prog?'':'none';
+function showTask(){holdClear();const c=cur,d=$('deg');$('repBtn').classList.toggle('on',!!c.rep);$('repBtn').setAttribute('aria-pressed',String(!!c.rep));$('repBtn').style.display=c.prog&&!c.wander?'':'none';$('key').textContent=kt(c);$('key').style.display=c.prog?'':'none';
  if(c.vamp){d.style.fontSize='';d.innerHTML=vampHtml(c);$('song').textContent=`${c.vc[0].name} ↔ ${c.vc[1].name} · endlos`;$('chord').style.fontSize=''}
  else if(c.prog){d.style.fontSize='';d.innerHTML=c.wander?wanderHtml(c):tilesHtml(c);$('song').textContent=c.prog.line||(c.prog.ex?`${c.prog.n} · ${c.prog.s}`:`${c.prog.n} · z. B. in: ${c.prog.s}`);$('chord').style.fontSize=''}
  else{d.style.fontSize='';d.innerHTML=nextC?`<div class="pair"><div class="lab">Spiele diesen Akkord</div><div class="lab">Nächste</div><div class="kk big">${kkTxt(c)}</div><div class="kk sm">${kkTxt(nextC)}</div><div class="tile on"><span class="r">${tileTxt(c)}</span></div><div class="tile nx"><span class="r">${tileTxt(nextC)}</span></div></div>`:`<div class="pair" style="grid-template-columns:1fr"><div class="lab">Spiele diesen Akkord</div><div class="kk big">${kkTxt(c)}</div><div class="tile on"><span class="r">${tileTxt(c)}</span></div></div>`;$('song').textContent=c.akk?(c.inv!=null?`${POSL[c.inv]} · tiefster Ton: ${c.bassName}`:c.def[4]?'Terz, Septime und Extension genügen (Grundton und Quinte optional)':''):'';$('chord').style.fontSize=''}}
@@ -1334,7 +1343,11 @@ Lösung¦Solution¦Solución
 MIDI verbinden¦Connect MIDI¦Conectar MIDI
 Grundton darf fehlen (Rootless)¦Root may be omitted (rootless)¦La fundamental puede omitirse (rootless)
 Quinte darf fehlen¦Fifth may be omitted¦La quinta puede omitirse
-Bei richtigem Akkord weiter, sobald ich alle Tasten loslasse¦After a correct chord, move on as soon as I release all keys¦Tras un acorde correcto, pasar al siguiente en cuanto suelte todas las teclas
+Weiter bei richtigem Akkord¦Advance on a correct chord¦Avanzar con un acorde correcto
+nach Halten des Akkords¦after holding the chord¦al mantener el acorde
+sobald ich alle Tasten loslasse¦as soon as I release all keys¦en cuanto suelte todas las teclas
+nur mit Weiter / Leertaste¦only with Next / space bar¦solo con Siguiente / barra espaciadora
+Haltezeit¦Hold time¦Tiempo de pulsación
 Einstellungen¦Settings¦Ajustes
 Zeilenlänge (Akkorde)¦Row length (chords)¦Longitud de fila (acordes)
 Ansage per Sprachausgabe¦Spoken announcements¦Anuncio por voz
