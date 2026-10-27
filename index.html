@@ -978,7 +978,7 @@ function scShow(){const s=SK;if(!s)return;$('scHow').textContent=s.kind==='play'
  $('scTiles').innerHTML=`<div style="overflow-x:auto">${svg}</div>`;$('scPair').innerHTML=s.kind==='play'&&SKN?`<div class="pair sc"><div class="lab hid">·</div><div class="lab">Nächste</div><div class="kk big">${s.root}</div><div class="kk sm">${SKN.root}</div><div class="tile on"><span class="r">${s.ty.n}</span></div><div class="tile nx"><span class="r">${SKN.ty.n}</span></div></div>`:`<div class="pair sc" style="grid-template-columns:1fr"><div class="kk big">${s.root}</div><div class="tile on"><span class="r">${s.kind==='play'?s.ty.n:'Welche Skala ist das?'}</span></div></div>`;
  const o=$('scOpts');o.innerHTML='';
  if(s.kind==='name')s.opts.forEach(n=>{const b=document.createElement('button');b.textContent=n;b.className='sec'+(s.done&&n===s.ty.n?' good':s.wrong&&s.wrong.includes(n)?' wrong':'');b.onclick=()=>scAnswer(n);o.appendChild(b)})}
-const LN={pc:0,scale:0},LC={root:'C',mode:'Dur',view:'one',root1:'C',q:'maj7',inv:new Set([0])};
+const LN={pc:0,scale:0},LC={root:'C',mode:'Dur',view:'one',root1:'C',q:'maj7',inv:new Set([0,1,2,3])};
 function lnBuild(){$('lnRoots').innerHTML=ROOTLBL.map((l,i)=>`<button type="button" class="chip${LN.pc===i?' on':''}" data-r="${i}">${l}</button>`).join('');
  let i=0;$('lnTypes').innerHTML=SCG.map(([g,l])=>`<h2>${g}</h2><div class="chips">${l.map(x=>{const k=i++;return`<button type="button" class="chip${LN.scale===k?' on':''}" data-s="${k}">${x[0]}</button>`}).join('')}</div>`).join('')}
 $('lbScaleL').onclick=e=>{const b=e.target.closest('[data-r],[data-s]');if(!b)return;if(b.dataset.r!==undefined)LN.pc=+b.dataset.r;else LN.scale=+b.dataset.s;lnBuild();learnRender()};
