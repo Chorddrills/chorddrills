@@ -804,7 +804,7 @@ function scNote(m){const s=SK;if(area!=='scale'||!s||s.kind!=='play'||s.done)ret
  if(m%12===exp){if(s.hand==='B'){s.pend=s.pend||[];if(s.pend.some(x=>Math.abs(x-m)<12))return;SKST[m]='ok';s.pend.push(m);if(s.pend.length<2){$('scFb').textContent='Jetzt die zweite Hand: derselbe Ton in einer anderen Oktave';$('scFb').className='fb';scShow();return}s.pend=[]}
   SKST[m]='ok';s.step++;s.bad=-1;if(s.step===s.seq.length){s.done=true;if(!s.errs){okCount++;cntTxt();}
   $('scFb').textContent=s.errs?`Geschafft, aber mit ${s.errs} Fehler${s.errs>1?'n':''}`:'✓ Geschafft, fehlerfrei!';$('scFb').className='fb '+(s.errs?'bad':'ok');
-  if($('scAuto').checked)setTimeout(()=>{if(SK===s)scNew()},550)}else{$('scFb').textContent='';$('scFb').className='fb'}}
+  if($('scAuto').checked){const mg=$('scFb').textContent,cl=$('scFb').className;scNew();$('scFb').textContent=mg;$('scFb').className=cl}}else{$('scFb').textContent='';$('scFb').className='fb'}}
  else{SKST[m]='bad';s.pend=[];s.errs++;s.bad=s.step;const n=m%12;$('scFb').textContent='✗ Falscher Ton: '+(DEF[n][0]+acc(DEF[n][1]));$('scFb').className='fb bad'}
  scShow()}
 const scaleNote=scNote;
