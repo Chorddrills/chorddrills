@@ -72,6 +72,8 @@ h1.logo{margin:4px 0 12px;line-height:1}
 .tile.on{border-color:var(--ac);box-shadow:0 0 0 1px var(--ac)}
 .ch{display:inline-flex;flex-direction:column;align-items:center;line-height:1.15}
 .ch .r{font-size:clamp(.95rem,3.8vw,1.3rem);font-weight:700;white-space:nowrap}
+.jzw{white-space:nowrap}
+sup.jzs{font-size:.62em;font-weight:600;vertical-align:baseline;position:relative;top:-.55em;margin-left:1px;line-height:0}
 .ch sup{font-size:.62em;font-weight:600;vertical-align:baseline;position:relative;top:-.55em;margin-left:1px}
 .ch .nm{font-size:.72rem;color:var(--mut);font-weight:400;white-space:nowrap}
 .ch.cur .r{color:var(--ac)}
@@ -179,6 +181,16 @@ h2{font-size:.85rem;color:var(--mut);margin:14px 0 6px;font-weight:600}
 label{display:flex;align-items:center;gap:8px;margin:8px 0}
 input[type=number]{width:64px;font:inherit;padding:4px 6px;border-radius:8px;border:1px solid var(--bd);background:var(--bg);color:var(--fg)}
 .hint{color:var(--mut);font-size:.8rem;margin-top:10px}
+.jzRow{margin:0 0 14px;padding-bottom:12px;border-bottom:1px solid var(--bd)}
+.swrow{display:flex;align-items:center;gap:10px;cursor:pointer}
+.swrow input{position:absolute;opacity:0;width:0;height:0}
+.swl{font-weight:600}
+.jzTrk{position:relative;flex:none;width:42px;height:24px;border-radius:12px;background:var(--bd);transition:background .2s}
+.jzTrk::after{content:'';position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.35);transition:left .2s}
+.swrow input:checked+.jzTrk{background:var(--ac)}
+.swrow input:checked+.jzTrk::after{left:21px}
+.swrow input:focus-visible+.jzTrk{outline:2px solid var(--ac);outline-offset:2px}
+.swt{color:var(--mut);font-size:.85rem;min-width:2.2em}
 .pair.sc .tile.on .r{font-size:1.9rem}
 .pair.sc .tile.nx .r{font-size:1.15rem}
 .card.task{border:1.5px solid var(--bd);border-top:3px solid var(--ac);box-shadow:0 6px 22px rgba(0,0,0,.10)}
@@ -265,7 +277,7 @@ tr.hl td{background:var(--chip);font-weight:700}
 <div class="row" style="gap:6px"><button type="button" class="sec" id="vDown">▼ Halbton tiefer</button><button type="button" class="sec" id="vUp">▲ Halbton höher</button></div>
 <h2>Beispiele</h2><select id="vEx" style="width:100%;padding:8px;border-radius:10px"></select>
 <div class="hint" style="margin-top:10px">Wähle zwei Akkorde. Sie werden abwechselnd gespielt, ohne Ende. Unter den Kacheln siehst du, wie sie zueinander stehen könnten.</div></div>
-<div id="lbSight" style="display:none"><h2 style="margin-top:0">Schlüssel und Hände</h2><div class="chips" id="srHands"></div>
+<div id="lbSight" data-nojz style="display:none"><h2 style="margin-top:0">Schlüssel und Hände</h2><div class="chips" id="srHands"></div>
 <div id="srChordBlk" style="display:none"><div id="srCF"></div><label style="margin-top:8px"><input type="checkbox" id="srInv"> Umkehrungen erlauben</label></div>
 <div id="srIntBlk" style="display:none"><h2 data-ivall="1" title="Alle oder keine auswählen">Intervalle</h2><div class="chips" id="srIV"></div><h2>Anordnung</h2><div class="chips" id="srIA"></div></div>
 <h2>Tonart (Vorzeichen)</h2><div class="chips" id="srKeys"></div>
@@ -338,7 +350,7 @@ tr.hl td{background:var(--chip);font-weight:700}
 <div class="hint">Skala spielen: Töne einzeln der Reihe nach spielen (Oktavlage egal). Fingersätze gibt es für Ionisch, Äolisch, Harmonisch und Melodisch Moll, für die übrigen Skalen nicht. Der Zähler ist derselbe wie bei den Akkorden.</div>
 </details>
 </div>
-<div id="sightCol" style="display:none">
+<div id="sightCol" data-nojz style="display:none">
 <div class="msel"><select id="srMode"><option value="music">Modus: Musikalisch</option><option value="notes">Modus: Zufällige Noten</option><option value="chords">Modus: Akkorde lesen</option><option value="intervals">Modus: Intervalle lesen</option><option value="mixed">Modus: Alles gemischt</option></select></div>
 <div class="card task">
   <div class="midihint" role="button" tabindex="0"><span class="mh-t">Verbinde dein MIDI-Keyboard über das Symbol oben rechts.</span></div>
@@ -357,11 +369,13 @@ tr.hl td{background:var(--chip);font-weight:700}
 
 <details id="settings">
 <summary>Einstellungen</summary>
+<div class="jzRow" data-nojz><label class="swrow"><span class="swl">Jazz Akkordsymbole</span><input type="checkbox" id="jazzSym" role="switch"><span class="jzTrk" aria-hidden="true"></span><span class="swt" id="jazzSymT">Aus</span></label><div class="hint">Zeigt Akkorde als CΔ7, C−7, Cø7 statt Cmaj7, Cm7, Cm7♭5.</div></div>
 <div id="chordSet">
 <label><input type="checkbox" id="rootless"> Grundton darf fehlen (Rootless)</label>
 <label><input type="checkbox" id="fifth"> Quinte darf fehlen</label>
 <label>Weiter bei richtigem Akkord <select id="nextMode"><option value="hold">nach Halten des Akkords</option><option value="rel">sobald ich alle Tasten loslasse</option><option value="off">nur mit Weiter / Leertaste</option></select></label>
 <label id="holdRow">Haltezeit <input type="number" id="holdSecs" value="2" min="0.5" max="10" step="0.5"> Sekunden</label>
+<div class="hint" id="nextHint" style="margin-top:2px"></div>
 <label>Zeilenlänge (Akkorde) <input type="number" id="perRow" value="4" min="2" max="12"></label>
 <label><input type="checkbox" id="speak"> Ansage per Sprachausgabe</label>
 <label><input type="checkbox" id="showAns"> Lösung automatisch zeigen</label>
@@ -439,7 +453,12 @@ function staff(notes){const y=i=>95-(i-30)*5;let s='<svg class="staff" viewBox="
   for(let e=16;e>=n.idx;e-=2)lg(e);
   s+=g('n',cx-6,y(n.idx),n.col);
   /* Vorzeichen links vom ganzen Block, bei engen Abständen gestaffelt */
-  if(n.a){let ac=0;while(accs.some(q=>q.c===ac&&Math.abs(q.idx-n.idx)<6))ac++;accs.push({c:ac,idx:n.idx});s+=g(n.a>0?'sh':'fl',(n.a>0?89:93)-11*ac,y(n.idx),n.col)}});
+  if(n.a){const dbl=Math.abs(n.a)>=2;let ac=0;while(accs.some(q=>(q.c===ac||dbl&&q.c===ac+1)&&Math.abs(q.idx-n.idx)<6))ac++;accs.push({c:ac,idx:n.idx});if(dbl&&n.a<0)accs.push({c:ac+1,idx:n.idx});
+   const ax=(n.a>0?89:93)-11*ac,yy=y(n.idx);
+   if(n.a===-1)s+=g('fl',ax,yy,n.col);else if(n.a===1)s+=g('sh',ax,yy,n.col);
+   /* Doppel-B: zwei B nebeneinander; Doppelkreuz: kleines x */
+   else if(n.a<=-2)s+=g('fl',ax,yy,n.col)+g('fl',ax-8,yy,n.col);
+   else s+=`<path d="M${ax+1},${yy-4} L${ax+8},${yy+3} M${ax+8},${yy-4} L${ax+1},${yy+3}" stroke="${n.col}" stroke-width="2.6" stroke-linecap="round"/>`}});
  return s+'</svg>'}
 
 /* Spiel-Auswertung */
@@ -448,13 +467,14 @@ function expMap(){const m={};if(cur)curTones().forEach(t=>m[t.pc]=[t.l,t.a]);ret
 /* Weiter nach Halten: richtiger Akkord wird X Sekunden gehalten (oder früher losgelassen) -> nächste Aufgabe/Schritt */
 let holdT=null;const IGN=new Set();
 const nextMode=()=>$('nextMode').value;
-function holdUi(){$('holdRow').style.display=nextMode()==='hold'?'':'none'}
+const NEXTH={hold:'Weiter nach der Haltezeit oder sobald du loslässt. Spielst du schon den nächsten Akkord an, geht es sofort weiter.',rel:'Weiter erst, wenn alle Tasten losgelassen sind. Gut für Arpeggios.',off:'Weiter nur mit dem Weiter-Knopf oder der Leertaste.'};
+function holdUi(){$('holdRow').style.display=nextMode()==='hold'?'':'none';$('nextHint').textContent=NEXTH[nextMode()]}
 function holdClear(){if(holdT){clearTimeout(holdT);holdT=null}}
 function holdArm(){if(holdT||nextMode()!=='hold'||!(pendingStep||pendingNext))return;const sec=Math.min(10,Math.max(.5,+$('holdSecs').value||2));holdT=setTimeout(()=>{holdT=null;holdFire()},sec*1000)}
 function holdFire(){if(!cur||!solved||!H.size)return;IGN.clear();H.forEach(m=>IGN.add(m));if(pendingStep){pendingStep=false;advanceStep()}else if(pendingNext){pendingNext=false;stopAuto();autoAdvance()}}
 /* Nach dem richtigen Akkord: die nächste gedrückte Taste schaltet weiter und zählt schon für die neue Aufgabe */
 let solvedAt=0;const CHAIN_GRACE=600;
-function chainAdv(nt){if(!cur||area==='sight'||area==='scale'||!solved||!(pendingStep||pendingNext)||!H.size||H.has(nt))return;
+function chainAdv(nt){if(nextMode()!=='hold'||!cur||area==='sight'||area==='scale'||!solved||!(pendingStep||pendingNext)||!H.size||H.has(nt))return;
  /* Ton, der zum aktuellen Akkord gehört (zum Beispiel die Bassnote der linken Hand), kommt kurz nach dem Lösen noch dazu: gehört zum selben Akkord */
  if(Date.now()-solvedAt<CHAIN_GRACE&&curTones().some(t=>t.pc===((nt%12)+12)%12))return;
  IGN.clear();H.forEach(m=>IGN.add(m));holdClear();if(pendingStep){pendingStep=false;advanceStep()}else{pendingNext=false;stopAuto();autoAdvance()}}
@@ -711,8 +731,8 @@ function vampInit(){['vA','vB'].forEach(id=>$(id).innerHTML=VR.map(r=>`<option v
 ['vAq','vBq'].forEach(id=>$(id).innerHTML=CHQ.map(d=>`<option value="${d[0]}">${d[2]||'Dur'}</option>`).join(''));
 $('vEx').innerHTML='<option value="">Beispiele …</option>'+VEX.map((e,i)=>`<option value="${i}">${vnm(e[0],e[1])} ↔ ${vnm(e[2],e[3])} · ${e[4]}</option>`).join('');
 $('vA').value='D';$('vAq').value='m7';$('vB').value='G';$('vBq').value='7'}
-const FAMQ={maj:'M',maj7:'M',maj9:'M',maj7s11:'M',maj13:'M','6':'M',m:'m',m7:'m',m9:'m',m11:'m',m13:'m',m6:'m','7':'D','9':'D','7b9':'D','7s9':'D','7s11':'D','13':'D','13b9':'D',m7b5:'h',dim:'d',dim7:'d',aug:'a',sus4:'s',mmaj7:'mm'};
-const TRIAD=new Set(['maj','m','dim','aug','sus4']);
+const FAMQ={maj:'M',maj7:'M',maj9:'M',maj7s11:'M',maj13:'M','6':'M',m:'m',m7:'m',m9:'m',m11:'m',m13:'m',m6:'m','7':'D','9':'D','7b9':'D','7s9':'D','7s11':'D','13':'D','13b9':'D',m7b5:'h',dim:'d',dim7:'d',aug:'a',sus4:'s',mmaj7:'mm',sus2:'s',add9:'M','69':'M',madd9:'m',m69:'m'};
+const TRIAD=new Set(['maj','m','dim','aug','sus4','sus2']);
 function qmatch(id,dq){const f=FAMQ[id];if(id==='sus4')return true;if(TRIAD.has(id))return id==='maj'?(dq==='M'||dq==='D'):id==='m'?dq==='m':id==='dim'?(dq==='h'||dq==='d'):dq==='a';if(f==='M')return dq==='M';if(f==='m')return dq==='m';if(f==='D')return dq==='D';if(f==='h')return dq==='h';if(f==='d')return dq==='d';if(f==='mm')return dq==='mm';return false}
 const DEGQ={Dur:['M','m','m','M','D','m','h'],Moll:['m','h','M','m','m','M','D']},ROMD=['I','II','III','IV','V','VI','VII'],ROMM=['I','II','♭III','IV','V','♭VI','♭VII'];
 function degOf(pc,tonic,mode,id){const st=mode==='Dur'?ST.Dur:ST.Moll;for(let i=0;i<7;i++){if((tonic+st[i])%12===pc&&qmatch(id,DEGQ[mode][i]))return{r:mode==='Dur'?ROMD[i]:ROMM[i],h:false}}
@@ -1044,14 +1064,16 @@ const CHQ=[
  ['maj7','sev','maj7',[[0,0],[4,2],[7,4],[11,6]],null],['m7','sev','m7',[[0,0],[3,2],[7,4],[10,6]],null],['7','sev','7',[[0,0],[4,2],[7,4],[10,6]],null],['m7b5','sev','m7♭5',[[0,0],[3,2],[6,4],[10,6]],null],['dim7','sev','dim7',[[0,0],[3,2],[6,4],[9,6]],null],['mmaj7','sev','m(maj7)',[[0,0],[3,2],[7,4],[11,6]],null],['6','sev','6',[[0,0],[4,2],[7,4],[9,5]],null],['m6','sev','m6',[[0,0],[3,2],[7,4],[9,5]],null],
  ['maj9','e9','maj9',[[0,0],[4,2],[7,4],[11,6],[14,1]],[4,11,2]],['m9','e9','m9',[[0,0],[3,2],[7,4],[10,6],[14,1]],[3,10,2]],['9','e9','9',[[0,0],[4,2],[7,4],[10,6],[14,1]],[4,10,2]],['7b9','e9','7♭9',[[0,0],[4,2],[7,4],[10,6],[13,1]],[4,10,1]],['7s9','e9','7♯9',[[0,0],[4,2],[7,4],[10,6],[15,1]],[4,10,3]],
  ['m11','e11','m11',[[0,0],[3,2],[7,4],[10,6],[14,1],[17,3]],[3,10,5]],['maj7s11','e11','maj7♯11',[[0,0],[4,2],[7,4],[11,6],[18,3]],[4,11,6]],['7s11','e11','7♯11',[[0,0],[4,2],[7,4],[10,6],[18,3]],[4,10,6]],
- ['maj13','e13','maj13',[[0,0],[4,2],[7,4],[11,6],[14,1],[21,5]],[4,11,9]],['m13','e13','m13',[[0,0],[3,2],[7,4],[10,6],[14,1],[21,5]],[3,10,9]],['13','e13','13',[[0,0],[4,2],[7,4],[10,6],[14,1],[21,5]],[4,10,9]],['13b9','e13','13♭9',[[0,0],[4,2],[7,4],[10,6],[13,1],[21,5]],[4,10,1,9]]];
-const FAMS=[['tri','Dreiklänge'],['sev','Vierklänge'],['e9','mit 9'],['e11','mit 11'],['e13','mit 13']];
-const FAML={tri:'Dreiklang',sev:'Vierklang',e9:'9er-Akkord',e11:'11er-Akkord',e13:'13er-Akkord'};
+ ['maj13','e13','maj13',[[0,0],[4,2],[7,4],[11,6],[14,1],[21,5]],[4,11,9]],['m13','e13','m13',[[0,0],[3,2],[7,4],[10,6],[14,1],[17,3],[21,5]],[3,10,9]],['13','e13','13',[[0,0],[4,2],[7,4],[10,6],[14,1],[21,5]],[4,10,9]],['13b9','e13','13♭9',[[0,0],[4,2],[7,4],[10,6],[13,1],[21,5]],[4,10,1,9]],
+ ['sus2','tri','sus2',[[0,0],[2,1],[7,4]],null],
+ ['add9','add','add9',[[0,0],[4,2],[7,4],[14,1]],[0,4,2]],['madd9','add','m(add9)',[[0,0],[3,2],[7,4],[14,1]],[0,3,2]],['69','add','6/9',[[0,0],[4,2],[7,4],[9,5],[14,1]],[0,4,9,2]],['m69','add','m6/9',[[0,0],[3,2],[7,4],[9,5],[14,1]],[0,3,9,2]]];
+const FAMS=[['tri','Dreiklänge'],['sev','Vierklänge'],['e9','mit 9'],['e11','mit 11'],['e13','mit 13'],['add','add / 6/9']];
+const FAML={tri:'Dreiklang',sev:'Vierklang',e9:'9er-Akkord',e11:'11er-Akkord',e13:'13er-Akkord',add:'Add-Akkord'};
 const AKR=['C','D♭','D','E♭','E','F','F♯','G','A♭','A','B♭','B'];
 const AK={types:new Set(['maj','m']),roots:new Set(AKR),pos:new Set()},POSL=['Grundstellung','1. Umkehrung','2. Umkehrung','3. Umkehrung'];
-const SPW={de:{maj:'Dur',m:'Moll',dim:'vermindert',aug:'übermäßig',sus4:'sus vier',maj7:'Major sieben',m7:'Moll sieben','7':'sieben',m7b5:'Moll sieben b fünf',dim7:'vermindert sieben',mmaj7:'Moll Major sieben','6':'sechs',m6:'Moll sechs',maj9:'Major neun',m9:'Moll neun','9':'neun','7b9':'sieben b neun','7s9':'sieben Kreuz neun',m11:'Moll elf',maj7s11:'Major sieben Kreuz elf','7s11':'sieben Kreuz elf',maj13:'Major dreizehn',m13:'Moll dreizehn','13':'dreizehn','13b9':'dreizehn b neun'},
- en:{maj:'major',m:'minor',dim:'diminished',aug:'augmented',sus4:'sus four',maj7:'major seven',m7:'minor seven','7':'seven',m7b5:'minor seven flat five',dim7:'diminished seven',mmaj7:'minor major seven','6':'six',m6:'minor six',maj9:'major nine',m9:'minor nine','9':'nine','7b9':'seven flat nine','7s9':'seven sharp nine',m11:'minor eleven',maj7s11:'major seven sharp eleven','7s11':'seven sharp eleven',maj13:'major thirteen',m13:'minor thirteen','13':'thirteen','13b9':'thirteen flat nine'},
- es:{maj:'mayor',m:'menor',dim:'disminuido',aug:'aumentado',sus4:'sus cuatro',maj7:'mayor siete',m7:'menor siete','7':'siete',m7b5:'menor siete bemol cinco',dim7:'disminuido siete',mmaj7:'menor mayor siete','6':'seis',m6:'menor seis',maj9:'mayor nueve',m9:'menor nueve','9':'nueve','7b9':'siete bemol nueve','7s9':'siete sostenido nueve',m11:'menor once',maj7s11:'mayor siete sostenido once','7s11':'siete sostenido once',maj13:'mayor trece',m13:'menor trece','13':'trece','13b9':'trece bemol nueve'}};
+const SPW={de:{maj:'Dur',m:'Moll',dim:'vermindert',aug:'übermäßig',sus4:'sus vier',maj7:'Major sieben',m7:'Moll sieben','7':'sieben',m7b5:'Moll sieben b fünf',dim7:'vermindert sieben',mmaj7:'Moll Major sieben','6':'sechs',m6:'Moll sechs',maj9:'Major neun',m9:'Moll neun','9':'neun','7b9':'sieben b neun','7s9':'sieben Kreuz neun',m11:'Moll elf',maj7s11:'Major sieben Kreuz elf','7s11':'sieben Kreuz elf',maj13:'Major dreizehn',m13:'Moll dreizehn','13':'dreizehn','13b9':'dreizehn b neun',sus2:'sus zwei',add9:'add neun',madd9:'Moll add neun','69':'sechs neun',m69:'Moll sechs neun'},
+ en:{maj:'major',m:'minor',dim:'diminished',aug:'augmented',sus4:'sus four',maj7:'major seven',m7:'minor seven','7':'seven',m7b5:'minor seven flat five',dim7:'diminished seven',mmaj7:'minor major seven','6':'six',m6:'minor six',maj9:'major nine',m9:'minor nine','9':'nine','7b9':'seven flat nine','7s9':'seven sharp nine',m11:'minor eleven',maj7s11:'major seven sharp eleven','7s11':'seven sharp eleven',maj13:'major thirteen',m13:'minor thirteen','13':'thirteen','13b9':'thirteen flat nine',sus2:'sus two',add9:'add nine',madd9:'minor add nine','69':'six nine',m69:'minor six nine'},
+ es:{maj:'mayor',m:'menor',dim:'disminuido',aug:'aumentado',sus4:'sus cuatro',maj7:'mayor siete',m7:'menor siete','7':'siete',m7b5:'menor siete bemol cinco',dim7:'disminuido siete',mmaj7:'menor mayor siete','6':'seis',m6:'menor seis',maj9:'mayor nueve',m9:'menor nueve','9':'nueve','7b9':'siete bemol nueve','7s9':'siete sostenido nueve',m11:'menor once',maj7s11:'mayor siete sostenido once','7s11':'siete sostenido once',maj13:'mayor trece',m13:'menor trece','13':'trece','13b9':'trece bemol nueve',sus2:'sus dos',add9:'add nueve',madd9:'menor add nueve','69':'seis nueve',m69:'menor seis nueve'}};
 function tonesChord(root,d){const r=parse(root),ri=L.indexOf(r.l),ts=d[3].map(([s,ls])=>{const l=L[(ri+ls)%7],t=(r.semi+s)%12,a=((t-S[l]+18)%12)-6;return{l,a,pc:t,name:l+acc(a),off:s,rs:r.semi}});
  if(d[4])ts.need=d[4].map(s=>(r.semi+s)%12);return ts}
 const ENH={'D♭':'C♯','C♯':'D♭','E♭':'D♯','D♯':'E♭','F♯':'G♭','G♭':'F♯','A♭':'G♯','G♯':'A♭','B♭':'A♯','A♯':'B♭'};
@@ -1079,14 +1101,14 @@ const CINFO={maj:'Dur-Dreiklang: hell und stabil.',m:'Moll-Dreiklang: dunkler un
  maj7:'Große Septime: ruhig und warm, der typische Tonika-Klang im Jazz.',m7:'Moll mit kleiner Septime: weich, der häufigste Moll-Akkord im Jazz.','7':'Dominantseptakkord: Spannung, will zur Tonika auflösen.',m7b5:'Halbvermindert: bereitet die V in der Moll-II–V–I vor.',dim7:'Verminderter Septakkord: symmetrisch, sehr instabil, oft ein Durchgangsakkord.',mmaj7:'Moll mit großer Septime: spannungsvoll und geheimnisvoll.','6':'Dur-Sexte: freundlich, ersetzt oft das maj7 als Tonika-Klang.',m6:'Moll-Sexte: Moll-Tonika mit dorischer Farbe.',
  maj9:'maj7 plus 9: weich und schwebend.',m9:'m7 plus 9: warm und sehr verbreitet.','9':'Dominante plus 9: ein gefüllterer, bluesiger Dominantklang.','7b9':'Dominante mit ♭9: scharfe Spannung, typisch vor einer Moll-Tonika.','7s9':'Dominante mit ♯9: der „Hendrix-Akkord“, rau und bluesig.',
  m11:'m9 plus 11: weit und modern, oft für Moll-Vamps.',maj7s11:'maj7 mit ♯11: lydischer, schwebender Klang.','7s11':'Dominante mit ♯11: lydisch-dominant, typisch für die Tritonus-Substitution.',
- maj13:'maj9 plus 13: voll und luxuriös.',m13:'m9 plus 13: dorisch, weit und warm.','13':'Dominante mit 9 und 13: der volle Dominantklang in Jazz und Blues.','13b9':'Dominante mit ♭9 und 13: Spannung mit Süße, passt zur Halbton–Ganzton-Skala.'};
-const CSM={maj:['Ionisch (Dur)','Lydisch'],m:['Äolisch (natürlich Moll)','Dorisch','Phrygisch'],dim:['Lokrisch'],aug:['Ganzton','Lydisch ♯5'],sus4:['Mixolydisch','Dorisch'],maj7:['Ionisch (Dur)','Lydisch'],m7:['Dorisch','Äolisch (natürlich Moll)','Phrygisch'],'7':['Mixolydisch','Lydisch Dominant','Alteriert'],m7b5:['Lokrisch','Lokrisch ♮2'],dim7:['Ganzton–Halbton'],mmaj7:['Melodisch Moll','Harmonisch Moll'],'6':['Ionisch (Dur)','Lydisch'],m6:['Dorisch','Melodisch Moll'],maj9:['Ionisch (Dur)','Lydisch'],m9:['Dorisch','Äolisch (natürlich Moll)'],'9':['Mixolydisch'],'7b9':['Phrygisch Dominant','Halbton–Ganzton'],'7s9':['Alteriert','Halbton–Ganzton'],m11:['Dorisch','Äolisch (natürlich Moll)'],maj7s11:['Lydisch'],'7s11':['Lydisch Dominant'],maj13:['Ionisch (Dur)','Lydisch'],m13:['Dorisch'],'13':['Mixolydisch'],'13b9':['Halbton–Ganzton']};
+ maj13:'maj9 plus 13: voll und luxuriös.',m13:'m9 plus 13: dorisch, weit und warm.','13':'Dominante mit 9 und 13: der volle Dominantklang in Jazz und Blues.','13b9':'Dominante mit ♭9 und 13: Spannung mit Süße, passt zur Halbton–Ganzton-Skala.',sus2:'Sus2: Sekunde statt Terz, offen und schwebend, weder Dur noch Moll.',add9:'Dur-Dreiklang plus None, ohne Septime: offen und hell, typisch für Pop.',madd9:'Moll-Dreiklang plus None, ohne Septime: weich und etwas melancholisch.','69':'Dur mit Sexte und None, ohne Septime: der typische Jazz-Schlussakkord.',m69:'Moll mit großer Sexte und None: dorische Moll-Tonika im Jazz.'};
+const CSM={maj:['Ionisch (Dur)','Lydisch'],m:['Äolisch (natürlich Moll)','Dorisch','Phrygisch'],dim:['Lokrisch'],aug:['Ganzton','Lydisch ♯5'],sus4:['Mixolydisch','Dorisch'],maj7:['Ionisch (Dur)','Lydisch'],m7:['Dorisch','Äolisch (natürlich Moll)','Phrygisch'],'7':['Mixolydisch','Lydisch Dominant','Alteriert'],m7b5:['Lokrisch','Lokrisch ♮2'],dim7:['Ganzton–Halbton'],mmaj7:['Melodisch Moll','Harmonisch Moll'],'6':['Ionisch (Dur)','Lydisch'],m6:['Dorisch','Melodisch Moll'],maj9:['Ionisch (Dur)','Lydisch'],m9:['Dorisch','Äolisch (natürlich Moll)'],'9':['Mixolydisch'],'7b9':['Phrygisch Dominant','Halbton–Ganzton'],'7s9':['Alteriert','Halbton–Ganzton'],m11:['Dorisch','Äolisch (natürlich Moll)'],maj7s11:['Lydisch'],'7s11':['Lydisch Dominant'],maj13:['Ionisch (Dur)','Lydisch'],m13:['Dorisch'],'13':['Mixolydisch'],'13b9':['Halbton–Ganzton'],sus2:['Mixolydisch','Ionisch (Dur)','Dorisch'],add9:['Ionisch (Dur)','Lydisch','Mixolydisch'],madd9:['Äolisch (natürlich Moll)','Dorisch'],'69':['Ionisch (Dur)','Lydisch','Pentatonik Dur'],m69:['Dorisch','Melodisch Moll']};
 function chordKb(ts,dl2){const rp=ts[0].rs,m={},dl=dl2||degLabels(ts);let mx=0;ts.forEach((t,i)=>{const s=rp+t.off;mx=Math.max(mx,s);m[s]={root:t.off%12===0,label:t.name,deg:dl[i],f:null}});return`<div style="overflow-x:auto">${kbPlay(m,Math.max(2,Math.ceil((mx+1)/12)),'')}</div>`}
 const INVL=['Grundstellung','1. Umkehrung','2. Umkehrung','3. Umkehrung'],invMax=q=>Math.min(CHQ.find(x=>x[0]===q)[3].length-1,3);
 function chOneRender(){const root=LC.root1,d=CHQ.find(x=>x[0]===LC.q),ts=tonesChord(root,d),name=root+d[2],dl=degLabels(ts),mp={},nm=invMax(LC.q);ts.forEach(t=>mp[t.pc]=[t.l,t.a]);
  let h=`<div style="text-align:center"><div class="key">${name}</div></div>`;
  h+=`<p><b>Akkordtöne:</b> ${ts.map(t=>t.name).join(' – ')} <span class="hint">(${dl.join(' – ')})</span></p><h2>Klang</h2><p>${CINFO[d[0]]}</p>`;
- if(d[4])h+=`<p class="hint">Terz, Septime und Extension genügen (Grundton und Quinte optional)</p>`;
+ if(d[4])h+=d[1]==='add'?`<p class="hint">${d[0]==='69'||d[0]==='m69'?'Grundton, Terz, Sexte und None genügen (Quinte optional)':'Grundton, Terz und None genügen (Quinte optional)'}</p>`:`<p class="hint">Terz, Septime und Extension genügen (Grundton und Quinte optional)</p>`;
  h+=`<h2>Typische Skalen</h2><p>${CSM[d[0]].map(n=>`<button type="button" class="chip scl" data-sc="${SCALES.findIndex(s=>s.n===n)}">${n}</button>`).join(' ')}</p>`;
  const invs=[...LC.inv].filter(k=>k<=nm).sort((a,b)=>a-b);
  if(!invs.length)h+=`<p class="hint">Wähl mindestens eine Umkehrung</p>`;
@@ -1354,6 +1376,9 @@ nach Halten des Akkords¦after holding the chord¦al mantener el acorde
 sobald ich alle Tasten loslasse¦as soon as I release all keys¦en cuanto suelte todas las teclas
 nur mit Weiter / Leertaste¦only with Next / space bar¦solo con Siguiente / barra espaciadora
 Haltezeit¦Hold time¦Tiempo de pulsación
+Weiter nach der Haltezeit oder sobald du loslässt. Spielst du schon den nächsten Akkord an, geht es sofort weiter.¦Moves on after the hold time or when you let go. If you already start the next chord, it moves on right away.¦Avanza tras el tiempo de pulsación o al soltar. Si ya empiezas el siguiente acorde, avanza enseguida.
+Weiter erst, wenn alle Tasten losgelassen sind. Gut für Arpeggios.¦Moves on only when all keys are released. Good for arpeggios.¦Avanza solo cuando sueltas todas las teclas. Ideal para arpegios.
+Weiter nur mit dem Weiter-Knopf oder der Leertaste.¦Moves on only with the Next button or the space bar.¦Avanza solo con el botón Siguiente o la barra espaciadora.
 Einstellungen¦Settings¦Ajustes
 Zeilenlänge (Akkorde)¦Row length (chords)¦Longitud de fila (acordes)
 Ansage per Sprachausgabe¦Spoken announcements¦Anuncio por voz
@@ -1572,6 +1597,14 @@ Quintfall durch alle Stufen¦Falling fifths through all degrees¦Quintas descend
 Terzfall durch alle Stufen¦Falling thirds through all degrees¦Terceras descendentes por todos los grados
 Stufen aufwärts (I–II–III–IV–V–VI–VII)¦Degrees ascending (I–II–III–IV–V–VI–VII)¦Grados ascendentes (I–II–III–IV–V–VI–VII)
 Übung: alle sieben diatonischen Septakkorde¦Exercise: all seven diatonic seventh chords¦Ejercicio: los siete acordes de séptima diatónicos
+Jazz Akkordsymbole¦Jazz chord symbols¦Símbolos de acordes de jazz
+Zeigt Akkorde als CΔ7, C−7, Cø7 statt Cmaj7, Cm7, Cm7♭5.¦Shows chords as CΔ7, C−7, Cø7 instead of Cmaj7, Cm7, Cm7♭5.¦Muestra los acordes como CΔ7, C−7, Cø7 en lugar de Cmaj7, Cm7, Cm7♭5.
+Aus¦Off¦Desactivado
+An¦On¦Activado
+add / 6/9¦add / 6/9¦add / 6/9
+Add-Akkord¦Add chord¦Acorde add
+Grundton, Terz und None genügen (Quinte optional)¦Root, third and ninth are enough (fifth optional)¦Bastan la fundamental, la tercera y la novena (quinta opcional)
+Grundton, Terz, Sexte und None genügen (Quinte optional)¦Root, third, sixth and ninth are enough (fifth optional)¦Bastan la fundamental, la tercera, la sexta y la novena (quinta opcional)
 Anzeige¦Display¦Mostrar
 Stufe¦Degree¦Grado
 Akkord¦Chord¦Acorde
@@ -1656,7 +1689,7 @@ Wähl mindestens eine Akkordart und einen Grundton¦Choose at least one chord fa
  al(PROGS.map(p=>p.n),
   ['II–V–I (major)','II–V–I (minor)','Turnaround I–VI–II–V','Turnaround III–VI–II–V','Rhythm Changes (A section)','Rhythm Changes (bridge)','Circle of fifths from II (major)','Circle of fifths from I (minor)','Several II–V in a row','Descending II–V–I','A Train opening','Tritone substitution','Backdoor II–V','Minor line cliché','Bebop blues (Parker)','50s progression I–VI–IV–V','Pop I–V–VI–IV','Axis VI–IV–I–V','Andalusian cadence','Canon progression','I–IV–V (rock)','V–IV–I (rock)','Authentic cadence I–IV–V–I','Plagal cadence I–IV–I','Half cadence I–IV–V','Deceptive cadence I–IV–V–VI','Tonic–dominant swing I–V–I–V','Bach prelude (opening) I–II–V–I','Baroque circle of fifths I–IV–VII–III–VI–II–V–I','Double dominant I–II–V–I','Minor cadence i–iv–V–i','Neapolitan cadence i–♭II–V–i','Minor pop i–♭VI–♭III–♭VII','Rock cadence I–♭VII–IV–I','12-bar blues (major)','12-bar blues (minor)','Ragtime chain III–VI–II–V–I'],
   ['II–V–I (mayor)','II–V–I (menor)','Turnaround I–VI–II–V','Turnaround III–VI–II–V','Rhythm Changes (sección A)','Rhythm Changes (puente)','Ciclo de quintas desde el II (mayor)','Ciclo de quintas desde el I (menor)','Varios II–V seguidos','II–V–I descendentes','Comienzo de A Train','Sustitución por tritono','Backdoor II–V','Cliché de línea en menor','Blues bebop (Parker)','Progresión de los años 50 I–VI–IV–V','Pop I–V–VI–IV','Axis VI–IV–I–V','Cadencia andaluza','Progresión del canon','I–IV–V (rock)','V–IV–I (rock)','Cadencia auténtica I–IV–V–I','Cadencia plagal I–IV–I','Semicadencia I–IV–V','Cadencia rota I–IV–V–VI','Vaivén tónica–dominante I–V–I–V','Preludio de Bach (inicio) I–II–V–I','Ciclo de quintas barroco I–IV–VII–III–VI–II–V–I','Doble dominante I–II–V–I','Cadencia menor i–iv–V–i','Cadencia napolitana i–♭II–V–i','Pop menor i–♭VI–♭III–♭VII','Cadencia rock I–♭VII–IV–I','Blues de 12 compases (mayor)','Blues de 12 compases (menor)','Cadena de ragtime III–VI–II–V–I']);
- al(CHQ.map(d=>CINFO[d[0]]),["Major triad: bright and stable.","Minor triad: darker and soft.","Diminished triad: unstable and tense, wants to resolve.","Augmented triad: floating, with no clear direction.","Sus4: the third is replaced by the fourth, an open sound that often resolves to the third.","Major seventh: calm and warm, the typical tonic sound in jazz.","Minor with a minor seventh: soft, the most common minor chord in jazz.","Dominant seventh: tension, wants to resolve to the tonic.","Half-diminished: prepares the V in the minor II–V–I.","Diminished seventh: symmetric, very unstable, often a passing chord.","Minor with a major seventh: tense and mysterious.","Major sixth: friendly, often replaces maj7 as the tonic sound.","Minor sixth: minor tonic with a Dorian colour.","maj7 plus 9: soft and floating.","m7 plus 9: warm and very common.","Dominant plus 9: a fuller, bluesy dominant sound.","Dominant with ♭9: sharp tension, typical before a minor tonic.","Dominant with ♯9: the \"Hendrix chord\", rough and bluesy.","m9 plus 11: wide and modern, often used for minor vamps.","maj7 with ♯11: Lydian, floating sound.","Dominant with ♯11: Lydian dominant, typical for the tritone substitution.","maj9 plus 13: full and luxurious.","m9 plus 13: Dorian, wide and warm.","Dominant with 9 and 13: the full dominant sound in jazz and blues.","Dominant with ♭9 and 13: tension with sweetness, fits the half–whole scale."],["Tríada mayor: brillante y estable.","Tríada menor: más oscura y suave.","Tríada disminuida: inestable y tensa, quiere resolver.","Tríada aumentada: flotante, sin dirección clara.","Sus4: la tercera se sustituye por la cuarta; sonido abierto que suele resolver a la tercera.","Séptima mayor: tranquilo y cálido, el sonido típico de la tónica en el jazz.","Menor con séptima menor: suave, el acorde menor más habitual en el jazz.","Séptima de dominante: tensión, quiere resolver a la tónica.","Semidisminuido: prepara el V en el II–V–I menor.","Séptima disminuida: simétrica, muy inestable, a menudo acorde de paso.","Menor con séptima mayor: tensa y misteriosa.","Sexta mayor: amable, a menudo sustituye al maj7 como sonido de tónica.","Sexta menor: tónica menor con color dórico.","maj7 más 9: suave y flotante.","m7 más 9: cálido y muy habitual.","Dominante más 9: sonido de dominante más lleno y bluesero.","Dominante con ♭9: tensión aguda, típica antes de una tónica menor.","Dominante con ♯9: el «acorde de Hendrix», áspero y bluesero.","m9 más 11: amplio y moderno, muy usado en vamps menores.","maj7 con ♯11: sonido lidio y flotante.","Dominante con ♯11: dominante lidia, típica de la sustitución por tritono.","maj9 más 13: pleno y lujoso.","m9 más 13: dórico, amplio y cálido.","Dominante con 9 y 13: el sonido pleno de dominante en el jazz y el blues.","Dominante con ♭9 y 13: tensión con dulzura, encaja con la escala semitono–tono."]);
+ al(CHQ.map(d=>CINFO[d[0]]),["Major triad: bright and stable.","Minor triad: darker and soft.","Diminished triad: unstable and tense, wants to resolve.","Augmented triad: floating, with no clear direction.","Sus4: the third is replaced by the fourth, an open sound that often resolves to the third.","Major seventh: calm and warm, the typical tonic sound in jazz.","Minor with a minor seventh: soft, the most common minor chord in jazz.","Dominant seventh: tension, wants to resolve to the tonic.","Half-diminished: prepares the V in the minor II–V–I.","Diminished seventh: symmetric, very unstable, often a passing chord.","Minor with a major seventh: tense and mysterious.","Major sixth: friendly, often replaces maj7 as the tonic sound.","Minor sixth: minor tonic with a Dorian colour.","maj7 plus 9: soft and floating.","m7 plus 9: warm and very common.","Dominant plus 9: a fuller, bluesy dominant sound.","Dominant with ♭9: sharp tension, typical before a minor tonic.","Dominant with ♯9: the \"Hendrix chord\", rough and bluesy.","m9 plus 11: wide and modern, often used for minor vamps.","maj7 with ♯11: Lydian, floating sound.","Dominant with ♯11: Lydian dominant, typical for the tritone substitution.","maj9 plus 13: full and luxurious.","m9 plus 13: Dorian, wide and warm.","Dominant with 9 and 13: the full dominant sound in jazz and blues.","Dominant with ♭9 and 13: tension with sweetness, fits the half–whole scale.","Sus2: a second instead of a third, open and floating, neither major nor minor.","Major triad plus ninth, no seventh: open and bright, typical of pop.","Minor triad plus ninth, no seventh: soft and slightly melancholic.","Major with sixth and ninth, no seventh: the classic jazz ending chord.","Minor with major sixth and ninth: Dorian minor tonic in jazz."],["Tríada mayor: brillante y estable.","Tríada menor: más oscura y suave.","Tríada disminuida: inestable y tensa, quiere resolver.","Tríada aumentada: flotante, sin dirección clara.","Sus4: la tercera se sustituye por la cuarta; sonido abierto que suele resolver a la tercera.","Séptima mayor: tranquilo y cálido, el sonido típico de la tónica en el jazz.","Menor con séptima menor: suave, el acorde menor más habitual en el jazz.","Séptima de dominante: tensión, quiere resolver a la tónica.","Semidisminuido: prepara el V en el II–V–I menor.","Séptima disminuida: simétrica, muy inestable, a menudo acorde de paso.","Menor con séptima mayor: tensa y misteriosa.","Sexta mayor: amable, a menudo sustituye al maj7 como sonido de tónica.","Sexta menor: tónica menor con color dórico.","maj7 más 9: suave y flotante.","m7 más 9: cálido y muy habitual.","Dominante más 9: sonido de dominante más lleno y bluesero.","Dominante con ♭9: tensión aguda, típica antes de una tónica menor.","Dominante con ♯9: el «acorde de Hendrix», áspero y bluesero.","m9 más 11: amplio y moderno, muy usado en vamps menores.","maj7 con ♯11: sonido lidio y flotante.","Dominante con ♯11: dominante lidia, típica de la sustitución por tritono.","maj9 más 13: pleno y lujoso.","m9 más 13: dórico, amplio y cálido.","Dominante con 9 y 13: el sonido pleno de dominante en el jazz y el blues.","Dominante con ♭9 y 13: tensión con dulzura, encaja con la escala semitono–tono.","Sus2: segunda en lugar de tercera, abierto y flotante, ni mayor ni menor.","Tríada mayor más novena, sin séptima: abierta y luminosa, típica del pop.","Tríada menor más novena, sin séptima: suave y algo melancólica.","Mayor con sexta y novena, sin séptima: el típico acorde final del jazz.","Menor con sexta mayor y novena: tónica menor dórica en el jazz."]);
  al(THEMES.map(t=>t[1]),['Dark','Ivory','Mocha','Rosewood','Ebony','Cherry','Ocean','Forest','Lavender'],['Oscuro','Marfil','Moca','Palisandro','Ébano','Cerezo','Océano','Bosque','Lavanda'])}
 /* Muster mit Zahlen oder Namen */
 const NOUN={en:{Sekunden:'seconds',Terzen:'thirds',Quarten:'fourths',Quinten:'fifths',Sexten:'sixths',Septimen:'sevenths'},es:{Sekunden:'segundas',Terzen:'terceras',Quarten:'cuartas',Quinten:'quintas',Sexten:'sextas',Septimen:'séptimas'}};
@@ -1704,20 +1737,34 @@ const RULES=[
  [/^MIDI verbunden: (.+)$/,m=>Lg(`MIDI connected: ${m[1]}`,`MIDI conectado: ${m[1]}`)]
 ];
 function trs(s){if(LANG==='de')return s;const d=DICT[LANG][s];if(d!==undefined)return d;for(const [re,f] of RULES){const m=s.match(re);if(m){const r=f(m);if(r!=null)return r}}return s}
+/* Jazz-Akkordsymbole (Lead-Sheet-Schreibweise): Δ = maj7, − = Moll, ø = halbvermindert, ° = vermindert, + = übermäßig */
+const JZ={on:false};
+const JZS={'m':'−','dim':'°','aug':'+','maj7':'Δ7','m7':'−7','m7♭5':'ø7','dim7':'°7','m(maj7)':'−(Δ7)','m6':'−6','maj9':'Δ9','m9':'−9','7♭9':'7(♭9)','7♯9':'7(♯9)','m11':'−11','maj7♯11':'Δ7(♯11)','7♯11':'7(♯11)','maj13':'Δ13','m13':'−13','13♭9':'13(♭9)','sus4':'sus','add9':'(add 9)','m(add9)':'−(add 9)','m6/9':'−6/9'};
+const JZ_RT=/(?:[A-G][♭♯]?|[♭♯]?(?:VII|VI|IV|V|III|II|I))/.source,JZ_SU='m\\(add9\\)|m6/9|add9|maj7♯11|m\\(maj7\\)|m7♭5|maj13|maj9|maj7|13♭9|7♭9|7♯9|7♯11|dim7|m13|m11|m9|m7|m6';
+const JZ_EMB=new RegExp('(^|[^A-Za-z0-9♭♯])('+JZ_RT+')('+JZ_SU+')(?![A-Za-z0-9])','g'),JZ_EMA=new RegExp('(^|[^A-Za-z0-9♭♯])('+JZ_RT+')('+JZ_SU+'|dim|aug|m)(?![A-Za-z0-9])','g');
+const JZ_CH=JZ_RT+'(?:'+JZ_SU+'|dim|aug|m|sus4|sus2|6/9|6|7|9|13)?(?:\\/[A-G][♭♯]?)?',JZ_PURE=new RegExp('^[\\s:]*'+JZ_CH+'(?:[\\s–·,→↔⇄\\-]+'+JZ_CH+')*\\s*$');
+const JZ_SU2=JZ_SU+'|13|9|7|6/9|6|sus4|sus2',JZ_SGE=new RegExp('(^|[^A-Za-z0-9♭♯])('+JZ_RT+')('+JZ_SU2+')(?![A-Za-z0-9])','g'),JZ_SGP=new RegExp('(^|[^A-Za-z0-9♭♯])('+JZ_RT+')('+JZ_SU2+'|dim|aug|m)(?![A-Za-z0-9])','g');
+function jzSeg(s){const re=JZ_PURE.test(s.trim())?JZ_SGP:JZ_SGE;re.lastIndex=0;const out=[];let last=0,m;while((m=re.exec(s))){const st=m.index+m[1].length;out.push({t:s.slice(last,st)+m[2]});out.push({s:Object.prototype.hasOwnProperty.call(JZS,m[3])?JZS[m[3]]:m[3]});last=re.lastIndex}if(!out.length)return null;out.push({t:s.slice(last)});return out}
+function jzUnwrap(){document.querySelectorAll('span.jzw').forEach(sp=>sp.replaceWith(document.createTextNode(sp.dataset.jzsrc)))}
+function jzApply(s){const t=s.trim();if(!t)return s;if(Object.prototype.hasOwnProperty.call(JZS,t))return s.replace(t,JZS[t]);return s.replace(JZ_PURE.test(t)?JZ_EMA:JZ_EMB,(m,p,r,q)=>p+r+JZS[q])}
 const ORIG=new WeakMap(),ATT=new WeakMap(),SKIP={SCRIPT:1,STYLE:1};
 function trText(n){const v=n.nodeValue;let o=ORIG.get(n);if(!o||v!==o.out){o={src:v,out:v};ORIG.set(n,o)}
  const key=o.src.replace(/\s+/g,' ').trim();let out=o.src;
  if(key&&LANG!=='de'){const t=trs(key);if(t!==key)out=o.src.match(/^\s*/)[0]+t+o.src.match(/\s*$/)[0]}
+ const pn=n.parentNode;if(JZ.on&&key&&pn&&!(pn.closest&&pn.closest('[data-nojz]'))){
+  /* Hochgestellt wie auf Lead Sheets: Text in eigenen Knoten aufteilen (nicht in <sup>, Listenfeldern oder Grafiken) */
+  if(/^(SUP|SUB|OPTION|TITLE|TEXTAREA)$/.test(pn.nodeName)||pn.namespaceURI==='http://www.w3.org/2000/svg'||(pn.classList&&pn.classList.contains('jzw')))out=jzApply(out);
+  else{const sg=jzSeg(out);if(sg){const sp=document.createElement('span');sp.className='jzw';sp.dataset.jzsrc=o.src;sg.forEach(x=>{if(x.t!==undefined){if(x.t)sp.appendChild(document.createTextNode(x.t))}else{const su=document.createElement('sup');su.className='jzs';su.textContent=x.s;sp.appendChild(su)}});n.replaceWith(sp);return}out=jzApply(out)}}
  if(n.nodeValue!==out)n.nodeValue=out;o.out=out}
 function trAttr(el){if(!el.hasAttribute||!el.hasAttribute('title'))return;const v=el.getAttribute('title');let o=ATT.get(el);if(!o||v!==o.out){o={src:v,out:v};ATT.set(el,o)}
  let out=o.src;if(LANG!=='de'){const t=trs(o.src.trim());if(t!==o.src.trim())out=t}if(v!==out)el.setAttribute('title',out);o.out=out}
 function trWalk(root){if(root.nodeType===3){if(!SKIP[root.parentNode&&root.parentNode.tagName])trText(root);return}if(root.nodeType!==1||SKIP[root.tagName])return;trAttr(root);
- const tw=document.createTreeWalker(root,NodeFilter.SHOW_ELEMENT|NodeFilter.SHOW_TEXT);let n;while(n=tw.nextNode()){if(n.nodeType===3){if(!SKIP[n.parentNode.tagName])trText(n)}else if(!SKIP[n.tagName])trAttr(n)}}
-new MutationObserver(ms=>{if(LANG==='de')return;for(const m of ms){if(m.type==='childList')m.addedNodes.forEach(trWalk);else if(m.type==='characterData')trText(m.target);else if(m.type==='attributes')trAttr(m.target)}}).observe(document.body,{childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:['title']});
+ const tw=document.createTreeWalker(root,NodeFilter.SHOW_ELEMENT|NodeFilter.SHOW_TEXT),L=[];let n;while(n=tw.nextNode())L.push(n);L.forEach(n=>{if(n.nodeType===3){if(n.parentNode&&!SKIP[n.parentNode.tagName])trText(n)}else if(!SKIP[n.tagName])trAttr(n)})}
+new MutationObserver(ms=>{if(LANG==='de'&&!JZ.on)return;for(const m of ms){if(m.type==='childList')m.addedNodes.forEach(trWalk);else if(m.type==='characterData')trText(m.target);else if(m.type==='attributes')trAttr(m.target)}}).observe(document.body,{childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:['title']});
 const LANGS=[['de','Deutsch'],['en','English'],['es','Español']];
 function langBuild(){$('langs').innerHTML=LANGS.map(([c,n])=>`<button type="button" class="chip${LANG===c?' on':''}" data-lang="${c}">${n}</button>`).join('')}
 function ftLinks(){const de=LANG==='de';document.querySelectorAll('.ft a').forEach(x=>{if(x.dataset.k==='p')x.setAttribute('href',de?'datenschutz.html':'privacy.html');else if(x.dataset.k==='i')x.setAttribute('href',de?'impressum.html':'legal-notice.html')});document.querySelectorAll('.seo-de').forEach(e=>{e.hidden=!de});document.querySelectorAll('.seo-en').forEach(e=>{e.hidden=de})}
-function setLang(l){LANG=l;ftLinks();try{localStorage.setItem('pt-lang',l)}catch(e){}document.documentElement.lang=l;trWalk(document.body);langBuild();
+function setLang(l){jzUnwrap();LANG=l;ftLinks();try{localStorage.setItem('pt-lang',l)}catch(e){}document.documentElement.lang=l;trWalk(document.body);langBuild();
  rebuildLists();lnBuild();lcBuild();triBuild();akBuild();srBuild();cntTxt();
  if(area==='chord'&&!LEARN.chord&&cur)showTask();if(area==='scale'&&!LEARN.scale&&SK)scShow();if(LEARN.scale)learnRender();if(LEARN.chord)chLearnRender();
  const th=document.querySelector('#themes .on');if(th)setTheme(th.dataset.t);evalHeld()}
@@ -1725,6 +1772,9 @@ $('langs').onclick=e=>{const b=e.target.closest('[data-lang]');if(b&&b.dataset.l
 langBuild();
 {let l0='en';try{l0=localStorage.getItem('pt-lang')||'en'}catch(e){}if(l0!=='de'&&LANGS.some(x=>x[0]===l0))setLang(l0)}
 ftLinks();
+/* Jazz-Akkordsymbole: Schalter, im Browser gespeichert, standardmäßig aus */
+$('jazzSym').onchange=()=>{JZ.on=$('jazzSym').checked;$('jazzSymT').textContent=JZ.on?'An':'Aus';try{localStorage.setItem('pt-jazz',JZ.on?'1':'0')}catch(e){}setLang(LANG)};
+try{if(localStorage.getItem('pt-jazz')==='1'){JZ.on=true;$('jazzSym').checked=true;$('jazzSymT').textContent='An';setLang(LANG)}}catch(e){}
 vampInit();
 $('modeSel').onchange();
 cntTxt();
