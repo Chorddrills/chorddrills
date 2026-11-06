@@ -677,9 +677,10 @@ const PROGS=[
 ["Ragtime-Kette III–VI–II–V–I", "III7 VI7 II7 V7 Imaj7", 0, "Five Foot Two, Eyes of Blue"],
 ["Quintfall durch alle Stufen", "Imaj7 IVmaj7 VIIm7b5 IIIm7 VIm7 IIm7 V7 Imaj7", 0, "§Übung: alle sieben diatonischen Septakkorde"],
 ["Terzfall durch alle Stufen", "Imaj7 VIm7 IVmaj7 IIm7 VIIm7b5 V7 IIIm7 Imaj7", 0, "§Übung: alle sieben diatonischen Septakkorde"],
-["Stufen aufwärts (I–II–III–IV–V–VI–VII)", "Imaj7 IIm7 IIIm7 IVmaj7 V7 VIm7 VIIm7b5 Imaj7", 0, "§Übung: alle sieben diatonischen Septakkorde"]
+["Stufen aufwärts (I–II–III–IV–V–VI–VII)", "Imaj7 IIm7 IIIm7 IVmaj7 V7 VIm7 VIIm7b5 Imaj7", 0, "§Übung: alle sieben diatonischen Septakkorde"],
+["II–V–I–VI–IV–III–II–V (Dur)", "IIm7 V7 Imaj7 VIm7 IVmaj7 IIIm7 IIm7 V7", 0, "§Übung: diatonische Akkordfolge in Dur"]
 ].map(([n,t,m,s])=>{const a=t.split(' '),ex=s.startsWith('§');return{n,t:a,m,s:ex?s.slice(1):s,ex,rep:a.map((x,i)=>i>0&&x===a[i-1])}});
-const PGO=['Jazz','Klassik','Pop & Rock','Blues'],PGRP=["Jazz", "Jazz", "Jazz", "Jazz", "Jazz", "Jazz", "Jazz", "Jazz", "Jazz", "Jazz", "Jazz", "Jazz", "Jazz", "Jazz", "Jazz", "Pop & Rock", "Pop & Rock", "Pop & Rock", "Pop & Rock", "Klassik", "Pop & Rock", "Pop & Rock", "Klassik", "Klassik", "Klassik", "Klassik", "Klassik", "Klassik", "Klassik", "Klassik", "Klassik", "Klassik", "Pop & Rock", "Pop & Rock", "Blues", "Blues", "Jazz", "Jazz", "Jazz", "Jazz"];
+const PGO=['Jazz','Klassik','Pop & Rock','Blues'],PGRP=["Jazz", "Jazz", "Jazz", "Jazz", "Jazz", "Jazz", "Jazz", "Jazz", "Jazz", "Jazz", "Jazz", "Jazz", "Jazz", "Jazz", "Jazz", "Pop & Rock", "Pop & Rock", "Pop & Rock", "Pop & Rock", "Klassik", "Pop & Rock", "Pop & Rock", "Klassik", "Klassik", "Klassik", "Klassik", "Klassik", "Klassik", "Klassik", "Klassik", "Klassik", "Klassik", "Pop & Rock", "Pop & Rock", "Blues", "Blues", "Jazz", "Jazz", "Jazz", "Jazz", "Jazz"];
 const RM={I:0,II:1,III:2,IV:3,V:4,VI:5,VII:6},MS=[0,2,4,5,7,9,11],LS={'6':[0,2,4,5],'m6':[0,2,4,5],'sus4':[0,3,4]};
 const IVX={'maj7':[0,4,7,11],'m7':[0,3,7,10],'7':[0,4,7,10],'m7b5':[0,3,6,10],'6':[0,4,7,9],'m6':[0,3,7,9],'dim7':[0,3,6,9],'mmaj7':[0,3,7,11],'maj':[0,4,7],'m':[0,3,7],'dim':[0,3,6],'sus4':[0,5,7],'aug':[0,4,8]};
 const QP={m7b5:'m7♭5',mmaj7:'m(maj7)',maj:'',aug:'aug'};
@@ -1647,6 +1648,8 @@ Spiele die Töne der Skala nacheinander. Die Grundtöne steigen in großen Terze
 Quintfall durch alle Stufen¦Falling fifths through all degrees¦Quintas descendentes por todos los grados
 Terzfall durch alle Stufen¦Falling thirds through all degrees¦Terceras descendentes por todos los grados
 Stufen aufwärts (I–II–III–IV–V–VI–VII)¦Degrees ascending (I–II–III–IV–V–VI–VII)¦Grados ascendentes (I–II–III–IV–V–VI–VII)
+II–V–I–VI–IV–III–II–V (Dur)¦II–V–I–VI–IV–III–II–V (major)¦II–V–I–VI–IV–III–II–V (mayor)
+Übung: diatonische Akkordfolge in Dur¦Exercise: diatonic chord sequence in major¦Ejercicio: secuencia de acordes diatónicos en mayor
 Übung: alle sieben diatonischen Septakkorde¦Exercise: all seven diatonic seventh chords¦Ejercicio: los siete acordes de séptima diatónicos
 Jazz Akkordsymbole¦Jazz chord symbols¦Símbolos de acordes de jazz
 Zeigt Akkorde als CΔ7, C−7, Cø7 statt Cmaj7, Cm7, Cm7♭5.¦Shows chords as CΔ7, C−7, Cø7 instead of Cmaj7, Cm7, Cm7♭5.¦Muestra los acordes como CΔ7, C−7, Cø7 en lugar de Cmaj7, Cm7, Cm7♭5.
@@ -1808,6 +1811,7 @@ const RULES=[
  [/^Wechsel (.+) ↔ (.+): (\d+) Akkorde gespielt$/,m=>Lg(`Alternating ${m[1]} ↔ ${m[2]}: ${m[3]} chords played`,`Alternancia ${m[1]} ↔ ${m[2]}: ${m[3]} acordes tocados`)],
  [/^(.+) ↔ (.+) · endlos$/,m=>Lg(`${m[1]} ↔ ${m[2]} · endless`,`${m[1]} ↔ ${m[2]} · sin fin`)],
  [/^\+(\d+) weitere$/,m=>Lg(`+${m[1]} more`,`+${m[1]} más`)],
+ [/^(.+) · Übung: diatonische Akkordfolge in Dur$/,m=>Lg(`${trs(m[1])} · exercise: diatonic chord sequence in major`,`${trs(m[1])} · ejercicio: secuencia de acordes diatónicos en mayor`)],
  [/^(.+) · Übung: alle sieben diatonischen Septakkorde$/,m=>Lg(`${trs(m[1])} · exercise: all seven diatonic seventh chords`,`${trs(m[1])} · ejercicio: los siete acordes de séptima diatónicos`)],
  [/^Tonart-Wanderung: (\d+) Akkorde gespielt$/,m=>Lg(`Key journey: ${m[1]} chords played`,`Viaje por tonalidades: ${m[1]} acordes tocados`)],
  [/^Vorheriger Akkord: (.+)$/,m=>Lg(`Previous chord: ${m[1]}`,`Acorde anterior: ${m[1]}`)],
