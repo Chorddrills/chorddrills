@@ -73,6 +73,42 @@ h1.logo{margin:4px 0 12px;line-height:1}
 .ch{display:inline-flex;flex-direction:column;align-items:center;line-height:1.15}
 .ch .r{font-size:clamp(.95rem,3.8vw,1.3rem);font-weight:700;white-space:nowrap}
 .jzw{white-space:nowrap}
+.scAll{display:inline-flex;align-items:center;gap:6px;font-size:.85rem;color:var(--mut);padding:6px 10px;border:1px solid var(--bd);border-radius:10px;cursor:pointer;white-space:nowrap}
+.scAll input{margin:0}
+.rtOpenBtn{color:var(--ac)!important;border:1px solid var(--ac)!important;opacity:1!important;font-weight:600}
+#rtBar,#rtEdit{position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:8px 12px;margin:0 0 12px;background:var(--card);border:1px solid var(--bd);border-radius:12px;font-size:.9rem}
+#rtEdit{border-color:var(--ac)}
+#rtBar[hidden],#rtEdit[hidden],#rtOv[hidden]{display:none!important}
+#rtBar .nm{font-weight:700}
+#rtBar .tm{color:var(--mut);font-variant-numeric:tabular-nums}
+#rtBar button{padding:4px 9px}
+.rtSeg{flex:1;min-width:120px;display:flex;gap:3px;height:8px}
+.rtSeg>div{background:var(--bd);border-radius:4px;overflow:hidden}
+.rtSeg i{display:block;height:100%;background:var(--ac)}
+.rtSt{color:var(--mut);font-size:.82rem}
+#rtOv{position:fixed;inset:0;z-index:80;background:rgba(0,0,0,.55);display:flex;align-items:flex-start;justify-content:center;padding:5vh 12px;overflow:auto}
+.rtPanel{background:var(--card);color:var(--fg);border:1px solid var(--bd);border-radius:16px;padding:16px 18px;width:min(580px,100%);text-align:left;box-sizing:border-box}
+.rtHead{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;font-size:1.1rem}
+.rtTop{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:8px 0}
+.rtPanel select{appearance:auto;-webkit-appearance:auto;width:auto;flex:1 1 140px;min-width:0;background:var(--bg);color:var(--fg);border:1px solid var(--bd);border-radius:8px;padding:6px 8px;font-size:.92rem;font-weight:400}
+.rtNm{display:flex;gap:8px;align-items:center;margin:8px 0}.rtNm input{flex:1;font:inherit;padding:6px 8px;border-radius:8px;border:1px solid var(--bd);background:var(--bg);color:var(--fg)}
+.rtB{display:flex;flex-wrap:wrap;gap:6px 8px;align-items:center;padding:8px 0;border-top:1px solid var(--bd)}
+.rtB select{flex:1 1 170px}.rtMin input{width:56px}.rtMv{margin-left:auto;display:flex;gap:4px}
+.rtChk{display:flex;gap:8px;align-items:center;margin:10px 0}
+.rtStartBtn{width:100%;margin-top:6px}
+.rtSm{color:var(--mut);font-size:.85rem}
+.rtH{display:flex;gap:10px;flex-wrap:wrap;justify-content:space-between;padding:6px 0;border-top:1px solid var(--bd);font-size:.88rem}
+.rtMid{text-align:center}.rtBig{font-size:1.4rem;font-weight:700;margin:4px 0}.rtCd{font-size:2.4rem;font-weight:700;color:var(--ac);margin:12px 0}
+.rtKpi{display:flex;gap:10px;margin:6px 0 12px}.rtKpi>div{flex:1;background:var(--bg);border-radius:10px;padding:10px;text-align:center;font-size:.85rem;color:var(--mut)}.rtKpi b{display:block;font-size:1.3rem;color:var(--fg)}
+.rtTags{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}.rtTag{border:1px solid var(--bd);border-radius:999px;padding:3px 10px;font-size:.88rem}
+.rtLock{opacity:.45;pointer-events:none}
+.rtCust{flex:1 1 100%;display:flex;flex-direction:column;gap:6px}
+.rtCust input[type=text],.rtCust textarea{font:inherit;padding:6px 8px;border-radius:8px;border:1px solid var(--bd);background:var(--bg);color:var(--fg);box-sizing:border-box;width:100%;resize:vertical}
+.rtMet{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:.9rem}.rtMet label{display:flex;align-items:center;gap:6px}.rtMet select{flex:0 1 160px}
+#rtCustom{margin:0 0 16px;padding:28px 20px}#rtCustom[hidden]{display:none!important}
+.rtCName{font-size:1.5rem;font-weight:700}.rtCNote{margin:10px auto 0;max-width:560px;color:var(--mut);white-space:pre-wrap}
+.rtCTime{font-size:3.2rem;font-weight:700;margin:18px 0;font-variant-numeric:tabular-nums;color:var(--ac)}
+
 sup.jzs{font-size:.62em;font-weight:600;vertical-align:baseline;position:relative;top:-.55em;margin-left:1px;line-height:0}
 .ch sup{font-size:.62em;font-weight:600;vertical-align:baseline;position:relative;top:-.55em;margin-left:1px}
 .ch .nm{font-size:.72rem;color:var(--mut);font-weight:400;white-space:nowrap}
@@ -251,7 +287,7 @@ tr.hl td{background:var(--chip);font-weight:700}
 </head>
 <body class="nomidi">
 <div class="topR" id="topR">
-<div class="coffee" id="coffee"><button type="button" id="coffeeBtn" class="tbtn" title="Buy me a coffee" aria-haspopup="true" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 9h11v5a4 4 0 0 1-4 4H9a4 4 0 0 1-4-4z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M16 10h1.4a2.4 2.4 0 0 1 0 4.8H16" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8 4.5v2M11.5 4.5v2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span class="tx">Buy me a coffee</span></button><div class="cmenu" id="coffeeMenu" hidden><a href="https://ko-fi.com/kutterweich91755" target="_blank" rel="noopener noreferrer">Ko-fi</a><a href="https://paypal.me/kutterweich" target="_blank" rel="noopener noreferrer">PayPal</a></div></div>
+<button type="button" id="rtOpenBtn" class="tbtn rtOpenBtn" title="Routine">▶ Routine</button>
 <div class="vol" id="volBox"><button type="button" id="volBtn" class="tbtn" title="Ton an/aus" aria-label="Ton an/aus"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3.6L12.5 5.5v13l-4.9-4H4z" fill="currentColor"/><path class="w1" d="M15.4 9.4a3.6 3.6 0 0 1 0 5.2" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path class="w2" d="M17.9 7a7 7 0 0 1 0 10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path class="mx" d="M15.5 9.5l5 5M20.5 9.5l-5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button><input type="range" id="vol" min="0" max="100" value="0" title="Lautstärke"></div>
 <button type="button" id="midiTop" class="midiTop tbtn" title="MIDI verbinden"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12.5" r="9.2" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="7" cy="13" r="1.15" fill="currentColor"/><circle cx="8.46" cy="9.46" r="1.15" fill="currentColor"/><circle cx="12" cy="8" r="1.15" fill="currentColor"/><circle cx="15.54" cy="9.46" r="1.15" fill="currentColor"/><circle cx="17" cy="13" r="1.15" fill="currentColor"/><path d="M9.2 19.2h5.6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg><span id="midiTopTxt">MIDI verbinden</span></button>
 </div>
@@ -260,6 +296,7 @@ tr.hl td{background:var(--chip);font-weight:700}
 <div class="row" id="areaSw" style="justify-content:center;margin:0 0 10px"><button type="button" class="chip on" id="aChord">Akkorde</button><button type="button" class="chip" id="aScale">Skalen</button><button type="button" class="chip" id="aSight">Notenlesen</button></div>
 <div class="row" id="learnRow" style="justify-content:center;margin:0 0 10px"><label class="sw"><span class="lbl" id="lbA">Üben</span><input type="checkbox" id="learnSw"><span class="trk"></span><span class="lbl dim" id="lbB">Lernen</span></label></div>
 </header>
+<div id="rtBar" hidden></div><div id="rtEdit" hidden></div><div id="rtCustom" class="card" hidden></div>
 <div class="shell">
 <aside id="leftBar" class="card">
 <div id="lbChord"><h2 style="margin-top:0">Akkordtyp</h2><div class="chips triSw"></div>
@@ -328,6 +365,7 @@ tr.hl td{background:var(--chip);font-weight:700}
 <div class="msel sm"><select id="scOct"><option value="1">1 Oktave</option><option value="2">2 Oktaven</option></select></div>
 <div class="msel sm"><select id="scHand"><option value="R">rechte Hand</option><option value="L">linke Hand</option><option value="B">Beide Hände</option></select></div>
 <div class="msel sm" id="scOrdWrap" style="display:none"><select id="scOrd"></select></div>
+<label class="scAll" id="scAllLbl"><input type="checkbox" id="scShowAll"> <span>Tonleiter zeigen</span></label>
 </div>
 <div id="scLearn">
 <div class="card" id="lnBody" style="text-align:left"></div>
@@ -491,7 +529,7 @@ function evalHeldCore(){if(area==='sight')return;if(area==='scale'){const mp={};
  const miss=[...need].filter(p=>!pcs.has(p)),bad=[...pcs].filter(p=>!allow.has(p));
  const bassOk=!(cur.akk&&cur.inv!=null)||held[0]%12===cur.bassPc;
  if(!miss.length&&!bad.length&&bassOk){fb.textContent='✓ Richtig!';fb.className='fb ok';
-  if(!solved){solved=true;solvedAt=Date.now();if(cur.vamp||cur.prog&&(cur.wander||cur.step<cur.prog.t.length-1)){if(cur.wander||cur.vamp){okCount++;if(race.on)race.score++;cntTxt()}pendingStep=true;reveal()}else{okCount++;if(race.on)race.score++;cntTxt();if(!race.on)reveal();if(nextMode()!=='off'||race.on)pendingNext=true}}holdArm()}
+  if(!solved){solved=true;solvedAt=Date.now();rtChordSolved();if(cur.vamp||cur.prog&&(cur.wander||cur.step<cur.prog.t.length-1)){if(cur.wander||cur.vamp){okCount++;if(race.on)race.score++;cntTxt()}pendingStep=true;reveal()}else{okCount++;if(race.on)race.score++;cntTxt();if(!race.on)reveal();if(nextMode()!=='off'||race.on)pendingNext=true}}holdArm()}
  else if(bad.length){holdClear();fb.textContent='✗ Falscher Ton: '+bad.map(p=>DEF[p][0]+acc(DEF[p][1])).join(', ');fb.className='fb bad'}
  else if(!miss.length){holdClear();fb.textContent='Der tiefste Ton muss '+cur.bassName+' sein';fb.className='fb bad'}
  else{holdClear();fb.textContent=`Noch ${miss.length} ${miss.length>1?'Töne':'Ton'} fehlen`}}
@@ -566,7 +604,7 @@ const PH=new Set();let PED=false;
 /* Modus „loslassen“ mit Pedal: Akkord gelöst, keine Taste mehr gedrückt, nur noch das Pedal → nach 2 s ohne neuen Ton weiter */
 var pedT=null;
 function pedArm(){if(pedT){clearTimeout(pedT);pedT=null}if(nextMode()!=='rel'||!PED||PH.size||!H.size||!solved||!(pendingStep||pendingNext)||area==='scale'||area==='sight')return;pedT=setTimeout(()=>{pedT=null;if(nextMode()==='rel'&&PED&&!PH.size&&solved&&(pendingStep||pendingNext))holdFire()},1500)}
-function onMidi(e){const[s,nt,v]=e.data,c=s&0xf0;if(c===0xB0&&nt===64){const dn=v>=64;pianoSus(dn);if(dn!==PED){PED=dn;if(!dn)[...H].forEach(m=>{if(!PH.has(m)){H.delete(m);IGN.delete(m)}});evalHeld();pedArm()}return}if(c===0x90&&v>0){chainAdv(nt);PH.add(nt);H.add(nt);IGN.delete(nt);pianoOn(nt,v)}else if(c===0x80||c===0x90){PH.delete(nt);if(!PED){H.delete(nt);IGN.delete(nt)}pianoOff(nt)}else return;if(c===0x90&&v>0){if(area==='scale')scaleNote(nt);else if(area==='sight')sightNote(nt)}else if(area==='scale'&&SKST[nt]){delete SKST[nt];if(SK&&SK.kind==='play')scShow()}evalHeld();pedArm()}
+function onMidi(e){const[s,nt,v]=e.data,c=s&0xf0;if(c===0xB0&&nt===64){const dn=v>=64;pianoSus(dn);if(dn!==PED){PED=dn;if(!dn)[...H].forEach(m=>{if(!PH.has(m)){H.delete(m);IGN.delete(m)}});evalHeld();pedArm()}return}if(c===0x90&&v>0){rtNoteOn(nt);chainAdv(nt);PH.add(nt);H.add(nt);IGN.delete(nt);pianoOn(nt,v)}else if(c===0x80||c===0x90){PH.delete(nt);if(!PED){H.delete(nt);IGN.delete(nt)}pianoOff(nt)}else return;if(c===0x90&&v>0){if(area==='scale')scaleNote(nt);else if(area==='sight')sightNote(nt)}else if(area==='scale'&&SKST[nt]){delete SKST[nt];if(SK&&SK.kind==='play')scShow()}evalHeld();pedArm()}
 function midiUi(ins,msg){const t=$('midiTop'),ok=!!(ins&&ins.length);document.body.classList.toggle('nomidi',!ok);if(!ok)document.querySelectorAll('.midihint .mh-t').forEach(e=>e.textContent=msg||'Verbinde dein MIDI-Keyboard über das Symbol oben rechts.');if(ins&&ins.length){t.classList.add('on');$('midiTopTxt').textContent='MIDI ✓';t.title='MIDI verbunden: '+ins.map(i=>i.name).join(', ')}else{t.classList.remove('on');$('midiTopTxt').textContent='MIDI verbinden';t.title=msg||'MIDI verbinden'}}
 async function midiConnect(){
  if(!navigator.requestMIDIAccess){midiUi(null,'Dieser Browser unterstützt kein Web MIDI. Nutze Chrome oder Edge am Computer.');return}
@@ -685,7 +723,7 @@ function jazzSevenths(){if(triManual)return;const back=()=>{TRI=true;triAuto=fal
  if(jazz&&TRI){TRI=false;triAuto=true;triBuild();rebuildLists()}else if(!jazz&&triAuto&&!TRI)back()}
 function refreshNext(){jazzSevenths();if(area==='scale'){if(SK)scNew();return}nextC=null;if(cur)next(true)}
 function emptyMsg(){const nk=!sel.maj.size&&!sel.min.size;if(gm==='akk')return'Wähl mindestens eine Akkordart und einen Grundton';if(gm==='stufen')return nk?'Wähl mindestens eine Tonart':'Wähl mindestens eine Stufe';if(nk)return'Wähl mindestens eine Tonart';return $('diaOnly').checked?'Nichts Diatonisches gefunden: Haken oder Taktbereich ändern':'Wähl mindestens eine Tonart'}
-function showTask(){holdClear();const c=cur,d=$('deg');$('repBtn').classList.toggle('on',!!c.rep);$('repBtn').setAttribute('aria-pressed',String(!!c.rep));$('repBtn').style.display=c.prog&&!c.wander?'':'none';$('key').textContent=kt(c);$('key').style.display=c.prog?'':'none';
+function showTask(){holdClear();rtShow();const c=cur,d=$('deg');$('repBtn').classList.toggle('on',!!c.rep);$('repBtn').setAttribute('aria-pressed',String(!!c.rep));$('repBtn').style.display=c.prog&&!c.wander?'':'none';$('key').textContent=kt(c);$('key').style.display=c.prog?'':'none';
  if(c.vamp){d.style.fontSize='';d.innerHTML=vampHtml(c);$('song').textContent=`${c.vc[0].name} ↔ ${c.vc[1].name} · endlos`;$('chord').style.fontSize=''}
  else if(c.prog){d.style.fontSize='';d.innerHTML=c.wander?wanderHtml(c):tilesHtml(c);$('song').textContent=c.prog.line||(c.prog.ex?`${c.prog.n} · ${c.prog.s}`:`${c.prog.n} · z. B. in: ${c.prog.s}`);$('chord').style.fontSize=''}
  else{d.style.fontSize='';d.innerHTML=nextC?`<div class="pair"><div class="lab">Spiele diesen Akkord</div><div class="lab">Nächste</div><div class="kk big">${kkTxt(c)}</div><div class="kk sm">${kkTxt(nextC)}</div><div class="tile on"><span class="r">${tileTxt(c)}</span></div><div class="tile nx"><span class="r">${tileTxt(nextC)}</span></div></div>`:`<div class="pair" style="grid-template-columns:1fr"><div class="lab">Spiele diesen Akkord</div><div class="kk big">${kkTxt(c)}</div><div class="tile on"><span class="r">${tileTxt(c)}</span></div></div>`;$('song').textContent=c.akk?(c.inv!=null?`${POSL[c.inv]} · tiefster Ton: ${c.bassName}`:c.def[4]?'Terz, Septime und Extension genügen (Grundton und Quinte optional)':''):'';$('chord').style.fontSize=''}}
@@ -822,7 +860,7 @@ function scNew(keep){Object.keys(SKST).forEach(k=>delete SKST[k]);const roots=[.
  if(mode==='seq'){if(!SQ||SQ.sig!==sqSig())SQ=sqInit();else if(SQ.started&&!keep)sqAdv(SQ);SQ.started=true;pk=sqPick(SQ,types);const nx=Object.assign({},SQ);sqAdv(nx);SKN=sqPick(nx,types);scLast=pk.ty.n+pk.root}
  else{pk=SKN&&scSel.roots.has(SKN.root)&&scSel.types.has(SKN.ty.n)?SKN:scPick(scLast);scLast=pk.ty.n+pk.root;SKN=scPick(scLast)}
  const root=pk.root,ty=pk.ty,tones=scTones(root,ty),n=tones.length;
- SK={kind,root,ty,tones,n,step:0,errs:0,done:false,rev:false,bad:-1,tried:false,rootPc:parse(root).semi,ord:mode==='seq'?$('scOrd').value:null};
+ SK={kind,root,ty,tones,n,step:0,errs:0,done:false,rev:false,bad:-1,tried:false,rootPc:parse(root).semi,ord:mode==='seq'?$('scOrd').value:null,t0:Date.now()};
  if(kind==='play'){const oct=+$('scOct').value,dir=$('scDir').value,hand=$('scHand').value,up=[];for(let i=0;i<=n*oct;i++)up.push(i);
   const B=hand==='B',fR=$('scFing').checked?fingering(root,ty,B?'R':hand,up.length):null,fL=B&&$('scFing').checked?fingering(root,ty,'L',up.length):null;
   const ord=dir==='up'?up:dir==='down'?[...up].reverse():[...up,...[...up].reverse().slice(1)];
@@ -834,14 +872,14 @@ const SKST={};
 function scNote(m){const s=SK;if(area!=='scale'||!s||s.kind!=='play'||s.done)return;
  const exp=s.tones[s.seq[s.step].ti].pc;
  if(m%12===exp){if(s.hand==='B'){s.pend=s.pend||[];if(s.pend.some(x=>Math.abs(x-m)<12))return;SKST[m]='ok';s.pend.push(m);if(s.pend.length<2){$('scFb').textContent='Jetzt die zweite Hand: derselbe Ton in einer anderen Oktave';$('scFb').className='fb';scShow();return}s.pend=[]}
-  SKST[m]='ok';s.step++;s.bad=-1;if(s.step===s.seq.length){s.done=true;if(!s.errs){okCount++;cntTxt();}
+  SKST[m]='ok';s.step++;s.bad=-1;if(s.step===s.seq.length){s.done=true;rtScaleDone(s);if(!s.errs){okCount++;cntTxt();}
   $('scFb').textContent=s.errs?`Geschafft, aber mit ${s.errs} Fehler${s.errs>1?'n':''}`:'✓ Geschafft, fehlerfrei!';$('scFb').className='fb '+(s.errs?'bad':'ok');
   if($('scAuto').checked){const mg=$('scFb').textContent,cl=$('scFb').className;scNew();$('scFb').textContent=mg;$('scFb').className=cl}}else{$('scFb').textContent='';$('scFb').className='fb'}}
  else{SKST[m]='bad';s.pend=[];s.errs++;s.bad=s.step;const n=m%12;$('scFb').textContent='✗ Falscher Ton: '+(DEF[n][0]+acc(DEF[n][1]));$('scFb').className='fb bad'}
  scShow()}
 const scaleNote=scNote;
 function scAnswer(n){const s=SK;if(!s||s.done)return;
- if(n===s.ty.n){s.done=true;if(!s.tried){okCount++;cntTxt();}$('scFb').textContent=s.tried?'Richtig, aber erst im zweiten Anlauf':'✓ Richtig!';$('scFb').className='fb ok';if($('scAuto').checked&&!s.tried)setTimeout(()=>{if(SK===s)scNew()},800)}
+ if(n===s.ty.n){s.done=true;rtScaleDone(s);if(!s.tried){okCount++;cntTxt();}$('scFb').textContent=s.tried?'Richtig, aber erst im zweiten Anlauf':'✓ Richtig!';$('scFb').className='fb ok';if($('scAuto').checked&&!s.tried)setTimeout(()=>{if(SK===s)scNew()},800)}
  else{s.tried=true;s.errs++;(s.wrong=s.wrong||[]).push(n);$('scFb').textContent='✗ Nicht ganz';$('scFb').className='fb bad'}
  scShow()}
 /* Metronom und Grooves (in allen Bereichen verfügbar) */
@@ -952,7 +990,9 @@ function staffRow(tones,rp){const m0=60+rp,mp={};tones.forEach(t=>mp[t.pc]=[t.l,
  ns.forEach((n,k)=>{const cx=64+k*40;for(let e=28;e>=n.idx;e-=2)s+=`<line x1="${cx-11}" x2="${cx+11}" y1="${y(e)}" y2="${y(e)}" stroke="#000"/>`;for(let e=40;e<=n.idx;e+=2)s+=`<line x1="${cx-11}" x2="${cx+11}" y1="${y(e)}" y2="${y(e)}" stroke="#000"/>`;
   s+=g('n',cx-6,y(n.idx));if(n.a>0)s+=g('sh',cx-23,y(n.idx));else if(n.a<0)s+=g('fl',cx-19,y(n.idx))});
  return s+'</svg>'}
-$('scTask').onchange=()=>{$('scOrdWrap').style.display=$('scTask').value==='seq'?'':'none';scNew()};
+$('scTask').onchange=()=>{$('scOrdWrap').style.display=$('scTask').value==='seq'?'':'none';$('scAllLbl').style.display=$('scTask').value==='name'?'none':'';scNew()};
+try{$('scShowAll').checked=localStorage.getItem('pt-scall')==='1'}catch(e){}
+$('scShowAll').onchange=()=>{try{localStorage.setItem('pt-scall',$('scShowAll').checked?'1':'0')}catch(e){}if(SK)scShow()};
 const POSTER={"ion":{"0":["5 4 3 2 1 3 2 1","1 2 3 1 2 3 4 5"],"1":["3 2 1 4 3 2 1 3","2 3 1 2 3 4 1 2"],"2":["5 4 3 2 1 3 2 1","1 2 3 1 2 3 4 5"],"3":["3 2 1 4 3 2 1 3","3 1 2 3 4 1 2 3"],"4":["5 4 3 2 1 3 2 1","1 2 3 1 2 3 4 5"],"5":["5 4 3 2 1 3 2 1","1 2 3 4 1 2 3 4"],"6":["4 3 2 1 3 2 1 4","2 3 4 1 2 3 1 2"],"7":["5 4 3 2 1 3 2 1","1 2 3 1 2 3 4 5"],"8":["3 2 1 4 3 2 1 3","3 4 1 2 3 1 2 3"],"9":["5 4 3 2 1 3 2 1","1 2 3 1 2 3 4 5"],"10":["3 2 1 4 3 2 1 3","2 1 2 3 1 2 3 4"],"11":["4 3 2 1 4 3 2 1","1 2 3 1 2 3 4 5"]},"dor":{"0":["5 4 3 2 1 3 2 1","1 2 3 1 2 3 4 5"],"1":["3 2 1 4 3 2 1 3","2 3 1 2 3 4 1 2"],"2":["5 4 3 2 1 3 2 1","1 2 3 1 2 3 4 5"],"3":["2 1 4 3 2 1 2 3","2 1 2 3 4 1 2 3"],"4":["5 4 3 2 1 3 2 1","1 2 3 1 2 3 4 5"],"5":["5 4 3 2 1 3 2 1","1 2 3 4 1 2 3 4"],"6":["4 3 2 1 3 2 1 4","2 3 1 2 3 4 1 2"],"7":["5 4 3 2 1 3 2 1","1 2 3 1 2 3 4 5"],"8":["3 2 1 3 2 1 3 2","2 3 1 2 3 1 2 3"],"9":["5 4 3 2 1 3 2 1","1 2 3 1 2 3 4 5"],"10":["2 1 4 3 2 1 3 2","2 1 2 3 4 1 2 3"],"11":["4 3 2 1 4 3 2 1","1 2 3 1 2 3 4 5"]},"phr":{"0":["5 4 3 2 1 3 2 1","1 2 3 1 2 3 4 5"],"1":["3 2 1 3 2 1 4 3","3 1 2 3 4 1 2 3"],"2":["5 4 3 2 1 3 2 1","2 3 1 2 3 2 1 2"],"3":["2 1 4 3 2 1 3 2","3 1 2 3 4 1 2 3"],"4":["3 2 1 3 2 1 4 3","3 1 2 3 4 1 2 3"],"5":["5 4 3 2 1 3 2 1","1 2 3 4 1 2 3 5"],"6":["3 2 1 3 2 1 4 3","3 1 2 3 4 1 2 3"],"7":["5 4 3 2 1 3 2 1","2 3 4 1 2 3 1 2"],"8":["3 2 1 3 2 1 4 3","3 1 2 3 4 1 2 3"],"9":["3 2 1 3 2 1 4 3","3 4 1 2 3 1 2 3"],"10":["2 1 3 2 1 4 3 2","4 1 2 3 1 2 3 4"],"11":["3 2 1 3 2 1 4 3","3 1 2 3 4 1 2 3"]},"lyd":{"0":["5 4 3 2 1 3 2 1","2 3 1 2 3 1 2 3"],"1":["3 2 1 4 3 2 1 3","2 3 1 2 3 4 1 2"],"2":["2 1 4 3 2 1 3 2","2 1 2 3 4 1 2 3"],"3":["3 2 1 3 2 1 2 3","2 1 2 1 2 3 1 2"],"4":["5 4 3 2 1 2 3 1","1 2 3 1 2 3 4 5"],"5":["5 4 3 2 1 3 2 1","1 2 3 1 2 3 4 5"],"6":["4 3 2 1 3 2 1 2","2 3 4 1 2 3 1 2"],"7":["5 4 3 2 1 3 2 1","2 3 1 2 3 1 2 3"],"8":["3 2 1 4 3 2 1 3","2 3 1 2 3 4 1 2"],"9":["2 1 3 2 1 3 2 1","2 1 2 3 1 2 3 4"],"10":["3 2 1 4 3 2 1 2","2 1 2 3 1 2 3 4"],"11":["4 3 2 1 4 3 2 1","1 2 3 1 2 3 4 5"]},"mix":{"0":["5 4 3 2 1 3 2 1","1 2 3 1 2 3 4 5"],"1":["3 2 1 4 3 2 1 3","2 3 1 2 3 4 1 2"],"2":["5 4 3 2 1 3 2 1","1 2 3 1 2 3 4 5"],"3":["2 1 4 3 2 1 2 3","2 1 2 3 4 1 2 3"],"4":["5 4 3 2 1 3 2 1","1 2 3 1 2 3 4 5"],"5":["5 4 3 2 1 3 2 1","1 2 3 1 2 3 4 5"],"6":["4 3 2 1 3 2 1 2","2 3 4 1 2 3 1 2"],"7":["5 4 3 2 1 3 2 1","1 2 3 1 2 3 4 5"],"8":["3 2 1 3 2 1 3 2","2 3 1 2 3 1 2 3"],"9":["5 4 3 2 1 3 2 1","1 2 3 1 2 3 4 5"],"10":["3 2 1 3 2 1 2 3","2 1 2 3 1 2 3 4"],"11":["4 3 2 1 4 3 2 1","1 2 3 1 2 3 4 5"]},"aeo":{"0":["5 4 3 2 1 3 2 1","1 2 3 1 2 3 4 5"],"1":["3 2 1 4 3 2 1 3","3 4 1 2 3 1 2 3"],"2":["5 4 3 2 1 3 2 1","1 2 3 1 2 3 4 5"],"3":["2 1 4 3 2 1 3 2","3 1 2 3 4 1 2 3"],"4":["5 4 3 2 1 3 2 1","1 2 3 1 2 3 4 5"],"5":["5 4 3 2 1 3 2 1","1 2 3 4 1 2 3 4"],"6":["4 3 2 1 3 2 1 4","2 3 1 2 3 1 2 3"],"7":["5 4 3 2 1 3 2 1","1 2 3 1 2 3 4 5"],"8":["3 2 1 3 2 1 4 3","3 4 1 2 3 1 2 3"],"9":["5 4 3 2 1 3 2 1","1 2 3 1 2 3 4 5"],"10":["2 1 3 2 1 4 3 2","2 1 2 3 1 2 3 4"],"11":["4 3 2 1 4 3 2 1","1 2 3 1 2 3 4 5"]},"loc":{"0":["5 3 2 1 4 3 2 1","1 2 3 1 2 3 4 5"],"1":["2 1 4 3 2 1 3 2","4 1 2 3 1 2 3 4"],"2":["5 3 2 1 4 3 2 1","2 3 1 2 3 4 1 2"],"3":["2 1 4 3 2 1 3 2","4 1 2 3 1 2 3 4"],"4":["2 1 4 3 2 1 3 2","3 1 2 3 4 1 2 3"],"5":["5 4 3 2 1 3 2 1","1 2 3 4 1 2 3 5"],"6":["2 1 4 3 2 1 3 2","4 1 2 3 1 2 3 4"],"7":["5 3 2 1 4 3 2 1","2 3 4 1 2 3 1 2"],"8":["2 1 4 3 2 1 3 2","4 1 2 3 1 2 3 4"],"9":["5 3 2 1 4 3 2 1","3 2 1 2 3 1 2 3"],"10":["2 1 3 2 1 4 3 2","4 1 2 3 1 2 3 4"],"11":["2 1 4 3 2 1 3 2","4 1 2 3 1 2 3 4"]}};
 /* ===== Lernmodus Skalen im Poster-Stil: Klaviatur mit Fingerkreisen ===== */
 const POSTER_KEY={'Ionisch (Dur)':'ion','Dorisch':'dor','Phrygisch':'phr','Lydisch':'lyd','Mixolydisch':'mix','Äolisch (natürlich Moll)':'aeo','Lokrisch':'loc'};
@@ -985,21 +1025,22 @@ function learnRender(){const pc=LN.pc,sc=SCALES[LN.scale],root=bestRoot(pc,sc),t
   if(inf[3]){const pp=(rp-PAR[inf[3]][inf[4]]+12)%12,pn=inf[3]==='D'?PN[pp]+'-Dur':PMN[pp]+'-Moll ('+(inf[3]==='M'?'melodisch':'harmonisch')+')';h+=`<h2>Verwandtschaft</h2><p>${inf[4]+1}. Modus von ${pn}: dieselben Töne, aber ab dem ${inf[4]+1}. Ton.</p>`}}
  $('lnBody').innerHTML=h}
 /* ===== Skalen: Klaviatur statt Kacheln beim Üben, Chips statt Dropdowns beim Lernen ===== */
-function kbPlay(m,octs,hand){const KW=34,KH=96,BW=20,BH=60,LB=30,WHp={0:0,2:1,4:2,5:3,7:4,9:5,11:6},BKp={1:0,3:1,6:3,8:4,10:5},INK='#1b1b1b',SC='#8fd6cb',SCD='#17685e',RT='#f7a23c',RTD='#e08a1c',BAD='#f28b82',BADD='#b3261e';
+function kbPlay(m,octs,hand){const KW=34,KH=96,BW=20,BH=60,LB=30,WHp={0:0,2:1,4:2,5:3,7:4,9:5,11:6},BKp={1:0,3:1,6:3,8:4,10:5},INK='#1b1b1b',SC='#8fd6cb',SCD='#17685e',RT='#f7a23c',RTD='#e08a1c',BAD='#f28b82',BADD='#b3261e',SCP='#d3e9e5',SCDP='#2f4a46',RTP='#f3dcc2',RTDP='#6b4a2c';
  const hasF=Object.values(m).some(k=>k.f!=null),H=KH+(hasF?12+38+(hand.includes('@')?16:0):6);
  let s=`<svg viewBox="0 0 ${2*LB+7*octs*KW} ${H}" style="width:100%;min-width:${Math.min(octs*210,560)}px;max-width:${octs*320}px;display:block;margin:6px auto;color:var(--fg)" font-family="inherit">`;
  const wh=[],bl=[],circ=[];
  for(let t=0;t<12*octs;t++){const p=t%12,oc=Math.floor(t/12),k=m[t];
-  if(p in WHp){const w=oc*7+WHp[p],x=LB+w*KW;wh.push(`<rect x="${x}" y="0" width="${KW}" height="${KH}" rx="4" fill="${k?(k.bad?BAD:k.root?RT:SC):'#fff'}" stroke="${INK}" stroke-width="1.5"/>`+(k&&k.label?`<text x="${x+KW/2}" y="${KH-20}" text-anchor="middle" font-size="15" font-weight="800" fill="${INK}">${k.label}</text><text x="${x+KW/2}" y="${KH-7}" text-anchor="middle" font-size="10" font-weight="700" fill="${INK}">${k.deg}</text>`:''));if(k&&k.f!=null)circ.push([x+KW/2,false,k])}
-  else{const w=oc*7+BKp[p],x=LB+(w+1)*KW-BW/2;bl.push(`<rect x="${x}" y="0" width="${BW}" height="${BH}" rx="3" fill="${k?(k.bad?BADD:k.root?RTD:SCD):INK}" stroke="${INK}" stroke-width="1.5"/>`+(k&&k.label?`<text x="${x+BW/2}" y="${BH-17}" text-anchor="middle" font-size="12" font-weight="800" fill="${k.root?'#1b1b1b':'#fff'}">${k.label}</text><text x="${x+BW/2}" y="${BH-6}" text-anchor="middle" font-size="9" font-weight="700" fill="${k.root?'#1b1b1b':'#fff'}">${k.deg}</text>`:''));if(k&&k.f!=null)circ.push([LB+(w+1)*KW,true,k])}}
+  if(p in WHp){const w=oc*7+WHp[p],x=LB+w*KW;wh.push(`<rect x="${x}" y="0" width="${KW}" height="${KH}" rx="4" fill="${k?(k.bad?BAD:k.dim?(k.root?RTP:SCP):k.root?RT:SC):'#fff'}" stroke="${INK}" stroke-width="1.5"/>`+(k&&k.label?`<text x="${x+KW/2}" y="${KH-20}" text-anchor="middle" font-size="15" font-weight="800" fill="${INK}">${k.label}</text><text x="${x+KW/2}" y="${KH-7}" text-anchor="middle" font-size="10" font-weight="700" fill="${INK}">${k.deg}</text>`:''));if(k&&k.f!=null)circ.push([x+KW/2,false,k])}
+  else{const w=oc*7+BKp[p],x=LB+(w+1)*KW-BW/2;bl.push(`<rect x="${x}" y="0" width="${BW}" height="${BH}" rx="3" fill="${k?(k.bad?BADD:k.dim?(k.root?RTDP:SCDP):k.root?RTD:SCD):INK}" stroke="${INK}" stroke-width="1.5"/>`+(k&&k.label?`<text x="${x+BW/2}" y="${BH-17}" text-anchor="middle" font-size="12" font-weight="800" fill="${k.root&&!k.dim?'#1b1b1b':'#fff'}">${k.label}</text><text x="${x+BW/2}" y="${BH-6}" text-anchor="middle" font-size="9" font-weight="700" fill="${k.root&&!k.dim?'#1b1b1b':'#fff'}">${k.deg}</text>`:''));if(k&&k.f!=null)circ.push([LB+(w+1)*KW,true,k])}}
  s+=wh.join('')+bl.join('');
  if(hasF){const y0=KH+12;s+=hand.split('|').map(h=>{const[t,q]=h.split('@');if(q===undefined)return`<text x="0" y="${y0+22}" font-size="13" font-weight="800" fill="currentColor">${t}</text>`;const pp=+q%12,oc=Math.floor(+q/12),cx=pp in WHp?LB+(oc*7+WHp[pp])*KW+KW/2:LB+(oc*7+BKp[pp]+1)*KW;return`<text x="${cx}" y="${y0+51}" text-anchor="middle" font-size="12" font-weight="800" fill="currentColor">${t}</text>`}).join('');
-  circ.forEach(([cx,black,k])=>{const cy=y0+(black?10:24),bg=black?(k.root?RTD:SCD):(k.root?RT:SC),col=black&&!k.root?'#fff':INK;s+=`<circle cx="${cx}" cy="${cy}" r="10" fill="${bg}" stroke="${INK}" stroke-width="1.5"/><text x="${cx}" y="${cy+4.5}" text-anchor="middle" font-size="13" font-weight="800" fill="${col}">${k.f}</text>`})}
+  circ.forEach(([cx,black,k])=>{const cy=y0+(black?10:24),bg=k.dim?(black?(k.root?RTDP:SCDP):(k.root?RTP:SCP)):black?(k.root?RTD:SCD):(k.root?RT:SC),col=black&&(!k.root||k.dim)?'#fff':INK;s+=`<circle cx="${cx}" cy="${cy}" r="10" fill="${bg}" stroke="${INK}" stroke-width="1.5"/><text x="${cx}" y="${cy+4.5}" text-anchor="middle" font-size="13" font-weight="800" fill="${col}">${k.f}</text>`})}
  return s+'</svg>'}
 function scShow(){const s=SK;if(!s)return;$('scHow').textContent=s.kind==='play'?(s.hand==='B'?'Spiele jeden Ton mit beiden Händen gleichzeitig, in zwei verschiedenen Oktaven.':s.ord?SQHOW[s.ord]:'Spiele die Töne der Skala nacheinander.'):'Wähle unten die richtige Skala.';const f=$('scFing').checked,m={};let svg;
  if(s.kind==='play'){$('scName').textContent='';
-  const B=s.hand==='B',put=(pos,e,fg)=>{if(m[pos])return;m[pos]={root:e.ti===0,label:s.tones[e.ti].name,deg:e.ti===0?(pos>s.rootPc?'8':'1'):s.tones[e.ti].deg,f:f&&fg!=null?fg:null}};
-  s.seq.forEach((e,i)=>{if(!(i<s.step||s.rev||s.done||(i===s.step&&s.pend&&s.pend.length)))return;if(B){put(e.s,e,e.fl);put(e.s2,e,e.f)}else put(e.s,e,e.f)});
+  const B=s.hand==='B',all=$('scShowAll').checked,put=(pos,e,fg,dim)=>{if(m[pos]&&!(m[pos].dim&&!dim))return;m[pos]={root:e.ti===0,label:s.tones[e.ti].name,deg:e.ti===0?(pos>s.rootPc?'8':'1'):s.tones[e.ti].deg,f:f&&fg!=null?fg:null,dim}};
+  /* „Tonleiter zeigen“: noch nicht gespielte Töne blass anzeigen */
+  s.seq.forEach((e,i)=>{const pl=i<s.step||s.rev||s.done||(i===s.step&&s.pend&&s.pend.length);if(!pl&&!all)return;const d=!pl;if(B){put(e.s,e,e.fl,d);put(e.s2,e,e.f,d)}else put(e.s,e,e.f,d)});
   {const ne=s.seq[Math.min(s.step,s.seq.length-1)],ref=ne?ne.s:s.rootPc,top=s.octs*12;Object.entries(SKST).forEach(([mm,st])=>{if(st!=='bad'||!H.has(+mm))return;const pc=((+mm%12)+12)%12;let best=null;for(let p=pc;p<top;p+=12)if(best===null||Math.abs(p-ref)<Math.abs(best-ref))best=p;if(best!==null)m[best]={bad:true,f:null}})}
   svg=kbPlay(m,s.octs,B?`LH@${s.rootPc}|RH@${s.rootPc+12*s.oct}`:s.hand==='L'?'LH':'RH');
   const cs=!s.done&&s.seq[s.step]?s.seq[s.step]:null,nx=f&&s.hasF&&cs?cs.f:null,nl=f&&s.hasF&&cs?cs.fl:null;
@@ -1183,7 +1224,7 @@ function srNew(){const f=$('srFb'),fail=msg=>{SR=null;$('srStaff').innerHTML='';
   ok=['music','notes'].concat(SRS.cq.size?['chords']:[],SRS.iv.size&&SRS.ia.size?['intervals']:[]),types=SRS.mode==='mixed'?ok:[SRS.mode];
  for(let b=0;b<bars;b++){const t=rnd(types);let bar=srBar(t,ctx,clefs);if(!bar&&SRS.mode==='mixed')bar=srBar(rnd(['music','notes']),ctx,clefs);
   if(!bar)return fail(t==='chords'?'Der Bereich ist zu klein für die gewählten Akkorde':'Der Bereich ist zu klein für die gewählten Intervalle');steps.push(...bar)}
- SR={steps:steps.map(s=>({...s,got:new Set(),ok:false,bad:false})),i:0,errs:0,done:false,rev:false};$('srNext').textContent='Weiter';f.textContent='';f.className='fb';srRender()}
+ SR={steps:steps.map(s=>({...s,got:new Set(),ok:false,bad:false})),i:0,errs:0,done:false,rev:false,t0:Date.now()};$('srNext').textContent='Weiter';f.textContent='';f.className='fb';srRender()}
 function srRender(){const s=SR;if(!s){$('srStaff').innerHTML='';return}
  const T=SRS.hands!=='B',B=SRS.hands!=='T',ks=KS[SRS.key],cnt=Math.abs(ks),N=s.steps.length,y=i=>95-(i-30)*5,
   g=(k,x,yy,f)=>`<path transform="translate(${x},${yy}) scale(.04,-.04)" d="${GL[k]}" fill="${f}"/>`,
@@ -1214,14 +1255,14 @@ function srRender(){const s=SR;if(!s){$('srStaff').innerHTML='';return}
   o+='</g>'}
  $('srStaff').innerHTML=`<div style="overflow-x:auto"><svg viewBox="0 ${ymin} ${W} ${nSys*sh+(nSys-1)*12}" style="width:100%;max-width:${Math.round(W*1.3)}px;display:block;margin:6px auto">${o}</svg></div>`;
  $('srProg').textContent=`Note ${Math.min(s.i+1,N)} von ${N}`}
-function srFinish(){const s=SR;s.done=true;srRender();
+function srFinish(){const s=SR;s.done=true;rtSightDone(s);srRender();
  if(SRR.on){setTimeout(()=>{if(SR===s&&SRR.on)srNew()},150);return}
  const f=$('srFb');if(!s.errs){okCount++;cntTxt();f.textContent='✓ Geschafft, fehlerfrei!';f.className='fb ok'}else{f.textContent=`Geschafft, aber mit ${s.errs} ${s.errs>1?'Fehlern':'Fehler'} (zählt nicht)`;f.className='fb bad'}
  if($('srAuto').checked)setTimeout(()=>{if(SR===s&&!SRR.on)srNew()},1500)}
 function sightNote(m){const s=SR;if(area!=='sight'||!s||s.done)return;if(SRR.on&&performance.now()>=SRR.end)return;
  const st=s.steps[s.i],need=st.notes.map(n=>n.m),f=$('srFb');
  if(need.includes(m)){st.got.add(m);st.bad=false;f.textContent='';f.className='fb';if(need.every(x=>st.got.has(x))){st.ok=true;s.i++;if(SRR.on)SRR.score++;if(s.i>=s.steps.length){srFinish();return}}}
- else{s.errs++;st.bad=true;f.textContent=`✗ Falsch: gespielt ${midiName(m)}${$('srReveal').checked?', gesucht '+st.notes.map(srLab).join(' + '):''}`;f.className='fb bad'}
+ else{s.errs++;st.bad=true;rtNoteErr(st);f.textContent=`✗ Falsch: gespielt ${midiName(m)}${$('srReveal').checked?', gesucht '+st.notes.map(srLab).join(' + '):''}`;f.className='fb bad'}
  srRender()}
 function srRaceStart(){if(!SRS.hands){srNew();return}SRR.dur=Math.max(5,Math.min(600,+$('srRaceSecs').value||60));SRR.score=0;SRR.on=true;SRR.end=performance.now()+SRR.dur*1000;$('srRaceBtn').textContent='⏹ Abbrechen';srNew();clearInterval(SRR.timer);SRR.timer=setInterval(srTick,100);srTick()}
 function srTick(){const left=SRR.end-performance.now();if(left<=0){srRaceEnd(true);return}$('srTimer').textContent=`⏱ ${(left/1000).toFixed(1)} s · ✓ ${SRR.score}`}
@@ -1276,9 +1317,7 @@ $('dispRow').onclick=e=>{const b=e.target.closest('[data-d]');if(!b)return;DISP=
 dispBuild();
 let srRz;window.addEventListener('resize',()=>{clearTimeout(srRz);srRz=setTimeout(()=>{if(area==='sight'&&SR)srRender()},150)});
 /* Spenden-Menü und Klang der MIDI-Eingabe (oben rechts) */
-$('coffeeBtn').onclick=e=>{e.stopPropagation();const m=$('coffeeMenu');m.hidden=!m.hidden;$('coffeeBtn').setAttribute('aria-expanded',String(!m.hidden))};
-document.addEventListener('click',e=>{if(!e.target.closest('#coffee')){$('coffeeMenu').hidden=true;$('coffeeBtn').setAttribute('aria-expanded','false')}});
-document.addEventListener('keydown',e=>{if(e.key==='Escape')$('coffeeMenu').hidden=true});
+/* Spenden-Knopf vorerst entfernt */
 const PV={vol:0,mute:false,master:null,notes:new Map(),sus:false};
 const pvGain=()=>PV.mute?0:PV.vol;
 function pvMaster(){const c=ac();if(!PV.master){const g=c.createGain();if(c.createDynamicsCompressor){const k=c.createDynamicsCompressor();g.connect(k);k.connect(c.destination)}else g.connect(c.destination);PV.master=g}PV.master.gain.value=pvGain();return PV.master}
@@ -1617,6 +1656,54 @@ add / 6/9¦add / 6/9¦add / 6/9
 Add-Akkord¦Add chord¦Acorde add
 Grundton, Terz und None genügen (Quinte optional)¦Root, third and ninth are enough (fifth optional)¦Bastan la fundamental, la tercera y la novena (quinta opcional)
 Grundton, Terz, Sexte und None genügen (Quinte optional)¦Root, third, sixth and ninth are enough (fifth optional)¦Bastan la fundamental, la tercera, la sexta y la novena (quinta opcional)
+▶ Routine¦▶ Routine¦▶ Rutina
+Geschafft¦Done¦Hecho
+Weiter mit¦Next up¦A continuación
+Los¦Go¦Vamos
+Gesamt¦Total¦Total
+Pausiert¦Paused¦En pausa
+Pausiert – spiel einfach weiter¦Paused – just keep playing¦En pausa: sigue tocando
+Letzte Aufgabe¦Last task¦Última tarea
+Pause¦Pause¦Pausa
+Block überspringen¦Skip block¦Saltar bloque
+Beenden¦End¦Terminar
+Einstellen¦Set up¦Configurar
+eingestellt¦set up¦configurado
+aktuelle Einstellungen¦current settings¦ajustes actuales
+Nach oben¦Move up¦Subir
+Nach unten¦Move down¦Bajar
+Block löschen¦Delete block¦Eliminar bloque
+Noch keine Routine gespielt.¦No routine played yet.¦Aún no has hecho ninguna rutina.
+Deine Routinen¦Your routines¦Tus rutinas
+Neu¦New¦Nueva
+Kopie¦Copy¦Copia
+Löschen¦Delete¦Eliminar
+Name¦Name¦Nombre
+Noch keine Blöcke.¦No blocks yet.¦Aún no hay bloques.
++ Block¦+ Block¦+ Bloque
+Schwachstellen öfter üben¦Practise weak spots more often¦Practicar más los puntos débiles
+▶ Starten¦▶ Start¦▶ Empezar
+Letzte Routinen¦Recent routines¦Rutinas recientes
+Block einstellen:¦Set up block:¦Configurar bloque:
+Wähle unten Tonarten, Akkorde, Skalen usw.¦Choose keys, chords, scales and more below.¦Elige abajo tonalidades, acordes, escalas, etc.
+Übernehmen¦Apply¦Aplicar
+Abbrechen¦Cancel¦Cancelar
+Aufgaben¦Tasks¦Tareas
+auf Anhieb richtig¦right first time¦a la primera
+Keine auffälligen Schwachstellen.¦No notable weak spots.¦Sin puntos débiles destacables.
+Schwachstellen¦Weak spots¦Puntos débiles
+Routine beendet¦Routine finished¦Rutina terminada
+Nochmal¦Again¦Otra vez
+Fertig¦Done¦Listo
+Notenzeile¦Line of notes¦Línea de notas
+Tonart-Wanderung¦Key journey¦Recorrido por tonalidades
+Zufällige Akkorde¦Random Chords¦Acordes aleatorios
+Progressions¦Progressions¦Progresiones
+Akkordketten¦Chord chains¦Cadenas de acordes
+Zwei Akkorde im Wechsel¦Two chords alternating¦Dos acordes alternados
+Tonleiter zeigen¦Show scale¦Mostrar escala
+Eigener Block¦Custom block¦Bloque propio
+BPM¦BPM¦BPM
 Anzeige¦Display¦Mostrar
 Stufe¦Degree¦Grado
 Akkord¦Chord¦Acorde
@@ -1783,6 +1870,137 @@ function setLang(l){jzUnwrap();LANG=l;ftLinks();try{localStorage.setItem('pt-lan
 $('langs').onclick=e=>{const b=e.target.closest('[data-lang]');if(b&&b.dataset.lang!==LANG)setLang(b.dataset.lang)};
 langBuild();
 {let l0='en';try{l0=localStorage.getItem('pt-lang')||'en'}catch(e){}if(l0!=='de'&&LANGS.some(x=>x[0]===l0))setLang(l0)}
+/* ===== Routine: Übeplan aus Blöcken mit Zeit, Ablauf, Auswertung und Schwachstellen ===== */
+var RTR=null,RTE=null;
+const RTT={akk:['chord','akk','Zufällige Akkorde'],stufen:['chord','stufen','Stufenakkorde'],verlauf:['chord','verlauf','Progressions'],inter:['chord','inter','Akkordketten'],wander:['chord','wander','Tonart-Wanderung'],vamp:['chord','vamp','Zwei Akkorde im Wechsel'],scale:['scale',null,'Skalen'],sight:['sight',null,'Notenlesen'],custom:['custom',null,'Eigener Block']};
+const rtEsc=v=>String(v==null?'':v).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const rtLab=b=>b.type==='custom'?rtEsc(b.name||'Eigener Block'):RTT[b.type][2];
+const RT_PH={name:{de:'Name, z. B. Repertoire üben',en:'Name, e.g. repertoire',es:'Nombre, p. ej. repertorio'},note:{de:'Notiz (optional), z. B. Stücke oder Takte',en:'Note (optional), e.g. pieces or bars',es:'Nota (opcional), p. ej. piezas o compases'}};
+const RT_IDS=['progSel','wdPat','wdMove','ivSel','ivDir','ivTyp','ivLen','ivMin','ivRnd','diaOnly','vA','vAq','vB','vBq','scTask','scDir','scOct','scHand','scOrd','scFing','scAuto','scShowAll','srMode','srInv','srAcc'];
+const RTK='pt-routines',RTH='pt-rt-hist',RTW='pt-weak';
+const rtLoad=(k,d)=>{try{const v=JSON.parse(localStorage.getItem(k));return v==null?d:v}catch(e){return d}},rtStore=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
+let RTS=rtLoad(RTK,null);
+if(!RTS||!Array.isArray(RTS.list)||!RTS.list.length)RTS={sel:0,list:[{name:'Allround 30',weak:true,blocks:[{type:'akk',min:5,snap:null},{type:'verlauf',min:5,snap:null},{type:'scale',min:10,snap:null},{type:'sight',min:10,snap:null}]}]};
+const rtSave=()=>rtStore(RTK,RTS),rtCurR=()=>RTS.list[Math.min(RTS.sel,RTS.list.length-1)];
+/* Schnappschuss der Einstellungen (Sets werden in ihrem Objekt ersetzt, damit Chips weiter funktionieren) */
+function rtSer(o){const r={};for(const k in o){const v=o[k];r[k]=v instanceof Set?{__set:[...v]}:(v&&typeof v==='object'&&!Array.isArray(v))?rtSer(v):v}return r}
+function rtDeser(t,d){for(const k in d){const v=d[k];if(v&&v.__set){if(t[k] instanceof Set){t[k].clear();v.__set.forEach(x=>t[k].add(x))}else t[k]=new Set(v.__set)}else if(v&&typeof v==='object'&&!Array.isArray(v)){if(!t[k]||typeof t[k]!=='object')t[k]={};rtDeser(t[k],v)}else t[k]=v}}
+function rtSnap(){const ids={};RT_IDS.forEach(id=>{const e=$(id);if(e)ids[id]=e.type==='checkbox'?e.checked:e.value});return{o:{AK:rtSer(AK),sel:rtSer(sel),scSel:rtSer(scSel),SRS:rtSer(SRS)},TRI,DISP,ids}}
+function rtSetIds(ids){for(const id in ids){const e=$(id);if(!e)continue;if(e.type==='checkbox')e.checked=ids[id];else if([...(e.options||[])].length===0||[...e.options].some(o=>o.value===ids[id])||e.tagName==='INPUT')e.value=ids[id]}}
+function rtApply(sn){if(!sn)return;rtDeser(AK,sn.o.AK);rtDeser(sel,sn.o.sel);rtDeser(scSel,sn.o.scSel);rtDeser(SRS,sn.o.SRS);TRI=sn.TRI;DISP=sn.DISP;
+ rtSetIds(sn.ids);chips('majKeys',MAJ,sel.maj);chips('minKeys',MIN,sel.min);chips('degs',RO,sel.deg);chips('scRoots',ROOTS,scSel.roots);SCG.forEach(([g,l],i)=>chips('scT'+i,l.map(x=>x[0]),scSel.types));
+ try{dispBuild()}catch(e){}setLang(LANG);rtSetIds(sn.ids)}
+const RT_PART={akk:{o:['AK']},stufen:{o:['sel'],tri:1},verlauf:{o:['sel'],tri:1,disp:1,ids:['progSel','diaOnly']},inter:{o:['sel'],tri:1,disp:1,ids:['ivSel','ivDir','ivTyp','ivLen','ivMin','ivRnd']},wander:{tri:1,disp:1,ids:['wdPat','wdMove']},vamp:{ids:['vA','vAq','vB','vBq']},scale:{o:['scSel'],ids:['scTask','scDir','scOct','scHand','scOrd','scFing','scAuto','scShowAll']},sight:{o:['SRS'],ids:['srMode','srInv','srAcc']}};
+const RT_OBJ={AK,sel,scSel,SRS};
+function rtApplyPart(sn,type){const P=RT_PART[type],ids={};if(!sn||!P)return ids;(P.o||[]).forEach(k=>{if(sn.o[k])rtDeser(RT_OBJ[k],sn.o[k])});if(P.tri)TRI=sn.TRI;if(P.disp)DISP=sn.DISP;(P.ids||[]).forEach(id=>{if(id in sn.ids)ids[id]=sn.ids[id]});rtSetIds(ids);return ids}
+function rtRebuild(ids){chips('majKeys',MAJ,sel.maj);chips('minKeys',MIN,sel.min);chips('degs',RO,sel.deg);chips('scRoots',ROOTS,scSel.roots);SCG.forEach(([g,l],i)=>chips('scT'+i,l.map(x=>x[0]),scSel.types));try{dispBuild()}catch(e){}setLang(LANG);rtSetIds(ids||{})}
+function rtState(){return{snap:rtSnap(),area,gm,learn:{...LEARN}}}
+function rtGo(type){const [ar,md]=RTT[type];LEARN[ar]=false;$('learnSw').checked=false;setArea(ar);if(ar==='chord'){$('modeSel').value=md;$('modeSel').onchange()}else if(ar==='scale')scNew();else srNew();applyView()}
+function rtRestore(st){rtApply(st.snap);Object.assign(LEARN,st.learn);setArea(st.area);if(st.area==='chord'){$('modeSel').value=st.gm;$('modeSel').onchange()}$('learnSw').checked=!!LEARN[area];applyView()}
+function rtLock(on){['aChord','aScale','aSight','modeSel','learnSw'].forEach(id=>{const e=$(id);if(e){e.disabled=on;e.classList.toggle('rtLock',on)}})}
+/* Schwachstellen (im Browser gespeichert) */
+function rtWAll(){return rtLoad(RTW,{})}
+function rtRec(kind,label,ms,errs,meta){if(!RTR||!RTR.on)return;const b=RTR.st[RTR.i];if(b){b.n++;if(!errs)b.ok++;b.e+=errs;b.ms+=ms}
+ const key=kind+'|'+label,it=RTR.items[key]||(RTR.items[key]={kind,label,n:0,e:0,ms:0});it.n++;it.e+=errs;it.ms+=ms;
+ const W=rtWAll(),w=W[key]||(W[key]={kind,label,n:0,er:0,ms:0});w.n++;const a=w.n<5?1/w.n:.25;w.er+=((errs?1:0)-w.er)*a;w.ms+=(ms-w.ms)*a;if(meta)w.meta=meta;w.t=Date.now();rtStore(RTW,W)}
+function rtScore(w,med){return w.er*1.5+Math.max(0,w.ms/med-1)}
+function rtMed(list){const a=list.map(w=>w.ms).sort((x,y)=>x-y);return a.length?Math.max(1,a[Math.floor(a.length/2)]):1}
+function rtWeakPick(kind,ok){const W=Object.values(rtWAll()).filter(w=>w.kind===kind&&w.meta&&ok(w.meta));if(!W.length)return null;const med=rtMed(W),c=W.map(w=>[w,rtScore(w,med)]).filter(x=>x[1]>.3);if(!c.length)return null;let t=Math.random()*c.reduce((a,x)=>a+x[1],0);for(const [w,s] of c){t-=s;if(t<=0)return w.meta}return c[0][0].meta}
+const rtWeakOn=()=>RTR&&RTR.on&&RTR.R.weak&&Math.random()<.35;
+const _rtPickAkk=pickAkk;pickAkk=function(){if(rtWeakOn()){const m=rtWeakPick('chord',x=>AK.roots.has(x.r)&&AK.types.has(x.d));if(m){const R=new Set(AK.roots),T=new Set(AK.types);AK.roots.clear();AK.roots.add(m.r);AK.types.clear();AK.types.add(m.d);try{return _rtPickAkk()}finally{AK.roots.clear();R.forEach(x=>AK.roots.add(x));AK.types.clear();T.forEach(x=>AK.types.add(x))}}}return _rtPickAkk()};
+const _rtScPick=scPick;scPick=function(avoid){if(rtWeakOn()&&$('scTask').value!=='seq'){const m=rtWeakPick('scale',x=>scSel.roots.has(x.r)&&scSel.types.has(x.t));if(m){const ty=SCALES.find(s=>s.n===m.t);if(ty)return{root:m.r,ty}}}return _rtScPick(avoid)};
+/* Haken in den Übungen */
+function rtNoteOn(nt){if(!RTR||!RTR.on)return;RTR.act=Date.now();if(area==='chord'&&cur&&!solved){try{if(!curTones().some(t=>t.pc===((nt%12)+12)%12))RTR.ce++}catch(e){}}}
+function rtShow(){if(!RTR||!RTR.on||!cur)return;const k=n+':'+(cur.step||0);if(RTR.tk!==k){RTR.tk=k;RTR.t0=Date.now();RTR.ce=0}}
+function rtChordLabel(){try{if(cur.akk)return cur.name;if(cur.prog||cur.vamp){const a=progNames(cur);return a[cur.step||0]||a.join(' ')}return chordAt(cur.key,cur.mode,cur.i)}catch(e){return '?'}}
+function rtChordSolved(){if(!RTR||!RTR.on||!cur)return;let meta=null;if(cur.akk){try{meta={r:AKR[parse(cur.key).semi%12],d:cur.def[0]}}catch(e){}}rtRec('chord',rtChordLabel(),Date.now()-(RTR.t0||Date.now()),RTR.ce||0,meta)}
+function rtScaleDone(s){if(!RTR||!RTR.on||!s)return;rtRec('scale',s.root+' '+s.ty.n,Date.now()-(s.t0||Date.now()),s.errs||0,{r:s.root,t:s.ty.n})}
+function rtSightDone(s){if(!RTR||!RTR.on||!s)return;rtRec('sight','Notenzeile',Date.now()-(s.t0||Date.now()),s.errs||0,null)}
+function rtNoteErr(st){if(!RTR||!RTR.on||!st)return;try{st.notes.forEach(x=>{const key='note|'+srLab(x),it=RTR.items[key]||(RTR.items[key]={kind:'note',label:srLab(x),n:0,e:0,ms:0});it.n++;it.e++})}catch(e){}}
+/* Ablauf */
+const rtDoneNow=()=>{if(area==='scale')return!!(SK&&SK.done);if(area==='sight')return!!(SR&&SR.done);return!!(cur&&solved&&!pendingStep&&(cur.wander||cur.vamp||!cur.prog||cur.step>=cur.prog.t.length-1))};
+const rtTok=()=>area==='chord'?((gm==='wander'||gm==='vamp')?n+':'+(cur&&cur.step):String(n)):area==='scale'?SK:SR;
+const rtFmt=ms=>{const s=Math.max(0,Math.ceil(ms/1000));return Math.floor(s/60)+':'+String(s%60).padStart(2,'0')};
+function rtStart(){const R=rtCurR();if(!R||!R.blocks.length)return;rtClose();RTR={on:true,R,i:0,before:rtState(),st:R.blocks.map(b=>({type:b.type,min:b.min,n:0,ok:0,e:0,ms:0,act:0})),items:{},left:0,ending:null,trans:false,paused:false,lt:Date.now(),act:Date.now(),el:0,ce:0,t0:Date.now(),tk:''};
+ rtLock(true);$('rtBar').hidden=false;rtBlock(0);clearInterval(RTR.iv);RTR.iv=setInterval(rtTick,250)}
+function rtBlock(i){const b=RTR.R.blocks[i];RTR.i=i;RTR.left=b.min*60000;RTR.ending=null;RTR.trans=false;RTR.act=Date.now();rtCustomOff();
+ if(b.type==='custom')rtCustomOn(b);else{rtLock(false);if(b.snap)rtApply(b.snap);rtGo(b.type);rtLock(true)}rtBarRender()}
+/* Eigener Block: ruhige Karte statt Übung, keine Auswertung, optional Metronom */
+function rtCustomOn(b){document.querySelector('.shell').style.display='none';const c=$('rtCustom');c.hidden=false;
+ c.innerHTML=`<div class="rtCName">${rtEsc(b.name||'Eigener Block')}</div>${b.note?`<div class="rtCNote">${rtEsc(b.note)}</div>`:''}<div class="rtCTime" id="rtCTime">${rtFmt(RTR.left)}</div><button type="button" class="main" id="rtCDone">Fertig</button>`;
+ $('rtCDone').onclick=()=>{if(RTR){RTR.left=0;rtNext()}};
+ if(b.met){try{setBpm(+b.bpm||80);if(b.snd&&[...$('metSnd').options].some(o=>o.value===b.snd))$('metSnd').value=b.snd;if(!MET.on){RTR.metByUs=true;metToggle()}}catch(e){}}}
+function rtCustomOff(){const c=$('rtCustom');if(c&&!c.hidden){c.hidden=true;c.innerHTML='';document.querySelector('.shell').style.display=''}if(RTR&&RTR.metByUs){try{if(MET.on)metToggle()}catch(e){}RTR.metByUs=false}}
+function rtBeep(){try{const c=ac();if(c.state==='suspended')c.resume();metSound(c,c.currentTime+.02,true,'beep');metSound(c,c.currentTime+.22,true,'beep')}catch(e){}}
+function rtTick(){if(!RTR||!RTR.on)return;const now=Date.now(),dt=now-RTR.lt,cust=RTR.R.blocks[RTR.i].type==='custom';RTR.lt=now;RTR.idle=!cust&&now-RTR.act>60000;
+ if(!RTR.paused&&!RTR.idle&&(cust||!document.hidden)&&!RTR.trans){RTR.left-=dt;RTR.el+=dt;RTR.st[RTR.i].act+=dt}
+ if(cust){const t=$('rtCTime');if(t)t.textContent=rtFmt(RTR.left);if(RTR.left<=0&&!RTR.trans){rtBeep();rtNext()}rtBarRender();return}
+ if(RTR.left<=0&&!RTR.ending){RTR.ending=rtTok();RTR.endT=now}
+ if(RTR.ending&&!RTR.trans&&(rtTok()!==RTR.ending||rtDoneNow()))rtNext();
+ rtBarRender()}
+function rtNext(){if(!RTR)return;stopAuto();if(RTR.i+1>=RTR.R.blocks.length){rtFinish();return}RTR.trans=true;const nb=RTR.R.blocks[RTR.i+1];let c=3;
+ const ov=rtOv(`<div class="rtPanel rtMid"><div class="rtSm">Geschafft</div><div class="rtBig">${rtLab(RTR.R.blocks[RTR.i])}</div><div class="rtSm" style="margin-top:14px">Weiter mit</div><div class="rtBig"><span>${rtLab(nb)}</span> · <span>${nb.min}</span> <span>min</span></div><div class="rtCd" id="rtCd">3</div><button class="main" id="rtGoNow">Los</button></div>`);
+ const go=()=>{clearInterval(RTR.cd);rtClose();if(RTR&&RTR.on)rtBlock(RTR.i+1)};$('rtGoNow').onclick=go;RTR.cd=setInterval(()=>{c--;const e=$('rtCd');if(e)e.textContent=c;if(c<=0)go()},1000)}
+function rtFinish(){if(!RTR)return;const R=RTR.R;clearInterval(RTR.iv);clearInterval(RTR.cd);stopAuto();rtCustomOff();RTR.on=false;rtLock(false);$('rtBar').hidden=true;
+ /* Einstellungen bleiben wie in der Routine (je Modus die des letzten Blocks dieses Modus), alle Aufgaben neu, weiter im zuletzt gespielten Block */
+ const ids={};R.blocks.forEach(b=>{if(b.snap)Object.assign(ids,rtApplyPart(b.snap,b.type))});rtRebuild(ids);
+ try{scNew()}catch(e){}try{srNew()}catch(e){}let li=-1;for(let k=Math.min(RTR.i,R.blocks.length-1);k>=0;k--)if(R.blocks[k].type!=='custom'){li=k;break}if(li>=0)rtGo(R.blocks[li].type);else{setArea(area);applyView()}
+ const tot=RTR.st.reduce((a,b)=>({n:a.n+b.n,ok:a.ok+b.ok}),{n:0,ok:0}),H=rtLoad(RTH,[]);H.unshift({d:Date.now(),name:R.name,ms:RTR.el,n:tot.n,ok:tot.ok});rtStore(RTH,H.slice(0,30));rtSummary(RTR);RTR=null}
+function rtBarRender(){const b=$('rtBar');if(!RTR||!RTR.on){b.hidden=true;return}const R=RTR.R,blk=R.blocks[RTR.i],tot=R.blocks.reduce((a,x)=>a+x.min,0)*60000;
+ let done=0;R.blocks.forEach((x,i)=>{if(i<RTR.i)done+=x.min*60000});const restAll=Math.max(0,tot-done-(blk.min*60000-Math.max(0,RTR.left)));
+ const st=RTR.paused?'<span class="rtSt">Pausiert</span>':RTR.idle?'<span class="rtSt">Pausiert – spiel einfach weiter</span>':RTR.ending?'<span class="rtSt">Letzte Aufgabe</span>':'';
+ const seg=R.blocks.map((x,i)=>{const f=i<RTR.i?100:i>RTR.i?0:Math.min(100,Math.max(0,100-RTR.left/(x.min*600)));return`<div style="flex:${x.min}"><i style="width:${f}%"></i></div>`}).join('');
+ b.innerHTML=`<span class="nm">${rtLab(blk)}</span><span class="tm">⏱ ${rtFmt(RTR.left)}</span><div class="rtSeg">${seg}</div><span class="tm"><span>Gesamt</span> ${rtFmt(restAll)}</span>${st}<button type="button" id="rtPause" title="Pause">${RTR.paused?'▶':'⏸'}</button><button type="button" id="rtSkip" title="Block überspringen">⏭</button><button type="button" id="rtStop" title="Beenden">✕</button>`;
+ $('rtPause').onclick=()=>{RTR.paused=!RTR.paused;RTR.act=Date.now();rtBarRender()};$('rtSkip').onclick=()=>{RTR.left=0;rtNext()};$('rtStop').onclick=()=>rtFinish()}
+/* Fenster */
+function rtOv(html){let o=$('rtOv');if(!o){o=document.createElement('div');o.id='rtOv';document.body.appendChild(o)}o.innerHTML=html;o.hidden=false;return o}
+function rtClose(){const o=$('rtOv');if(o){o.hidden=true;o.innerHTML=''}}
+function rtOpen(){if(RTR&&RTR.on)return;const R=rtCurR(),tot=R.blocks.reduce((a,b)=>a+(+b.min||0),0),H=rtLoad(RTH,[]).slice(0,5);
+ const opts=Object.keys(RTT).map(k=>`<option value="${k}">${RTT[k][2]}</option>`).join('');
+ const sndOpts=[...$('metSnd').options].map(o=>[o.value,o.textContent]),L=LANG in RT_PH.name?LANG:'en';
+ const rows=R.blocks.map((b,i)=>`<div class="rtB"><select data-i="${i}" data-f="type">${opts.replace(`value="${b.type}"`,`value="${b.type}" selected`)}</select><span class="rtMin"><input type="number" min="1" max="120" step="1" value="${b.min}" data-i="${i}" data-f="min"> <span>min</span></span>${b.type==='custom'?`<div class="rtCust"><input type="text" data-i="${i}" data-f="name" value="${rtEsc(b.name)}" placeholder="${RT_PH.name[L]}"><textarea data-i="${i}" data-f="note" rows="2" placeholder="${RT_PH.note[L]}">${rtEsc(b.note)}</textarea><div class="rtMet"><label><input type="checkbox" data-i="${i}" data-f="met"${b.met?' checked':''}> <span>Metronom</span></label><input type="number" min="30" max="240" data-i="${i}" data-f="bpm" value="${+b.bpm||80}"${b.met?'':' disabled'}> <span>BPM</span><select data-i="${i}" data-f="snd"${b.met?'':' disabled'}>${sndOpts.map(([v,t])=>`<option value="${v}"${v===(b.snd||'click')?' selected':''}>${t}</option>`).join('')}</select></div></div>`:`<button type="button" data-a="edit" data-i="${i}">Einstellen</button><span class="rtSt">${b.snap?'eingestellt':'aktuelle Einstellungen'}</span>`}<span class="rtMv"><button type="button" data-a="up" data-i="${i}" title="Nach oben" ${i?'':'disabled'}>↑</button><button type="button" data-a="down" data-i="${i}" title="Nach unten" ${i<R.blocks.length-1?'':'disabled'}>↓</button><button type="button" data-a="del" data-i="${i}" title="Block löschen">✕</button></span></div>`).join('');
+ const hist=H.length?H.map(h=>`<div class="rtH"><span>${new Date(h.d).toLocaleDateString(LANG)}</span><span>${h.name}</span><span>${Math.round(h.ms/60000)} min</span><span>${h.n?Math.round(100*h.ok/h.n):0} %</span></div>`).join(''):'<div class="rtSm">Noch keine Routine gespielt.</div>';
+ rtOv(`<div class="rtPanel"><div class="rtHead"><b>Deine Routinen</b><button type="button" id="rtX" title="Schließen">✕</button></div>
+ <div class="rtTop"><select id="rtSel">${RTS.list.map((r,i)=>`<option value="${i}"${i===RTS.sel?' selected':''}>${r.name.replace(/</g,'&lt;')}</option>`).join('')}</select><button type="button" id="rtNew">Neu</button><button type="button" id="rtDup">Kopie</button><button type="button" id="rtDel">Löschen</button></div>
+ <label class="rtNm"><span>Name</span><input id="rtName" value="${R.name.replace(/"/g,'&quot;')}"></label>
+ <div class="rtBs">${rows||'<div class="rtSm">Noch keine Blöcke.</div>'}</div>
+ <div class="rtTop" style="justify-content:space-between"><button type="button" id="rtAdd">+ Block</button><span><span>Gesamt</span> <b>${tot}</b> <span>min</span></span></div>
+ <label class="rtChk"><input type="checkbox" id="rtWeak"${R.weak?' checked':''}> <span>Schwachstellen öfter üben</span></label>
+ <button type="button" class="main rtStartBtn" id="rtGo">▶ Starten</button>
+ <div class="rtSm" style="margin-top:16px;font-weight:600">Letzte Routinen</div>${hist}</div>`);
+ const P=$('rtOv');
+ P.onclick=e=>{if(e.target===P)rtClose()};$('rtX').onclick=rtClose;
+ $('rtSel').onchange=e=>{RTS.sel=+e.target.value;rtSave();rtOpen()};
+ $('rtName').onchange=e=>{R.name=e.target.value.trim()||'Routine';rtSave();rtOpen()};
+ $('rtNew').onclick=()=>{RTS.list.push({name:'Routine '+(RTS.list.length+1),weak:true,blocks:[{type:'akk',min:5,snap:null}]});RTS.sel=RTS.list.length-1;rtSave();rtOpen()};
+ $('rtDup').onclick=()=>{RTS.list.push(JSON.parse(JSON.stringify({...R,name:R.name+' (2)'})));RTS.sel=RTS.list.length-1;rtSave();rtOpen()};
+ $('rtDel').onclick=()=>{if(RTS.list.length<2)return;RTS.list.splice(RTS.sel,1);RTS.sel=0;rtSave();rtOpen()};
+ $('rtAdd').onclick=()=>{R.blocks.push({type:'scale',min:5,snap:null});rtSave();rtOpen()};
+ $('rtWeak').onchange=e=>{R.weak=e.target.checked;rtSave()};
+ $('rtGo').onclick=rtStart;
+ P.querySelectorAll('[data-f]').forEach(el=>el.onchange=()=>{const b=R.blocks[+el.dataset.i],f=el.dataset.f;
+  if(f==='type'){if(b.type!==el.value){b.type=el.value;b.snap=null;if(b.type==='custom'){b.name=b.name||'';b.note=b.note||'';b.met=!!b.met;b.bpm=b.bpm||80;b.snd=b.snd||'click'}}}
+  else if(f==='min')b.min=Math.max(1,Math.min(120,Math.round(+el.value)||1));
+  else if(f==='name'||f==='note'){b[f]=el.value;rtSave();return}
+  else if(f==='met')b.met=el.checked;else if(f==='bpm')b.bpm=Math.max(30,Math.min(240,Math.round(+el.value)||80));else if(f==='snd')b.snd=el.value;
+  rtSave();rtOpen()});
+ P.querySelectorAll('[data-a]').forEach(el=>el.onclick=()=>{const i=+el.dataset.i,a=el.dataset.a,B=R.blocks;if(a==='up'&&i>0)[B[i-1],B[i]]=[B[i],B[i-1]];else if(a==='down'&&i<B.length-1)[B[i+1],B[i]]=[B[i],B[i+1]];else if(a==='del')B.splice(i,1);else if(a==='edit'){rtEdit(i);return}rtSave();rtOpen()})}
+function rtEdit(i){const R=rtCurR(),b=R.blocks[i];rtClose();RTE={i,before:rtState()};if(b.snap)rtApply(b.snap);rtGo(b.type);rtLock(true);
+ const e=$('rtEdit');e.hidden=false;e.innerHTML=`<span><span>Block einstellen:</span> <b>${RTT[b.type][2]}</b></span><span class="rtSm">Wähle unten Tonarten, Akkorde, Skalen usw.</span><button type="button" class="main" id="rtOk">Übernehmen</button><button type="button" class="sec" id="rtCancel">Abbrechen</button>`;
+ $('rtOk').onclick=()=>{b.snap=rtSnap();rtSave();rtEditEnd()};$('rtCancel').onclick=rtEditEnd}
+function rtEditEnd(){if(!RTE)return;rtLock(false);$('rtEdit').hidden=true;rtRestore(RTE.before);RTE=null;rtOpen()}
+function rtSummary(X){const rows=X.st.map((b,bi)=>b.type==='custom'?`<div class="rtH"><span>${rtLab(X.R.blocks[bi]||b)}</span><span>${Math.round(b.act/60000)} <span>min</span></span><span></span><span></span></div>`:`<div class="rtH"><span>${RTT[b.type][2]}</span><span>${b.n} <span>Aufgaben</span></span><span>${b.n?Math.round(100*b.ok/b.n)+' %':'–'} <span>auf Anhieb richtig</span></span><span>Ø ${b.n?(b.ms/b.n/1000).toFixed(1):'–'} s</span></div>`).join('');
+ const it=Object.values(X.items),med=rtMed(it.filter(x=>x.n).map(x=>({ms:x.ms/x.n}))),weak=it.filter(x=>x.n).map(x=>[x,(x.e/x.n)*1.5+Math.max(0,(x.ms/x.n)/med-1)+(x.kind==='note'?x.e*.5:0)]).filter(x=>x[1]>.3).sort((a,b)=>b[1]-a[1]).slice(0,6);
+ const wk=weak.length?weak.map(([x])=>`<span class="rtTag">${x.label}</span>`).join(''):'<span class="rtSm">Keine auffälligen Schwachstellen.</span>';
+ const tot=X.st.reduce((a,b)=>({n:a.n+b.n,ok:a.ok+b.ok}),{n:0,ok:0});
+ rtOv(`<div class="rtPanel"><div class="rtHead"><b>Routine beendet</b><button type="button" id="rtX" title="Schließen">✕</button></div>
+ <div class="rtKpi"><div><b>${Math.round(X.el/60000)}</b> <span>min</span></div><div><b>${tot.n}</b> <span>Aufgaben</span></div><div><b>${tot.n?Math.round(100*tot.ok/tot.n):0} %</b> <span>auf Anhieb richtig</span></div></div>
+ ${rows}<div class="rtSm" style="margin-top:14px;font-weight:600">Schwachstellen</div><div class="rtTags">${wk}</div>
+ <div class="rtTop" style="margin-top:16px"><button type="button" class="sec" id="rtAgain">Nochmal</button><button type="button" class="main" id="rtDone">Fertig</button></div></div>`);
+ $('rtX').onclick=rtClose;$('rtDone').onclick=rtClose;$('rtAgain').onclick=rtStart}
+$('rtOpenBtn').onclick=rtOpen;
+document.addEventListener('visibilitychange',()=>{if(RTR&&RTR.on)RTR.lt=Date.now()});
+
 ftLinks();
 /* Jazz-Akkordsymbole: Schalter, im Browser gespeichert, standardmäßig aus */
 $('jazzSym').onchange=()=>{JZ.on=$('jazzSym').checked;$('jazzSymT').textContent=JZ.on?'An':'Aus';try{localStorage.setItem('pt-jazz',JZ.on?'1':'0')}catch(e){}setLang(LANG)};
