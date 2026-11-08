@@ -73,6 +73,7 @@ h1.logo{margin:4px 0 12px;line-height:1}
 .ch{display:inline-flex;flex-direction:column;align-items:center;line-height:1.15}
 .ch .r{font-size:clamp(.95rem,3.8vw,1.3rem);font-weight:700;white-space:nowrap}
 .jzw{white-space:nowrap}
+.lnOct{display:flex;gap:6px;margin:4px 0 2px}
 .scAll{display:inline-flex;align-items:center;gap:6px;font-size:.85rem;color:var(--mut);padding:6px 10px;border:1px solid var(--bd);border-radius:10px;cursor:pointer;white-space:nowrap}
 .scAll input{margin:0}
 .rtOpenBtn{color:var(--ac)!important;border:1px solid var(--ac)!important;opacity:1!important;font-weight:600}
@@ -102,6 +103,7 @@ h1.logo{margin:4px 0 12px;line-height:1}
 .rtKpi{display:flex;gap:10px;margin:6px 0 12px}.rtKpi>div{flex:1;background:var(--bg);border-radius:10px;padding:10px;text-align:center;font-size:.85rem;color:var(--mut)}.rtKpi b{display:block;font-size:1.3rem;color:var(--fg)}
 .rtTags{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}.rtTag{border:1px solid var(--bd);border-radius:999px;padding:3px 10px;font-size:.88rem}
 .rtLock{opacity:.45;pointer-events:none}
+.rtTblW{overflow-x:auto;margin-top:6px}.rtTbl{width:100%;border-collapse:collapse;font-size:.88rem}.rtTbl th,.rtTbl td{text-align:left;padding:5px 8px;border-top:1px solid var(--bd);white-space:nowrap}.rtTbl thead th{color:var(--mut);font-weight:600;border-top:0}.rtTbl td:nth-child(n+2),.rtTbl thead th:nth-child(n+2){text-align:right}.rtTbl .rtMode th{padding-top:12px;font-weight:700;color:var(--fg);text-align:left!important}
 .rtCust{flex:1 1 100%;display:flex;flex-direction:column;gap:6px}
 .rtCust input[type=text],.rtCust textarea{font:inherit;padding:6px 8px;border-radius:8px;border:1px solid var(--bd);background:var(--bg);color:var(--fg);box-sizing:border-box;width:100%;resize:vertical}
 .rtMet{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:.9rem}.rtMet label{display:flex;align-items:center;gap:6px}.rtMet select{flex:0 1 160px}
@@ -420,7 +422,7 @@ tr.hl td{background:var(--chip);font-weight:700}
 <label>Automatik: Pause <input type="number" id="secs" value="4" min="1" max="30"> Sekunden</label>
 <h2>Zeitrennen</h2>
 <label>Dauer <input type="number" id="raceSecs" value="60" min="5" max="600"> Sekunden</label>
-<div class="hint">Leertaste = Weiter, Enter = Lösung zeigen (bei aktiver Wiederholung = nächste Aufgabe). Ansage auf Deutsch: B♭ heißt „Bäs", B heißt „B".</div>
+<div class="hint" data-noh>Leertaste = Weiter, Enter = Lösung zeigen (bei aktiver Wiederholung = nächste Aufgabe). Ansage auf Deutsch: B♭ heißt „Bäs", B heißt „B".</div>
 </div>
 <div id="sightSet" style="display:none">
 <h2>Zeitrennen</h2>
@@ -431,6 +433,7 @@ tr.hl td{background:var(--chip);font-weight:700}
 </details>
 <details id="viewSet">
 <summary>Darstellung und Sprache</summary>
+<div class="jzRow" data-noh data-nojz><label class="swrow"><span class="swl">Deutsche Notennamen (H statt B)</span><input type="checkbox" id="hName" role="switch"><span class="jzTrk" aria-hidden="true"></span><span class="swt" id="hNameT">Aus</span></label><div class="hint">Zeigt H für den Ton B und B für B♭, wie in deutschen Noten.</div></div>
 <h2>Sprache</h2>
 <div class="chips" id="langs"></div>
 <h2>Farbschema</h2>
@@ -872,7 +875,9 @@ function scNew(keep){Object.keys(SKST).forEach(k=>delete SKST[k]);const roots=[.
 const SKST={};
 function scNote(m){const s=SK;if(area!=='scale'||!s||s.kind!=='play'||s.done)return;
  const exp=s.tones[s.seq[s.step].ti].pc;
- if(m%12===exp){if(s.hand==='B'){s.pend=s.pend||[];if(s.pend.some(x=>Math.abs(x-m)<12))return;SKST[m]='ok';s.pend.push(m);if(s.pend.length<2){$('scFb').textContent='Jetzt die zweite Hand: derselbe Ton in einer anderen Oktave';$('scFb').className='fb';scShow();return}s.pend=[]}
+ /* Neu anfangen: der erste Ton der Skala setzt zurück, ohne als Fehler zu zählen */
+ if(m%12!==exp&&s.step>0&&m%12===s.tones[s.seq[0].ti].pc&&!(s.hand==='B'&&s.pend&&s.pend.length)){s.step=0;s.pend=[];s.bad=-1;Object.keys(SKST).forEach(k=>{if(SKST[k]==='ok')delete SKST[k]});scNote(m);if(!$('scFb').textContent){$('scFb').textContent='↺ Neu begonnen';$('scFb').className='fb'}return}
+ if(m%12===exp){if(s.step===0&&s.hand!=='B')s.anc=m-s.seq[0].s;if(s.hand==='B'){s.pend=s.pend||[];if(s.pend.some(x=>Math.abs(x-m)<12))return;SKST[m]='ok';s.pend.push(m);if(s.pend.length<2){$('scFb').textContent='Jetzt die zweite Hand: derselbe Ton in einer anderen Oktave';$('scFb').className='fb';scShow();return}s.pend=[]}
   SKST[m]='ok';s.step++;s.bad=-1;if(s.step===s.seq.length){s.done=true;rtScaleDone(s);if(!s.errs){okCount++;cntTxt();}
   $('scFb').textContent=s.errs?`Geschafft, aber mit ${s.errs} Fehler${s.errs>1?'n':''}`:'✓ Geschafft, fehlerfrei!';$('scFb').className='fb '+(s.errs?'bad':'ok');
   if($('scAuto').checked){const mg=$('scFb').textContent,cl=$('scFb').className;scNew();$('scFb').textContent=mg;$('scFb').className=cl}}else{$('scFb').textContent='';$('scFb').className='fb'}}
@@ -1001,10 +1006,10 @@ const ROOTLBL=['C','C♯ / D♭','D','D♯ / E♭','E','F','F♯ / G♭','G','G�
 const ROOTCAND=['C','C♯','D♭','D','D♯','E♭','E','F','F♯','G♭','G','G♯','A♭','A','A♯','B♭','B'];
 function bestRoot(pc,sc){let best=null,bs=1e9;ROOTCAND.filter(n=>parse(n).semi===pc).forEach(n=>{const v=scTones(n,sc).reduce((a,t)=>a+Math.abs(t.a)+(Math.abs(t.a)>1?10:0),0);if(v<bs){bs=v;best=n}});return best}
 function pKb(names,offs,rp,lh,rh,degs){const KW=34,KH=96,BW=20,BH=60,LB=30,WHp={0:0,2:1,4:2,5:3,7:4,9:5,11:6},BKp={1:0,3:1,6:3,8:4,10:5},INK='#1b1b1b',SC='#8fd6cb',SCD='#17685e',RT='#f7a23c',RTD='#e08a1c';
- const ks={};offs.forEach((o,k)=>{ks[rp+o]=k});const rows=(lh||rh)?(lh&&rh?2:1):0,H=KH+(rows?12+rows*38:6);
- let s=`<svg viewBox="0 0 ${2*LB+14*KW} ${H}" style="width:100%;min-width:440px;max-width:640px;display:block;margin:6px auto;color:var(--fg)" font-family="inherit">`;
+ const ks={};offs.forEach((o,k)=>{ks[rp+o]=k});const rows=(lh||rh)?(lh&&rh?2:1):0,H=KH+(rows?12+rows*38:6),NO=Math.max(2,Math.ceil((rp+Math.max(...offs)+1)/12));
+ let s=`<svg viewBox="0 0 ${2*LB+NO*7*KW} ${H}" style="width:100%;min-width:${NO*220}px;max-width:${NO*320}px;display:block;margin:6px auto;color:var(--fg)" font-family="inherit">`;
  const wh=[],bl=[],circ=[];
- for(let t=0;t<24;t++){const p=t%12,oc=Math.floor(t/12),k=ks[t],root=k===0||k===offs.length-1;
+ for(let t=0;t<NO*12;t++){const p=t%12,oc=Math.floor(t/12),k=ks[t],root=k!=null&&offs[k]%12===0;
   if(p in WHp){const w=oc*7+WHp[p],x=LB+w*KW;wh.push(`<rect x="${x}" y="0" width="${KW}" height="${KH}" rx="4" fill="${k!=null?(root?RT:SC):'#fff'}" stroke="${INK}" stroke-width="1.5"/>`+(k!=null?`<text x="${x+KW/2}" y="${KH-20}" text-anchor="middle" font-size="15" font-weight="800" fill="${INK}">${names[k]}</text><text x="${x+KW/2}" y="${KH-7}" text-anchor="middle" font-size="10" font-weight="700" fill="${INK}">${degs[k]}</text>`:''));if(k!=null)circ.push([x+KW/2,false,root,k])}
   else{const w=oc*7+BKp[p],x=LB+(w+1)*KW-BW/2;bl.push(`<rect x="${x}" y="0" width="${BW}" height="${BH}" rx="3" fill="${k!=null?(root?RTD:SCD):INK}" stroke="${INK}" stroke-width="1.5"/>`+(k!=null?`<text x="${x+BW/2}" y="${BH-17}" text-anchor="middle" font-size="12" font-weight="800" fill="${root?'#1b1b1b':'#fff'}">${names[k]}</text><text x="${x+BW/2}" y="${BH-6}" text-anchor="middle" font-size="9" font-weight="700" fill="${root?'#1b1b1b':'#fff'}">${degs[k]}</text>`:''));if(k!=null)circ.push([LB+(w+1)*KW,true,root,k])}}
  s+=wh.join('')+bl.join('');
@@ -1015,16 +1020,21 @@ function learnRender(){const pc=LN.pc,sc=SCALES[LN.scale],root=bestRoot(pc,sc),t
  const gaps=tones.map((t,i)=>{const g=(((i<n-1?tones[i+1].pc:tones[0].pc)-t.pc)%12+12)%12;return g===1?'H':g===2?'G':g===3?'ÜS':String(g)}),all=[...tones,tones[0]];
  let h=`<div style="text-align:center"><div class="key">${root}</div><div class="deg" style="font-size:1.4rem">${sc.n}</div></div>`;
  h+=`<div class="hint" style="text-align:center">Abstände: <b>${gaps.map(g=>STPD[LANG][g]||g).join(' – ')}</b> (G = Ganzton, H = Halbton${gaps.includes('ÜS')?', ÜS = übermäßige Sekunde':''})</div>`;
- const key=POSTER_KEY[sc.n];let lh=null,rh=null;
- if(key&&POSTER[key]&&POSTER[key][pc]){lh=POSTER[key][pc][0].split(' ').map(Number);rh=POSTER[key][pc][1].split(' ').map(Number)}
- else{const a=fingering(root,sc,'R',n+1),b=fingering(root,sc,'L',n+1);if(a||b){rh=a;lh=b}}
- const offs=[...tones.map(t=>(((t.pc-rp)%12)+12)%12),12];
- h+=`<h2>Klaviatur und Fingersatz</h2><div style="overflow-x:auto">${pKb(all.map(t=>t.name),offs,rp,lh,rh,[...tones.map((t,i)=>i===0?'1':t.deg),'8'])}</div>`;
+ const key=POSTER_KEY[sc.n],o2=LN.oct===2;let lh=null,rh=null;
+ if(key&&POSTER[key]&&POSTER[key][pc]){lh=POSTER[key][pc][0].split(' ').map(Number);rh=POSTER[key][pc][1].split(' ').map(Number);
+  /* zwei Oktaven: rechts beginnt die zweite Oktave mit dem Daumen bzw. mit dem Finger, mit dem die erste Oktave endet; links wiederholt sich der Fingersatz ab dem zweiten Ton */
+  if(o2){const mid=rh[0]===1?1:rh[n];rh=rh.slice(0,n).concat([mid],rh.slice(1,n),[rh[n]]);lh=[lh[0]].concat(lh.slice(1,n+1),lh.slice(1,n+1))}}
+ else{const a=fingering(root,sc,'R',o2?2*n+1:n+1),b=fingering(root,sc,'L',o2?2*n+1:n+1);if(a||b){rh=a;lh=b}}
+ const off1=tones.map(t=>(((t.pc-rp)%12)+12)%12),offs=o2?[...off1,...off1.map(x=>x+12),24]:[...off1,12];
+ const nm=o2?[...tones,...tones,tones[0]].map(t=>t.name):all.map(t=>t.name),dg=o2?[...tones.map((t,i)=>i===0?'1':t.deg),...tones.map((t,i)=>i===0?'8':t.deg),'15']:[...tones.map((t,i)=>i===0?'1':t.deg),'8'];
+ h+=`<h2>Klaviatur und Fingersatz</h2><div class="lnOct"><button type="button" class="chip${o2?'':' on'}" data-lo="1">1 Oktave</button><button type="button" class="chip${o2?' on':''}" data-lo="2">2 Oktaven</button></div><div style="overflow-x:auto">${pKb(nm,offs,rp,lh,rh,dg)}</div>`;
  h+=(lh||rh)?`<div class="hint">Abwärts gelten dieselben Finger rückwärts. Orange = Grundton, grün = weitere Töne, Kreise der schwarzen Tasten sitzen höher. Kleine Zahl unter dem Tonnamen: Intervall zum Grundton (8 = Oktave).</div>`:'<div class="hint">Orange = Grundton, grün = weitere Töne.</div>';
  h+=`<h2>Notenbild</h2>${staffRow(tones,rp)}`;
  if(inf[0]){h+=`<h2>Klang</h2><p>${inf[0]}</p><h2>Merkmal</h2><p>${inf[1]}</p><h2>Typische Akkorde</h2><p>${inf[2]}</p>`;
   if(inf[3]){const pp=(rp-PAR[inf[3]][inf[4]]+12)%12,pn=inf[3]==='D'?PN[pp]+'-Dur':PMN[pp]+'-Moll ('+(inf[3]==='M'?'melodisch':'harmonisch')+')';h+=`<h2>Verwandtschaft</h2><p>${inf[4]+1}. Modus von ${pn}: dieselben Töne, aber ab dem ${inf[4]+1}. Ton.</p>`}}
- $('lnBody').innerHTML=h}
+ $('lnBody').innerHTML=h;
+ $('lnBody').querySelectorAll('[data-lo]').forEach(b=>b.onclick=()=>{LN.oct=+b.dataset.lo;try{localStorage.setItem('pt-ln-oct',String(LN.oct))}catch(e){}learnRender()})}
+try{LN.oct=+(localStorage.getItem('pt-ln-oct')||1)}catch(e){}
 /* ===== Skalen: Klaviatur statt Kacheln beim Üben, Chips statt Dropdowns beim Lernen ===== */
 function kbPlay(m,octs,hand){const KW=34,KH=96,BW=20,BH=60,LB=30,WHp={0:0,2:1,4:2,5:3,7:4,9:5,11:6},BKp={1:0,3:1,6:3,8:4,10:5},INK='#1b1b1b',SC='#8fd6cb',SCD='#17685e',RT='#f7a23c',RTD='#e08a1c',BAD='#f28b82',BADD='#b3261e',SCP='#d3e9e5',SCDP='#2f4a46',RTP='#f3dcc2',RTDP='#6b4a2c';
  const hasF=Object.values(m).some(k=>k.f!=null),H=KH+(hasF?12+38+(hand.includes('@')?16:0):6);
@@ -1042,7 +1052,10 @@ function scShow(){const s=SK;if(!s)return;$('scHow').textContent=s.kind==='play'
   const B=s.hand==='B',all=$('scShowAll').checked,put=(pos,e,fg,dim)=>{if(m[pos]&&!(m[pos].dim&&!dim))return;m[pos]={root:e.ti===0,label:s.tones[e.ti].name,deg:e.ti===0?(pos>s.rootPc?'8':'1'):s.tones[e.ti].deg,f:f&&fg!=null?fg:null,dim}};
   /* „Tonleiter zeigen“: noch nicht gespielte Töne blass anzeigen */
   s.seq.forEach((e,i)=>{const pl=i<s.step||s.rev||s.done||(i===s.step&&s.pend&&s.pend.length);if(!pl&&!all)return;const d=!pl;if(B){put(e.s,e,e.fl,d);put(e.s2,e,e.f,d)}else put(e.s,e,e.f,d)});
-  {const ne=s.seq[Math.min(s.step,s.seq.length-1)],ref=ne?ne.s:s.rootPc,top=s.octs*12;Object.entries(SKST).forEach(([mm,st])=>{if(st!=='bad'||!H.has(+mm))return;const pc=((+mm%12)+12)%12;let best=null;for(let p=pc;p<top;p+=12)if(best===null||Math.abs(p-ref)<Math.abs(best-ref))best=p;if(best!==null)m[best]={bad:true,f:null}})}
+  {const ne=s.seq[Math.min(s.step,s.seq.length-1)],ref=ne?ne.s:s.rootPc,top=s.octs*12;Object.entries(SKST).forEach(([mm,st])=>{if(st!=='bad'||!H.has(+mm))return;
+   /* falscher Ton in der gespielten Lage (bezogen auf den ersten Ton der Skala), sonst nahe am erwarteten Ton */
+   if(s.anc!=null&&!B){const q=+mm-s.anc;if(q>=0&&q<top){m[q]={bad:true,f:null};return}}
+   const pc=((+mm%12)+12)%12;let best=null;for(let p=pc;p<top;p+=12)if(best===null||Math.abs(p-ref)<Math.abs(best-ref))best=p;if(best!==null)m[best]={bad:true,f:null}})}
   svg=kbPlay(m,s.octs,B?`LH@${s.rootPc}|RH@${s.rootPc+12*s.oct}`:s.hand==='L'?'LH':'RH');
   const cs=!s.done&&s.seq[s.step]?s.seq[s.step]:null,nx=f&&s.hasF&&cs?cs.f:null,nl=f&&s.hasF&&cs?cs.fl:null;
   $('scInfo').textContent=(f?(s.hasF?(B?`Fingersatz beide Hände${nx!=null?`, nächste Finger: rechts ${nx}, links ${nl}`:''}`:`Fingersatz ${s.hand==='L'?'links':'rechts'}${nx!=null?', nächster Finger: '+nx:''}`):''):'')+`${f&&s.hasF?' · ':''}Ton ${Math.min(s.step+1,s.seq.length)} von ${s.seq.length}`}
@@ -1257,9 +1270,10 @@ function srRender(){const s=SR;if(!s){$('srStaff').innerHTML='';return}
  $('srStaff').innerHTML=`<div style="overflow-x:auto"><svg viewBox="0 ${ymin} ${W} ${nSys*sh+(nSys-1)*12}" style="width:100%;max-width:${Math.round(W*1.3)}px;display:block;margin:6px auto">${o}</svg></div>`;
  $('srProg').textContent=`Note ${Math.min(s.i+1,N)} von ${N}`}
 function srFinish(){const s=SR;s.done=true;rtSightDone(s);srRender();
- if(SRR.on){setTimeout(()=>{if(SR===s&&SRR.on)srNew()},150);return}
- const f=$('srFb');if(!s.errs){okCount++;cntTxt();f.textContent='✓ Geschafft, fehlerfrei!';f.className='fb ok'}else{f.textContent=`Geschafft, aber mit ${s.errs} ${s.errs>1?'Fehlern':'Fehler'} (zählt nicht)`;f.className='fb bad'}
- if($('srAuto').checked)setTimeout(()=>{if(SR===s&&!SRR.on)srNew()},1500)}
+ if(SRR.on){srNew();return}
+ const f=$('srFb');if(!s.errs){okCount++;cntTxt();f.textContent='✓ Geschafft, fehlerfrei!';f.className='fb ok'}else{f.textContent=`Geschafft, aber mit ${s.errs} ${s.errs>1?'Fehlern':'Fehler'}`;f.className='fb bad'}
+ /* sofort die nächste Zeile, das Ergebnis der letzten bleibt als Meldung stehen */
+ if($('srAuto').checked){const mg=f.textContent,cl=f.className;srNew();f.textContent=mg;f.className=cl}}
 function sightNote(m){const s=SR;if(area!=='sight'||!s||s.done)return;if(SRR.on&&performance.now()>=SRR.end)return;
  const st=s.steps[s.i],need=st.notes.map(n=>n.m),f=$('srFb');
  if(need.includes(m)){st.got.add(m);st.bad=false;f.textContent='';f.className='fb';if(need.every(x=>st.got.has(x))){st.ok=true;s.i++;if(SRR.on)SRR.score++;if(s.i>=s.steps.length){srFinish();return}}}
@@ -1707,6 +1721,16 @@ Zwei Akkorde im Wechsel¦Two chords alternating¦Dos acordes alternados
 Tonleiter zeigen¦Show scale¦Mostrar escala
 Eigener Block¦Custom block¦Bloque propio
 BPM¦BPM¦BPM
+Schwachstellen pro Modus¦Weak spots by mode¦Puntos débiles por modo
+Schwachstelle¦Weak spot¦Punto débil
+Versuche¦Attempts¦Intentos
+Fehler¦Mistakes¦Errores
+Ø Zeit¦Avg. time¦Tiempo medio
+Fehler = falsch gespielte Töne. Beim Notenlesen steht jede Note, bei der du dich verspielt hast.¦Mistakes = wrong notes played. For sight reading, each note you got wrong is listed.¦Errores = notas equivocadas. En lectura a primera vista aparece cada nota en la que te equivocaste.
+Aufgabe¦Task¦Tarea
+↺ Neu begonnen¦↺ Started again¦↺ Empezado de nuevo
+Deutsche Notennamen (H statt B)¦German note names (H instead of B)¦Nombres de notas alemanes (H en lugar de B)
+Zeigt H für den Ton B und B für B♭, wie in deutschen Noten.¦Shows H for the note B and B for B♭, as in German notation.¦Muestra H para la nota B y B para B♭, como en la notación alemana.
 Anzeige¦Display¦Mostrar
 Stufe¦Degree¦Grado
 Akkord¦Chord¦Acorde
@@ -1841,11 +1865,13 @@ const RULES=[
 ];
 function trs(s){if(LANG==='de')return s;const d=DICT[LANG][s];if(d!==undefined)return d;for(const [re,f] of RULES){const m=s.match(re);if(m){const r=f(m);if(r!=null)return r}}return s}
 /* Jazz-Akkordsymbole (Lead-Sheet-Schreibweise): Δ = maj7, − = Moll, ø = halbvermindert, ° = vermindert, + = übermäßig */
-const JZ={on:false};
+const JZ={on:false},HN={on:false};
+/* Deutsche Notennamen: B → H, B♭ → B, B♭♭ → B♭ (nur Anzeige; Wörter wie „Bass“ oder „Blues“ bleiben) */
+function hApply(s){return s.replace(/(^|[^A-Za-zÄÖÜäöüß])B(𝄫|♭♭|♭|♯♯|♯|𝄪)?(?=$|[^A-Za-zÄÖÜäöüß]|maj|m(?![a-z])|dim|aug|sus|add|alt)/g,(m,p,a)=>p+(!a?'H':a==='♭'?'B':(a==='♭♭'||a==='𝄫')?'B♭':'H'+a))}
 const JZS={'m':'−','dim':'°','aug':'+','maj7':'Δ7','m7':'−7','m7♭5':'ø7','dim7':'°7','m(maj7)':'−(Δ7)','m6':'−6','maj9':'Δ9','m9':'−9','7♭9':'7(♭9)','7♯9':'7(♯9)','m11':'−11','maj7♯11':'Δ7(♯11)','7♯11':'7(♯11)','maj13':'Δ13','m13':'−13','13♭9':'13(♭9)','sus4':'sus','add9':'(add 9)','m(add9)':'−(add 9)','m6/9':'−6/9'};
-const JZ_RT=/(?:[A-G][♭♯]?|[♭♯]?(?:VII|VI|IV|V|III|II|I))/.source,JZ_SU='m\\(add9\\)|m6/9|add9|maj7♯11|m\\(maj7\\)|m7♭5|maj13|maj9|maj7|13♭9|7♭9|7♯9|7♯11|dim7|m13|m11|m9|m7|m6';
+const JZ_RT=/(?:[A-H][♭♯]?|[♭♯]?(?:VII|VI|IV|V|III|II|I))/.source,JZ_SU='m\\(add9\\)|m6/9|add9|maj7♯11|m\\(maj7\\)|m7♭5|maj13|maj9|maj7|13♭9|7♭9|7♯9|7♯11|dim7|m13|m11|m9|m7|m6';
 const JZ_EMB=new RegExp('(^|[^A-Za-z0-9♭♯])('+JZ_RT+')('+JZ_SU+')(?![A-Za-z0-9])','g'),JZ_EMA=new RegExp('(^|[^A-Za-z0-9♭♯])('+JZ_RT+')('+JZ_SU+'|dim|aug|m)(?![A-Za-z0-9])','g');
-const JZ_CH=JZ_RT+'(?:'+JZ_SU+'|dim|aug|m|sus4|sus2|6/9|6|7|9|13)?(?:\\/[A-G][♭♯]?)?',JZ_PURE=new RegExp('^[\\s:]*'+JZ_CH+'(?:[\\s–·,→↔⇄\\-]+'+JZ_CH+')*\\s*$');
+const JZ_CH=JZ_RT+'(?:'+JZ_SU+'|dim|aug|m|sus4|sus2|6/9|6|7|9|13)?(?:\\/[A-H][♭♯]?)?',JZ_PURE=new RegExp('^[\\s:]*'+JZ_CH+'(?:[\\s–·,→↔⇄\\-]+'+JZ_CH+')*\\s*$');
 const JZ_SU2=JZ_SU+'|13|9|7|6/9|6|sus4|sus2',JZ_SGE=new RegExp('(^|[^A-Za-z0-9♭♯])('+JZ_RT+')('+JZ_SU2+')(?![A-Za-z0-9])','g'),JZ_SGP=new RegExp('(^|[^A-Za-z0-9♭♯])('+JZ_RT+')('+JZ_SU2+'|dim|aug|m)(?![A-Za-z0-9])','g');
 function jzSeg(s){const re=JZ_PURE.test(s.trim())?JZ_SGP:JZ_SGE;re.lastIndex=0;const out=[];let last=0,m;while((m=re.exec(s))){const st=m.index+m[1].length;out.push({t:s.slice(last,st)+m[2]});out.push({s:Object.prototype.hasOwnProperty.call(JZS,m[3])?JZS[m[3]]:m[3]});last=re.lastIndex}if(!out.length)return null;out.push({t:s.slice(last)});return out}
 function jzUnwrap(){document.querySelectorAll('span.jzw').forEach(sp=>sp.replaceWith(document.createTextNode(sp.dataset.jzsrc)))}
@@ -1854,7 +1880,8 @@ const ORIG=new WeakMap(),ATT=new WeakMap(),SKIP={SCRIPT:1,STYLE:1};
 function trText(n){const v=n.nodeValue;let o=ORIG.get(n);if(!o||v!==o.out){o={src:v,out:v};ORIG.set(n,o)}
  const key=o.src.replace(/\s+/g,' ').trim();let out=o.src;
  if(key&&LANG!=='de'){const t=trs(key);if(t!==key)out=o.src.match(/^\s*/)[0]+t+o.src.match(/\s*$/)[0]}
- const pn=n.parentNode;if(JZ.on&&key&&pn&&!(pn.closest&&pn.closest('[data-nojz]'))){
+ const pn=n.parentNode;if(HN.on&&key&&pn&&!(pn.closest&&pn.closest('[data-noh]')))out=hApply(out);
+ if(JZ.on&&key&&pn&&!(pn.closest&&pn.closest('[data-nojz]'))){
   /* Hochgestellt wie auf Lead Sheets: Text in eigenen Knoten aufteilen (nicht in <sup>, Listenfeldern oder Grafiken) */
   if(/^(SUP|SUB|OPTION|TITLE|TEXTAREA)$/.test(pn.nodeName)||pn.namespaceURI==='http://www.w3.org/2000/svg'||(pn.classList&&pn.classList.contains('jzw')))out=jzApply(out);
   else{const sg=jzSeg(out);if(sg){const sp=document.createElement('span');sp.className='jzw';sp.dataset.jzsrc=o.src;sg.forEach(x=>{if(x.t!==undefined){if(x.t)sp.appendChild(document.createTextNode(x.t))}else{const su=document.createElement('sup');su.className='jzs';su.textContent=x.s;sp.appendChild(su)}});n.replaceWith(sp);return}out=jzApply(out)}}
@@ -1863,7 +1890,7 @@ function trAttr(el){if(!el.hasAttribute||!el.hasAttribute('title'))return;const 
  let out=o.src;if(LANG!=='de'){const t=trs(o.src.trim());if(t!==o.src.trim())out=t}if(v!==out)el.setAttribute('title',out);o.out=out}
 function trWalk(root){if(root.nodeType===3){if(!SKIP[root.parentNode&&root.parentNode.tagName])trText(root);return}if(root.nodeType!==1||SKIP[root.tagName])return;trAttr(root);
  const tw=document.createTreeWalker(root,NodeFilter.SHOW_ELEMENT|NodeFilter.SHOW_TEXT),L=[];let n;while(n=tw.nextNode())L.push(n);L.forEach(n=>{if(n.nodeType===3){if(n.parentNode&&!SKIP[n.parentNode.tagName])trText(n)}else if(!SKIP[n.tagName])trAttr(n)})}
-new MutationObserver(ms=>{if(LANG==='de'&&!JZ.on)return;for(const m of ms){if(m.type==='childList')m.addedNodes.forEach(trWalk);else if(m.type==='characterData')trText(m.target);else if(m.type==='attributes')trAttr(m.target)}}).observe(document.body,{childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:['title']});
+new MutationObserver(ms=>{if(LANG==='de'&&!JZ.on&&!HN.on)return;for(const m of ms){if(m.type==='childList')m.addedNodes.forEach(trWalk);else if(m.type==='characterData')trText(m.target);else if(m.type==='attributes')trAttr(m.target)}}).observe(document.body,{childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:['title']});
 const LANGS=[['de','Deutsch'],['en','English'],['es','Español']];
 function langBuild(){$('langs').innerHTML=LANGS.map(([c,n])=>`<button type="button" class="chip${LANG===c?' on':''}" data-lang="${c}">${n}</button>`).join('')}
 function ftLinks(){const de=LANG==='de';document.querySelectorAll('.ft a').forEach(x=>{if(x.dataset.k==='p')x.setAttribute('href',de?'datenschutz.html':'privacy.html');else if(x.dataset.k==='i')x.setAttribute('href',de?'impressum.html':'legal-notice.html')});document.querySelectorAll('.seo-de').forEach(e=>{e.hidden=!de});document.querySelectorAll('.seo-en').forEach(e=>{e.hidden=de})}
@@ -1904,8 +1931,8 @@ function rtRestore(st){rtApply(st.snap);Object.assign(LEARN,st.learn);setArea(st
 function rtLock(on){['aChord','aScale','aSight','modeSel','learnSw'].forEach(id=>{const e=$(id);if(e){e.disabled=on;e.classList.toggle('rtLock',on)}})}
 /* Schwachstellen (im Browser gespeichert) */
 function rtWAll(){return rtLoad(RTW,{})}
-function rtRec(kind,label,ms,errs,meta){if(!RTR||!RTR.on)return;const b=RTR.st[RTR.i];if(b){b.n++;if(!errs)b.ok++;b.e+=errs;b.ms+=ms}
- const key=kind+'|'+label,it=RTR.items[key]||(RTR.items[key]={kind,label,n:0,e:0,ms:0});it.n++;it.e+=errs;it.ms+=ms;
+function rtRec(kind,label,ms,errs,meta,noItem){if(!RTR||!RTR.on)return;const b=RTR.st[RTR.i];if(b){b.n++;if(!errs)b.ok++;b.e+=errs;b.ms+=ms}if(noItem)return;
+ const mode=b?b.type:'?',ik=mode+'|'+kind+'|'+label,key=kind+'|'+label,it=RTR.items[ik]||(RTR.items[ik]={mode,kind,label,n:0,e:0,ms:0});it.n++;it.e+=errs;it.ms+=ms;
  const W=rtWAll(),w=W[key]||(W[key]={kind,label,n:0,er:0,ms:0});w.n++;const a=w.n<5?1/w.n:.25;w.er+=((errs?1:0)-w.er)*a;w.ms+=(ms-w.ms)*a;if(meta)w.meta=meta;w.t=Date.now();rtStore(RTW,W)}
 function rtScore(w,med){return w.er*1.5+Math.max(0,w.ms/med-1)}
 function rtMed(list){const a=list.map(w=>w.ms).sort((x,y)=>x-y);return a.length?Math.max(1,a[Math.floor(a.length/2)]):1}
@@ -1919,8 +1946,8 @@ function rtShow(){if(!RTR||!RTR.on||!cur)return;const k=n+':'+(cur.step||0);if(R
 function rtChordLabel(){try{if(cur.akk)return cur.name;if(cur.prog||cur.vamp){const a=progNames(cur);return a[cur.step||0]||a.join(' ')}return chordAt(cur.key,cur.mode,cur.i)}catch(e){return '?'}}
 function rtChordSolved(){if(!RTR||!RTR.on||!cur)return;let meta=null;if(cur.akk){try{meta={r:AKR[parse(cur.key).semi%12],d:cur.def[0]}}catch(e){}}rtRec('chord',rtChordLabel(),Date.now()-(RTR.t0||Date.now()),RTR.ce||0,meta)}
 function rtScaleDone(s){if(!RTR||!RTR.on||!s)return;rtRec('scale',s.root+' '+s.ty.n,Date.now()-(s.t0||Date.now()),s.errs||0,{r:s.root,t:s.ty.n})}
-function rtSightDone(s){if(!RTR||!RTR.on||!s)return;rtRec('sight','Notenzeile',Date.now()-(s.t0||Date.now()),s.errs||0,null)}
-function rtNoteErr(st){if(!RTR||!RTR.on||!st)return;try{st.notes.forEach(x=>{const key='note|'+srLab(x),it=RTR.items[key]||(RTR.items[key]={kind:'note',label:srLab(x),n:0,e:0,ms:0});it.n++;it.e++})}catch(e){}}
+function rtSightDone(s){if(!RTR||!RTR.on||!s)return;rtRec('sight','',Date.now()-(s.t0||Date.now()),s.errs||0,null,true)}
+function rtNoteErr(st){if(!RTR||!RTR.on||!st)return;const b=RTR.st[RTR.i],mode=b?b.type:'sight';try{st.notes.forEach(x=>{const key=mode+'|note|'+srLab(x),it=RTR.items[key]||(RTR.items[key]={mode,kind:'note',label:srLab(x),n:0,e:0,ms:0});it.n++;it.e++})}catch(e){}}
 /* Ablauf */
 const rtDoneNow=()=>{if(area==='scale')return!!(SK&&SK.done);if(area==='sight')return!!(SR&&SR.done);return!!(cur&&solved&&!pendingStep&&(cur.wander||cur.vamp||!cur.prog||cur.step>=cur.prog.t.length-1))};
 const rtTok=()=>area==='chord'?((gm==='wander'||gm==='vamp')?n+':'+(cur&&cur.step):String(n)):area==='scale'?SK:SR;
@@ -1993,13 +2020,20 @@ function rtEdit(i){const R=rtCurR(),b=R.blocks[i];rtClose();RTE={i,before:rtStat
  const e=$('rtEdit');e.hidden=false;e.innerHTML=`<span><span>Block einstellen:</span> <b>${RTT[b.type][2]}</b></span><span class="rtSm">Wähle unten Tonarten, Akkorde, Skalen usw.</span><button type="button" class="main" id="rtOk">Übernehmen</button><button type="button" class="sec" id="rtCancel">Abbrechen</button>`;
  $('rtOk').onclick=()=>{b.snap=rtSnap();rtSave();rtEditEnd()};$('rtCancel').onclick=rtEditEnd}
 function rtEditEnd(){if(!RTE)return;rtLock(false);$('rtEdit').hidden=true;rtRestore(RTE.before);RTE=null;rtOpen()}
-function rtSummary(X){const rows=X.st.map((b,bi)=>b.type==='custom'?`<div class="rtH"><span>${rtLab(X.R.blocks[bi]||b)}</span><span>${Math.round(b.act/60000)} <span>min</span></span><span></span><span></span></div>`:`<div class="rtH"><span>${RTT[b.type][2]}</span><span>${b.n} <span>Aufgaben</span></span><span>${b.n?Math.round(100*b.ok/b.n)+' %':'–'} <span>auf Anhieb richtig</span></span><span>Ø ${b.n?(b.ms/b.n/1000).toFixed(1):'–'} s</span></div>`).join('');
- const it=Object.values(X.items),med=rtMed(it.filter(x=>x.n).map(x=>({ms:x.ms/x.n}))),weak=it.filter(x=>x.n).map(x=>[x,(x.e/x.n)*1.5+Math.max(0,(x.ms/x.n)/med-1)+(x.kind==='note'?x.e*.5:0)]).filter(x=>x[1]>.3).sort((a,b)=>b[1]-a[1]).slice(0,6);
- const wk=weak.length?weak.map(([x])=>`<span class="rtTag">${x.label}</span>`).join(''):'<span class="rtSm">Keine auffälligen Schwachstellen.</span>';
+function rtSummary(X){const rows=X.st.map((b,bi)=>b.type==='custom'?`<div class="rtH"><span>${rtLab(X.R.blocks[bi]||b)}</span><span>${Math.round(b.act/60000)} <span>min</span></span><span></span><span></span></div>`:`<div class="rtH"><span>${RTT[b.type][2]}</span><span>${b.n} <span>${b.n===1?'Aufgabe':'Aufgaben'}</span></span><span>${b.n?Math.round(100*b.ok/b.n)+' %':'–'} <span>auf Anhieb richtig</span></span><span>Ø ${b.n?(b.ms/b.n/1000).toFixed(1):'–'} s</span></div>`).join('');
+ /* Schwachstellen pro Modus als Tabelle */
+ const modes=[...new Set(X.st.map(b=>b.type).filter(t=>t!=='custom'))],all=Object.values(X.items).filter(x=>x.n);
+ const tb=modes.map(md=>{const it=all.filter(x=>x.mode===md),tm=it.filter(x=>x.kind!=='note'),med=rtMed(tm.map(x=>({ms:x.ms/x.n})));
+  const sc=it.map(x=>[x,x.kind==='note'?x.e*.6:(x.e/x.n)*1.5+Math.max(0,(x.ms/x.n)/med-1)]).filter(a=>a[1]>.3).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  const head=`<tr class="rtMode"><th colspan="4">${RTT[md][2]}</th></tr>`;
+  if(!sc.length)return head+`<tr><td colspan="4" class="rtSm">Keine auffälligen Schwachstellen.</td></tr>`;
+  return head+sc.map(([x])=>`<tr><td>${rtEsc(x.label)}</td><td>${x.kind==='note'?'–':x.n}</td><td>${x.e}</td><td>${x.kind==='note'||!x.n?'–':(x.ms/x.n/1000).toFixed(1)+' s'}</td></tr>`).join('')}).join('');
  const tot=X.st.reduce((a,b)=>({n:a.n+b.n,ok:a.ok+b.ok}),{n:0,ok:0});
  rtOv(`<div class="rtPanel"><div class="rtHead"><b>Routine beendet</b><button type="button" id="rtX" title="Schließen">✕</button></div>
- <div class="rtKpi"><div><b>${Math.round(X.el/60000)}</b> <span>min</span></div><div><b>${tot.n}</b> <span>Aufgaben</span></div><div><b>${tot.n?Math.round(100*tot.ok/tot.n):0} %</b> <span>auf Anhieb richtig</span></div></div>
- ${rows}<div class="rtSm" style="margin-top:14px;font-weight:600">Schwachstellen</div><div class="rtTags">${wk}</div>
+ <div class="rtKpi"><div><b>${Math.round(X.el/60000)}</b> <span>min</span></div><div><b>${tot.n}</b> <span>${tot.n===1?'Aufgabe':'Aufgaben'}</span></div><div><b>${tot.n?Math.round(100*tot.ok/tot.n):0} %</b> <span>auf Anhieb richtig</span></div></div>
+ ${rows}<div class="rtSm" style="margin-top:16px;font-weight:600">Schwachstellen pro Modus</div>
+ <div class="rtTblW"><table class="rtTbl"><thead><tr><th>Schwachstelle</th><th>Versuche</th><th>Fehler</th><th>Ø Zeit</th></tr></thead><tbody>${tb||`<tr><td colspan="4" class="rtSm">Keine auffälligen Schwachstellen.</td></tr>`}</tbody></table></div>
+ <div class="rtSm" style="margin-top:6px">Fehler = falsch gespielte Töne. Beim Notenlesen steht jede Note, bei der du dich verspielt hast.</div>
  <div class="rtTop" style="margin-top:16px"><button type="button" class="sec" id="rtAgain">Nochmal</button><button type="button" class="main" id="rtDone">Fertig</button></div></div>`);
  $('rtX').onclick=rtClose;$('rtDone').onclick=rtClose;$('rtAgain').onclick=rtStart}
 $('rtOpenBtn').onclick=rtOpen;
@@ -2009,6 +2043,9 @@ ftLinks();
 /* Jazz-Akkordsymbole: Schalter, im Browser gespeichert, standardmäßig aus */
 $('jazzSym').onchange=()=>{JZ.on=$('jazzSym').checked;$('jazzSymT').textContent=JZ.on?'An':'Aus';try{localStorage.setItem('pt-jazz',JZ.on?'1':'0')}catch(e){}setLang(LANG)};
 try{if(localStorage.getItem('pt-jazz')==='1'){JZ.on=true;$('jazzSym').checked=true;$('jazzSymT').textContent='An';setLang(LANG)}}catch(e){}
+/* Deutsche Notennamen: Schalter, im Browser gespeichert, standardmäßig aus */
+$('hName').onchange=()=>{HN.on=$('hName').checked;$('hNameT').textContent=HN.on?'An':'Aus';try{localStorage.setItem('pt-hname',HN.on?'1':'0')}catch(e){}setLang(LANG)};
+try{if(localStorage.getItem('pt-hname')==='1'){HN.on=true;$('hName').checked=true;$('hNameT').textContent='An';setLang(LANG)}}catch(e){}
 vampInit();
 $('modeSel').onchange();
 cntTxt();
