@@ -875,9 +875,11 @@ function scNew(keep){Object.keys(SKST).forEach(k=>delete SKST[k]);const roots=[.
 const SKST={};
 function scNote(m){const s=SK;if(area!=='scale'||!s||s.kind!=='play'||s.done)return;
  const exp=s.tones[s.seq[s.step].ti].pc;
- /* Neu anfangen: der erste Ton der Skala setzt zurück, ohne als Fehler zu zählen */
- if(m%12!==exp&&s.step>0&&m%12===s.tones[s.seq[0].ti].pc&&!(s.hand==='B'&&s.pend&&s.pend.length)){s.step=0;s.pend=[];s.bad=-1;Object.keys(SKST).forEach(k=>{if(SKST[k]==='ok')delete SKST[k]});scNote(m);if(!$('scFb').textContent){$('scFb').textContent='↺ Neu begonnen';$('scFb').className='fb'}return}
- if(m%12===exp){if(s.step===0&&s.hand!=='B')s.anc=m-s.seq[0].s;if(s.hand==='B'){s.pend=s.pend||[];if(s.pend.some(x=>Math.abs(x-m)<12))return;SKST[m]='ok';s.pend.push(m);if(s.pend.length<2){$('scFb').textContent='Jetzt die zweite Hand: derselbe Ton in einer anderen Oktave';$('scFb').className='fb';scShow();return}s.pend=[]}
+ /* Neu anfangen: der erste Ton der Skala in derselben Lage wie am Anfang setzt zurück, ohne als Fehler zu zählen */
+ if(m%12!==exp&&s.step>0&&m%12===s.tones[s.seq[0].ti].pc&&!(s.hand==='B'&&s.pend&&s.pend.length)&&(s.hand==='B'?(s.m0s||[]).includes(m):(s.m0==null||m===s.m0))){s.step=0;s.pend=[];s.bad=-1;Object.keys(SKST).forEach(k=>{if(SKST[k]==='ok')delete SKST[k]});scNote(m);if(!$('scFb').textContent){$('scFb').textContent='↺ Neu begonnen';$('scFb').className='fb'}return}
+ if(m%12===exp){if(s.step===0&&s.hand!=='B')s.anc=m-s.seq[0].s;
+  /* Startton(e) merken: Neubeginn nur mit dem Grundton in derselben Lage wie am Anfang */
+  if(s.step===0){if(s.hand==='B'){if(!s.pend||!s.pend.length)s.m0s=[];s.m0s.push(m)}else s.m0=m}if(s.hand==='B'){s.pend=s.pend||[];if(s.pend.some(x=>Math.abs(x-m)<12))return;SKST[m]='ok';s.pend.push(m);if(s.pend.length<2){$('scFb').textContent='Jetzt die zweite Hand: derselbe Ton in einer anderen Oktave';$('scFb').className='fb';scShow();return}s.pend=[]}
   SKST[m]='ok';s.step++;s.bad=-1;if(s.step===s.seq.length){s.done=true;rtScaleDone(s);if(!s.errs){okCount++;cntTxt();}
   $('scFb').textContent=s.errs?`Geschafft, aber mit ${s.errs} Fehler${s.errs>1?'n':''}`:'✓ Geschafft, fehlerfrei!';$('scFb').className='fb '+(s.errs?'bad':'ok');
   if($('scAuto').checked){const mg=$('scFb').textContent,cl=$('scFb').className;scNew();$('scFb').textContent=mg;$('scFb').className=cl}}else{$('scFb').textContent='';$('scFb').className='fb'}}
